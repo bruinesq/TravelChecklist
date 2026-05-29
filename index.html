@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Travel">
 <title>Family Travel</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{font-size:17px;}
@@ -336,21 +336,35 @@ function showLoad(){document.getElementById('fscreen').classList.add('hide');doc
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamily(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 async function pickFamily(key){
-  // Safety check - supabase must be initialized
-  if(!sb){
-    try{sb=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+  try {
+    // Step 1: check sb
+    if(!sb){
+      try{sb=supabase.createClient(SB_URL,SB_KEY);}catch(e2){
+        alert('STEP1 FAIL: '+e2.message); return;
+      }
+    }
+    if(!sb){ alert('sb still null after retry'); return; }
+
+    // Step 2: set state
+    S.fkey=key; S.fid=FIDS[key];
+    S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
+    S.tab=key==='jmcr'?'ryan':'family';
+    S.user=null; S.member=null; S.rsubs=[];
+    localStorage.setItem('fkey',key);
+
+    // Step 3: show loading screen
+    document.getElementById('fscreen').classList.add('hide');
+    document.getElementById('lscreen').classList.remove('hide');
+    var dbg=document.getElementById('ldbg');
+    dbg.classList.add('show');
+    dbg.innerHTML='<div>Step 3: loading screen shown</div>';
+
+    // Step 4: full load
+    dbg.innerHTML+='<div>Step 4: loading data...</div>';
+    await loadAll();
+  } catch(e) {
+    alert('pickFamily CRASH: '+e.message+' stack: '+e.stack);
   }
-  if(!sb){
-    alert('Connection error: Supabase library not loaded. Please reload the page.');
-    return;
-  }
-  S.fkey=key;S.fid=FIDS[key];
-  S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
-  S.tab=key==='jmcr'?'ryan':'family';
-  S.user=null;S.member=null;S.rsubs=[];
-  localStorage.setItem('fkey',key);
-  showLoad();
-  await loadAll();
 }
 function switchFamily(){S.rsubs.forEach(function(ch){sb.removeChannel(ch);});S.rsubs=[];localStorage.removeItem('fkey');showFamily();}
 async function loadAll(){
@@ -459,15 +473,28 @@ function sortItems(arr){
 }
 function itemRow(item,tab){
   var stamper=item.done_by?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
+function itemRow(item,tab){
+  var stamper=item.done_by?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
   var stamp=stamper?'<span class="istamp" style="background:'+(stamper.icon_color||'#ccc')+'22;color:'+(stamper.icon_color||'#555')+'">'+esc(stamper.name)+'</span>':'';
   var skip=item.is_skipped?'<span class="iskip">skip</span>':'';
+  var doneBtn=item.is_done?'<span class="iundo" data-undo="'+item.id+'">Undo</span>':'';
   return '<li class="irow'+(item.is_done?' done':'')+(item.is_skipped?' skip':'')+'" id="ir_'+item.id+'">'
     +'<button class="ichk'+(item.is_done?' on':'')+'" data-id="'+item.id+'">'+(item.is_done?'<i class="ti ti-check"></i>':'')+'</button>'
     +'<div style="flex:1;min-width:0;"><div class="itxt'+(item.is_done?' struck':'')+(item.is_skipped?' skp':'')+'">'+esc(item.text)+'</div>'
-    +(item.is_done?'<span class="iundo" onclick="undoCheck(''+item.id+'')">Undo</span>':'')+'</div>'
-    +stamp+skip+'<button class="idot" onclick="itemCtx(event,''+item.id+'',''+tab+'')"><i class="ti ti-dots-vertical"></i></button></li>';
+    +doneBtn+'</div>'
+    +stamp+skip+'<button class="idot" data-ctx="'+item.id+'" data-tab="'+tab+'"><i class="ti ti-dots-vertical"></i></button></li>';
 }
-function bindChecks(){document.querySelectorAll('.ichk[data-id]').forEach(function(btn){btn.onclick=function(){toggleCheck(btn.dataset.id);};});}
+function bindChecks(){
+  document.querySelectorAll('.ichk[data-id]').forEach(function(btn){
+    btn.onclick=function(){toggleCheck(btn.dataset.id);};
+  });
+  document.querySelectorAll('[data-undo]').forEach(function(el){
+    el.onclick=function(){undoCheck(el.dataset.undo);};
+  });
+  document.querySelectorAll('.idot[data-ctx]').forEach(function(btn){
+    btn.onclick=function(e){itemCtx(e,btn.dataset.ctx,btn.dataset.tab);};
+  });
+}
 function ryanPanel(){
   var cat=S.cats.find(function(c){return c.name===S.ryanSub;});
   var items=cat?sortItems(S.items.filter(function(i){return i.category_id===cat.id;})):[];
@@ -479,11 +506,11 @@ function ryanPanel(){
     var sc=S.cats.find(function(c){return c.name===s.n;});
     var sd=sc?S.items.filter(function(i){return i.category_id===sc.id&&i.is_done;}).length:0;
     var st=sc?S.items.filter(function(i){return i.category_id===sc.id&&!i.is_skipped;}).length:0;
-    return '<div class="dditem'+(S.ryanSub===s.n?' sel':'')+'" onclick="setRyanSub(''+s.n+'')">'
+    return '<div class="dditem'+(S.ryanSub===s.n?' sel':'')+'" data-action="setRyan" data-sub="" + s.n + "">'
       +'<i class="ti '+s.ico+' dditem-ico" style="color:'+s.c+'"></i><span>'+s.n+'</span>'
       +'<span class="dditem-cnt">'+sd+'/'+st+'</span></div>';
   }).join('');
-  return '<div class="ddwrap"><div class="ddsel" onclick="toggleDD('ryanDD')">'
+  return '<div class="ddwrap"><div class="ddsel" data-dd="ryanDD">'
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
     +'<span class="ddsel-lbl">Ryan &#8212; '+S.ryanSub+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+total+'</span>'
@@ -492,7 +519,7 @@ function ryanPanel(){
     +'<div class="ph ryan"><i class="ti '+cur.ico+'" style="color:'+cur.c+';font-size:1.05rem;"></i>'
     +'<span class="ph-title">Ryan &#8212; '+S.ryanSub+'</span>'
     +'<span class="ph-cnt" style="background:#CECBF6;color:#3C3489;">'+done+'/'+total+'</span>'
-    +'<button class="ph-add ryan" onclick="openAddItem('ryan')"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<button class="ph-add ryan" data-action="addItem" data-tab="ryan"><i class="ti ti-plus"></i> Add</button></div>'
     +'<ul class="ilist">'+items.map(function(i){return itemRow(i,'ryan');}).join('')+'</ul>'
     +(items.length?'':'<div class="empty">No items yet &#8212; tap Add</div>');
 }
@@ -503,14 +530,14 @@ function familyPanel(){
     var pd=S.items.filter(function(i){return i.member_id===p.id&&i.is_done;}).length;
     var pt=S.items.filter(function(i){return i.member_id===p.id&&!i.is_skipped;}).length;
     var isSel=m&&m.id===p.id;
-    return '<div class="dditem'+(isSel?' sel fam':'')+'" style="'+(isSel?'background:'+p.bg_color+';':'')+'" onclick="setMember(''+p.id+'')">'
+    return '<div class="dditem'+(isSel?' sel fam':'')+'" style="'+(isSel?'background:'+p.bg_color+';':'')+'" data-action="setMember" data-id="" + p.id + "">'
       +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+(p.icon_color||'#666')+'"></i>'
       +'<span>'+esc(p.name)+'</span>'
       +'<span class="dditem-cnt" style="background:'+(p.icon_color||'#999')+'22;color:'+(p.icon_color||'#555')+'">'+pd+'/'+pt+'</span></div>';
   }).join('');
   var done=m?S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length:0;
   var total=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
-  var html='<div class="ddwrap"><div class="ddsel" onclick="toggleDD('famDD')">'
+  var html='<div class="ddwrap"><div class="ddsel" data-dd="famDD">'
     +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+(m.icon_color||'#1D9E75')+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+total+'</span>':'')
@@ -522,7 +549,7 @@ function familyPanel(){
     +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+(m.icon_color||'#1D9E75')+';font-size:1.05rem;"></i>'
     +'<span class="ph-title">'+esc(m.name)+"'s List</span>"
     +'<span class="ph-cnt" style="background:'+(m.icon_color||'#1D9E75')+'33;color:'+(m.icon_color||'#085041')+'">'+done+'/'+total+'</span>'
-    +'<button class="ph-add family" onclick="openAddItem('family')"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<button class="ph-add family" data-action="addItem" data-tab="family"><i class="ti ti-plus"></i> Add</button></div>'
     +'<ul class="ilist" style="background:'+(m.bg_color||'#E1F5EE')+'18;">'+items.map(function(i){return itemRow(i,'family');}).join('')+'</ul>'
     +(items.length?'':'<div class="empty">No items yet &#8212; tap Add</div>');
   return html;
@@ -533,7 +560,7 @@ function flightPanel(){
   var past=sorted.filter(function(f){return isPast(f.departure_dt);});
   function cardHtml(f){
     var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name)||p.companion_name;}).filter(Boolean).join(', ');
-    return'<div class="card'+(isPast(f.departure_dt)?' past':'')+'" onclick="flightDetail(''+f.id+'')">'
+    return'<div class="card'+(isPast(f.departure_dt)?' past':'')+'" data-action="flight" data-id="" + f.id + "">'
       +'<div class="card-title">'+esc(f.origin_city)+' &#8594; '+esc(f.dest_city)+(isPast(f.departure_dt)?'<span class="pill pt" style="margin-left:0.3rem">Past</span>':'')+'</div>'
       +'<div class="card-sub"><span class="pill fl">'+esc(f.airline||'&#8212;')+'</span>'+fmtDT(f.departure_dt)+(f.gate?' &middot; Gate '+esc(f.gate):'')+'</div>'
       +(pax?'<div class="card-sub" style="margin-top:0.15rem;">&#x1F465; '+esc(pax)+'</div>':'')
@@ -541,7 +568,7 @@ function flightPanel(){
   }
   return'<div class="ph flight"><i class="ti ti-plane" style="color:#378ADD;font-size:1.05rem;"></i>'
     +'<span class="ph-title">Flights</span><span class="ph-cnt" style="background:#B5D4F4;color:#0C447C;">'+up.length+' upcoming</span>'
-    +'<button class="ph-add flight" onclick="openAddFlight()"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<button class="ph-add flight" data-action="addFlight"><i class="ti ti-plus"></i> Add</button></div>'
     +(up.length+past.length===0?'<div class="empty">No flights yet</div>':'')
     +'<div class="cards">'+up.map(cardHtml).join('')+(past.length?'<div class="sec-sep">Past Flights</div>'+past.map(cardHtml).join(''):'')+'</div>';
 }
@@ -549,14 +576,14 @@ function hotelPanel(){
   var sorted=S.hotels.slice().sort(function(a,b){return new Date(a.check_in_dt)-new Date(b.check_in_dt);});
   var up=sorted.filter(function(h){return!isPast(h.check_out_dt);});
   var past=sorted.filter(function(h){return isPast(h.check_out_dt);});
-  function cardHtml(h){return'<div class="card'+(isPast(h.check_out_dt)?' past':'')+'" onclick="hotelDetail(''+h.id+'')">'
+  function cardHtml(h){return'<div class="card'+(isPast(h.check_out_dt)?' past':'')+'" data-action="hotel" data-id="" + h.id + "">'
     +'<div class="card-title">'+esc(h.name)+(isPast(h.check_out_dt)?'<span class="pill pt" style="margin-left:0.3rem">Past</span>':'')+'</div>'
     +'<div class="card-sub"><span class="pill ht">'+esc(h.accom_type||'Hotel')+'</span>'+esc(h.location||'&#8212;')+' &middot; '+fmtD(h.check_in_dt)+' &#8594; '+fmtD(h.check_out_dt)+'</div>'
     +(h.room_number?'<div class="card-sub" style="margin-top:0.15rem;">&#x1F6AA; Room '+esc(h.room_number)+'</div>':'')
     +'<i class="ti ti-chevron-right card-chev"></i></div>';}
   return'<div class="ph hotel"><i class="ti ti-building" style="color:#D85A30;font-size:1.05rem;"></i>'
     +'<span class="ph-title">Hotels &amp; Stays</span><span class="ph-cnt" style="background:#F5C4B3;color:#712B13;">'+up.length+' upcoming</span>'
-    +'<button class="ph-add hotel" onclick="openAddHotel(null)"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<button class="ph-add hotel" data-action="addHotel"><i class="ti ti-plus"></i> Add</button></div>'
     +(up.length+past.length===0?'<div class="empty">No accommodations yet</div>':'')
     +'<div class="cards">'+up.map(cardHtml).join('')+(past.length?'<div class="sec-sep">Past Stays</div>'+past.map(cardHtml).join(''):'')+'</div>';
 }
@@ -564,13 +591,13 @@ function reservePanel(){
   var sorted=S.reserves.slice().sort(function(a,b){return new Date(a.reservation_dt)-new Date(b.reservation_dt);});
   var up=sorted.filter(function(r){return!isPast(r.reservation_dt);});
   var past=sorted.filter(function(r){return isPast(r.reservation_dt);});
-  function cardHtml(r){return'<div class="card'+(isPast(r.reservation_dt)?' past':'')+'" onclick="reserveDetail(''+r.id+'')">'
+  function cardHtml(r){return'<div class="card'+(isPast(r.reservation_dt)?' past':'')+'" data-action="reserve" data-id="" + r.id + "">'
     +'<div class="card-title">'+esc(r.name)+(isPast(r.reservation_dt)?'<span class="pill pt" style="margin-left:0.3rem">Past</span>':'')+'</div>'
     +'<div class="card-sub"><span class="pill rs">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' &middot; '+esc(r.location):'')+'</div>'
     +'<i class="ti ti-chevron-right card-chev"></i></div>';}
   return'<div class="ph reserve"><i class="ti ti-calendar-event" style="color:#9B59B6;font-size:1.05rem;"></i>'
     +'<span class="ph-title">Reservations</span><span class="ph-cnt" style="background:#E8C8F8;color:#6B2F9E;">'+up.length+' upcoming</span>'
-    +'<button class="ph-add reserve" onclick="openAddReservation(null)"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<button class="ph-add reserve" data-action="addReserve"><i class="ti ti-plus"></i> Add</button></div>'
     +(up.length+past.length===0?'<div class="empty">No reservations yet</div>':'')
     +'<div class="cards">'+up.map(cardHtml).join('')+(past.length?'<div class="sec-sep">Past Reservations</div>'+past.map(cardHtml).join(''):'')+'</div>';
 }
@@ -627,19 +654,23 @@ async function deleteItem(id){
   S.items=S.items.filter(function(i){return i.id!==id;});setSdot('');closeCtx();renderPanel();updateProg();
 }
 function V(id){var el=document.getElementById(id);return el?el.value.trim():'';}
-function togMtile(el,color){el.classList.toggle('sel');el.style.borderColor=el.classList.contains('sel')?color:'#e0d8c8';}
+function togMtile(el,color){
+  el.classList.toggle('sel');
+  var c=color||el.dataset.color||'#1D9E75';
+  el.style.borderColor=el.classList.contains('sel')?c:'#e0d8c8';
+}
 function togFtog(btn,gid){document.querySelectorAll('#'+gid+' .ftog-opt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
 function openAddItem(tab){
   var packers=S.members.filter(function(m){return!m.is_subject;});
   var isFam=tab==='family';
   var dest=isFam
     ?'<div class="fsec"><label class="flbl">Add to (select one or more)</label><div class="mtiles" id="addTgt">'
-      +packers.map(function(m){return'<div class="mtile'+(S.member&&S.member.id===m.id?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(S.member&&S.member.id===m.id?(m.icon_color||'#1D9E75'):'#e0d8c8')+'" onclick="togMtile(this,''+(m.icon_color||'#1D9E75')+'')">'
+      +packers.map(function(m){return'<div class="mtile'+(S.member&&S.member.id===m.id?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(S.member&&S.member.id===m.id?(m.icon_color||'#1D9E75'):'#e0d8c8')+'" data-action="togMtile" data-color="'+( m.icon_color||'#1D9E75')+'">'
         +'<i class="ti '+(m.icon||'ti-user')+' mtile-ico" style="color:'+(m.icon_color||'#666')+'"></i><span class="mtile-lbl">'+esc(m.name)+'</span></div>';}).join('')+'</div></div>'
     :'<div class="fsec"><label class="flbl">Sub-list</label><div class="ftog" id="subPicker">'
-      +['Backpack','Meds','Equip'].map(function(s){return'<button class="ftog-opt'+(s===S.ryanSub?' on':'')+'" onclick="togFtog(this,'subPicker');S._sub=''+s+''">'+s+'</button>';}).join('')+'</div></div>';
+      +['Backpack','Meds','Equip'].map(function(s){return'<button class="ftog-opt'+(s===S.ryanSub?' on':'')+'" onclick="togFtog(this,\'subPicker\');S._sub=s">'+s+'</button>';}).join('')+'</div></div>';
   openCP('Add Item',dest+'<div class="fsec"><label class="flbl">Item description</label><input class="finp" id="addTxt" placeholder="e.g. Sunscreen"/></div>'
-    +'<button class="sbtn '+(isFam?'family':'ryan')+'" onclick="submitAddItem(''+tab+'')"><i class="ti ti-plus"></i> Add Item</button>');
+    +'<button class="sbtn '+(isFam?'family':'ryan')+'" data-action="submitAddItem" data-tab="" + tab + ""><i class="ti ti-plus"></i> Add Item</button>');
   setTimeout(function(){var f=document.getElementById('addTxt');if(f)f.focus();},80);
 }
 async function submitAddItem(tab){
@@ -665,9 +696,9 @@ function itemCtx(e,id,tab){
   e.stopPropagation();
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var ctx=document.getElementById('ctx');
-  ctx.innerHTML='<div class="cxi" onclick="skipItem(''+id+'')">'+'<i class="ti ti-player-skip-forward"></i> '+(item.is_skipped?'Unskip':'Skip')+'</div>'
-    +(item.is_done?'<div class="cxi" onclick="undoCheck(''+id+'');closeCtx()"><i class="ti ti-arrow-back-up"></i> Undo</div>':'')
-    +'<div class="cxd"></div><div class="cxi red" onclick="deleteItem(''+id+'')">'+'<i class="ti ti-trash"></i> Delete</div>';
+  ctx.innerHTML='<div class="cxi" data-action="skip" data-id="" + id + "">'+'<i class="ti ti-player-skip-forward"></i> '+(item.is_skipped?'Unskip':'Skip')+'</div>'
+    +(item.is_done?'<div class="cxi" data-action="undo" data-id="" + id + ""><i class="ti ti-arrow-back-up"></i> Undo</div>':'')
+    +'<div class="cxd"></div><div class="cxi red" data-action="del" data-id="" + id + "">'+'<i class="ti ti-trash"></i> Delete</div>';
   ctx.style.top=Math.min(e.clientY+4,window.innerHeight-150)+'px';
   ctx.style.left=Math.min(e.clientX,window.innerWidth-160)+'px';
   ctx.classList.add('open');document.getElementById('overlay').classList.add('open');
@@ -683,7 +714,7 @@ function paxTiles(selIds){
     var g=groups[fid];var isCur=fid===S.fid;
     var tiles=g.mems.map(function(m){
       var isSel=selIds?selIds.indexOf(m.id)>=0:isCur;
-      return'<div class="mtile'+(isSel?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(isSel?(m.icon_color||'#378ADD'):'#e0d8c8')+'" onclick="togMtile(this,''+(m.icon_color||'#378ADD')+'')">'
+      return'<div class="mtile'+(isSel?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(isSel?(m.icon_color||'#378ADD'):'#e0d8c8')+'" data-action="togMtile" data-color="'+(m.icon_color||'#378ADD')+'">'
         +'<i class="ti '+(m.icon||'ti-user')+' mtile-ico" style="color:'+(m.icon_color||'#666')+'"></i>'
         +'<span class="mtile-lbl">'+esc(m.name)+'</span></div>';
     }).join('');
@@ -718,8 +749,8 @@ function flightFormHTML(f){
     +'<div class="frow"><div class="fsec"><label class="flbl">Gate</label><input class="finp" id="fGate" value="'+esc(f?f.gate||'':'')+'" placeholder="B14"/></div>'
     +'<div class="fsec"><label class="flbl">Confirmation #</label><input class="finp" id="fConf" value="'+esc(f?f.confirmation_no||'':'')+'"/></div></div>'
     +'<div class="fsec"><label class="flbl">Insurance</label><div class="ftog" id="insTog">'
-    +'<button class="ftog-opt'+(f&&f.is_insured?'':' on')+'" onclick="togFtog(this,'insTog')">No</button>'
-    +'<button class="ftog-opt'+(f&&f.is_insured?' on':'')+'" onclick="togFtog(this,'insTog')">Yes</button></div></div>'
+    +'<button class="ftog-opt'+(f&&f.is_insured?'':' on')+'" onclick="togFtog(this,\'insTog\')">No</button>'
+    +'<button class="ftog-opt'+(f&&f.is_insured?' on':'')+'" onclick="togFtog(this,\'insTog\')">Yes</button></div></div>'
     +'<div class="fsec" id="insPolWrap" style="display:'+(f&&f.is_insured?'block':'none')+'">'
     +'<label class="flbl">Policy #</label><input class="finp" id="fPol" value="'+esc(f?f.insurance_policy_no||'':'')+'"/></div>'
     +'<div class="fsec"><label class="flbl">Seat assignments</label><div id="seatWrap">'+seatRows(S.allMembers,f?f.flight_passengers:null)+'</div></div>'
@@ -738,15 +769,15 @@ function flightDetail(id){
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+paxStr+'</span></div>'
     +DR('Insurance',f.is_insured?'Yes — '+(f.insurance_policy_no||'—'):'No')
     +DR('Baggage',f.baggage_notes)+DR('Notes',f.notes)
-    +'<button class="sbtn flight" style="margin-top:0.5rem" onclick="openEditFlight(''+f.id+'')">'
+    +'<button class="sbtn flight" style="margin-top:0.5rem" data-action="openEditFlight" data-id="" + f.id + "">'
     +'<i class="ti ti-edit"></i> Edit Flight</button>'
-    +'<button class="dbtn" onclick="delRec('flight',''+f.id+'')">'+'<i class="ti ti-trash"></i> Delete</button>');
+    +'<button class="dbtn" data-action="delRec" data-type="flight" data-id="" + f.id + "">'+'<i class="ti ti-trash"></i> Delete</button>');
 }
 function openEditFlight(id){
   var f=S.flights.find(function(x){return x.id===id;});if(!f)return;
   openCP('Edit Flight',flightFormHTML(f)
-    +'<button class="sbtn flight" onclick="submitFlight(''+f.id+'')">'+'<i class="ti ti-check"></i> Save Changes</button>'
-    +'<button class="dbtn" onclick="delRec('flight',''+f.id+'')">'+'<i class="ti ti-trash"></i> Delete</button>');
+    +'<button class="sbtn flight" data-action="submitFlight" data-id="" + f.id + "">'+'<i class="ti ti-check"></i> Save Changes</button>'
+    +'<button class="dbtn" data-action="delRec" data-type="flight" data-id="" + f.id + "">'+'<i class="ti ti-trash"></i> Delete</button>');
   addInsListener();
 }
 function addInsListener(){document.getElementById('insTog').addEventListener('click',function(){document.getElementById('insPolWrap').style.display=document.querySelector('#insTog .on').textContent==='Yes'?'block':'none';});}
@@ -784,7 +815,7 @@ function hotelFormHTML(h){
   var outL=h.check_out_dt?new Date(h.check_out_dt).toISOString().slice(0,16):'';
   var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
   return'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="acType">'
-    +types.map(function(t,i){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&i===0)?' on':'')+'" onclick="togFtog(this,'acType');toggleCruise()">'+t+'</button>';}).join('')+'</div></div>'
+    +types.map(function(t,i){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&i===0)?' on':'')+'" onclick="togFtog(this,\'acType\');toggleCruise()">'+t+'</button>';}).join('')+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="hName" value="'+esc(h.name||'')+'" placeholder="Hotel or ship name"/></div>'
     +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="hLoc" value="'+esc(h.location||'')+'"/></div>'
     +'<div class="frow"><div class="fsec"><label class="flbl">Check-in</label><input class="finp" type="datetime-local" id="hIn" value="'+inL+'"/></div>'
@@ -803,7 +834,7 @@ function hotelFormHTML(h){
     +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="hNotes">'+esc(h.notes||'')+'</textarea></div>';
 }
 function toggleCruise(){setTimeout(function(){var t=document.querySelector('#acType .on');var el=document.getElementById('cruiseF');if(el&&t)el.style.display=t.textContent==='Cruise Ship'?'block':'none';},10);}
-function openAddHotel(h){openCP(h?'Edit Stay':'Add Accommodation',hotelFormHTML(h)+'<button class="sbtn hotel" onclick="submitHotel(''+(h?h.id:'null')+'')">'+(h?'<i class="ti ti-check"></i> Save':'<i class="ti ti-building"></i> Add')+'</button>'+(h?'<button class="dbtn" onclick="delRec('hotel',''+h.id+'')"><i class="ti ti-trash"></i> Delete</button>':''));}
+function openAddHotel(h){openCP(h?'Edit Stay':'Add Accommodation',hotelFormHTML(h)+'<button class="sbtn hotel" data-action="submitHotel" data-id="" + (h?h.id:"null") + "">'+(h?'<i class="ti ti-check"></i> Save':'<i class="ti ti-building"></i> Add')+'</button>'+(h?'<button class="dbtn" data-action="delRec" data-type="hotel" data-id="" + h.id + ""><i class="ti ti-trash"></i> Delete</button>':''));}
 async function submitHotel(editId){
   var name=V('hName');if(!name){alert('Name is required.');return;}
   setSdot('saving');
@@ -830,14 +861,14 @@ function hotelDetail(id){
     +DR('Reserved by',h.reserved_by)+DR('Phone',h.contact_phone)+DR('Email',h.contact_email)
     +(isCruise?DR('Ship',h.ship_name)+DR('Cabin',h.cabin_number)+DR('Deck',h.deck)+DR('Dining',h.dining_assignment):'')
     +DR('Cancellation',h.cancellation_notes)+DR('Notes',h.notes)
-    +'<button class="sbtn hotel" style="margin-top:0.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===''+h.id+'';}))"><i class="ti ti-edit"></i> Edit Stay</button>'
-    +'<button class="dbtn" onclick="delRec('hotel',''+h.id+'')"><i class="ti ti-trash"></i> Delete</button>');
+    +'<button class="sbtn hotel" style="margin-top:0.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===h.id;}))"><i class="ti ti-edit"></i> Edit Stay</button>'
+    +'<button class="dbtn" data-action="delRec" data-type="hotel" data-id="" + h.id + ""><i class="ti ti-trash"></i> Delete</button>');
 }
 function reserveFormHTML(r){
   r=r||{};var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):'';
   var types=['Restaurant','Tour','Activity','Transport','Other'];
   return'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="resType">'
-    +types.map(function(t,i){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&i===0)?' on':'')+'" onclick="togFtog(this,'resType')">'+t+'</button>';}).join('')+'</div></div>'
+    +types.map(function(t,i){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&i===0)?' on':'')+'" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('')+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name / Description</label><input class="finp" id="rName" value="'+esc(r.name||'')+'"/></div>'
     +'<div class="frow"><div class="fsec"><label class="flbl">Date &amp; Time</label><input class="finp" type="datetime-local" id="rDT" value="'+dtL+'"/></div>'
     +'<div class="fsec"><label class="flbl"># of People</label><input class="finp" type="number" id="rPpl" value="'+(r.num_people||'')+'" min="1"/></div></div>'
@@ -849,7 +880,7 @@ function reserveFormHTML(r){
     +'<div class="fsec"><label class="flbl">Cancellation Policy</label><textarea class="finp fta" id="rCancel">'+esc(r.cancellation_notes||'')+'</textarea></div>'
     +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="rNotes">'+esc(r.notes||'')+'</textarea></div>';
 }
-function openAddReservation(r){openCP(r?'Edit Reservation':'Add Reservation',reserveFormHTML(r)+'<button class="sbtn reserve" onclick="submitReserve(''+(r?r.id:'null')+'')">'+(r?'<i class="ti ti-check"></i> Save':'<i class="ti ti-calendar-event"></i> Add')+'</button>'+(r?'<button class="dbtn" onclick="delRec('reserve',''+r.id+'')"><i class="ti ti-trash"></i> Delete</button>':''));}
+function openAddReservation(r){openCP(r?'Edit Reservation':'Add Reservation',reserveFormHTML(r)+'<button class="sbtn reserve" data-action="submitReserve" data-id="" + (r?r.id:"null") + "">'+(r?'<i class="ti ti-check"></i> Save':'<i class="ti ti-calendar-event"></i> Add')+'</button>'+(r?'<button class="dbtn" data-action="delRec" data-type="reserve" data-id="" + r.id + ""><i class="ti ti-trash"></i> Delete</button>':''));}
 async function submitReserve(editId){
   var name=V('rName');if(!name){alert('Name is required.');return;}setSdot('saving');
   var rt=document.querySelector('#resType .on');
@@ -871,8 +902,8 @@ function reserveDetail(id){
     +DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)
     +DR('Reserved by',r.reserved_by)+DR('Phone',r.contact_phone)+DR('Email',r.contact_email)
     +DR('Cancellation',r.cancellation_notes)+DR('Notes',r.notes)
-    +'<button class="sbtn reserve" style="margin-top:0.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===''+r.id+'';}))"><i class="ti ti-edit"></i> Edit</button>'
-    +'<button class="dbtn" onclick="delRec('reserve',''+r.id+'')"><i class="ti ti-trash"></i> Delete</button>');
+    +'<button class="sbtn reserve" style="margin-top:0.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===r.id;}))"><i class="ti ti-edit"></i> Edit</button>'
+    +'<button class="dbtn" data-action="delRec" data-type="reserve" data-id="" + r.id + ""><i class="ti ti-trash"></i> Delete</button>');
 }
 function DR(lbl,val){return'<div class="drow"><span class="dlbl">'+lbl+'</span><span class="dval">'+esc(String(val||'—'))+'</span></div>';}
 async function delRec(type,id){
@@ -905,6 +936,46 @@ function closeCon(){document.getElementById('cmod').classList.remove('open');doc
 function closeAll(){document.getElementById('cpanel').classList.remove('open');document.getElementById('overlay').classList.remove('open');document.getElementById('ctx').classList.remove('open');closeDD();}
 function closeCtx(){document.getElementById('ctx').classList.remove('open');}
 document.addEventListener('click',function(e){if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))document.getElementById('ctx').classList.remove('open');if(!e.target.closest('.ddwrap'))closeDD();});
+
+} // auto-close
+
+// Global delegated event handler for data-action elements
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('[data-action]');
+  if(!el) {
+    // Check for data-dd (dropdown toggles)
+    var dd = e.target.closest('[data-dd]');
+    if(dd) { toggleDD(dd.dataset.dd); return; }
+    return;
+  }
+  var action = el.dataset.action;
+  var id = el.dataset.id;
+  var tab = el.dataset.tab;
+  var type = el.dataset.type;
+  if(action==='flight')  { flightDetail(id); }
+  else if(action==='hotel')   { hotelDetail(id); }
+  else if(action==='reserve') { reserveDetail(id); }
+  else if(action==='setRyan') { setRyanSub(el.dataset.sub); }
+  else if(action==='setMember') { setMember(id); }
+  else if(action==='skip') { skipItem(id); }
+  else if(action==='undo') { undoCheck(id); }
+  else if(action==='del')  { deleteItem(id); }
+  else if(action==='addItem')   { openAddItem(tab); }
+  else if(action==='addFlight') { openAddFlight(); }
+  else if(action==='addHotel')  { openAddHotel(null); }
+  else if(action==='addReserve'){ openAddReservation(null); }
+  else if(action==='openEditFlight') { openEditFlight(id); }
+  else if(action==='submitFlight') { submitFlight(id==='null'?null:id); }
+  else if(action==='submitAddItem') { submitAddItem(tab); }
+  else if(action==='delRec') { delRec(type, id); }
+  else if(action==='editHotel') { var h=S.hotels.find(function(x){return x.id===id;}); if(h) openAddHotel(h); }
+  else if(action==='editReserve') { var r=S.reserves.find(function(x){return x.id===id;}); if(r) openAddReservation(r); }
+  else if(action==='removeComp') { removeComp(parseInt(el.dataset.idx)); }
+  else if(action==='togMtile') { togMtile(el); }
+  else if(action==='submitHotel') { submitHotel(id==='null'?null:id); }
+  else if(action==='submitReserve') { submitReserve(id==='null'?null:id); }
+});
+
 (function boot(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);})();
 </script>
 </body>

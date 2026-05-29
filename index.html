@@ -385,7 +385,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 </div>
 
 <!-- LOADING -->
-<div class="loading-screen" id="loadingScreen">
+<div class="loading-screen hidden" id="loadingScreen">
   <div class="loading-ico">✈️</div>
   <div class="loading-txt">Loading your trip...</div>
   <div id="debugPanel" style="display:none;margin-top:1.5rem;background:rgba(0,0,0,0.5);border-radius:0.75rem;padding:1rem;width:min(90vw,22rem);max-height:60vh;overflow-y:auto;text-align:left;"></div>
@@ -484,7 +484,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 // ════════════════════════════════════════════════
 const SUPABASE_URL     = 'https://dehktexgwfurefdihtfn.supabase.co';
 const SUPABASE_ANON_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-let sb; // initialized in boot()
+let sb;
+// Initialize Supabase immediately (CDN script is synchronous, loaded before this)
+try {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) {
+  console.error('Supabase init failed:', e);
+}
 
 const FAMILY_IDS = {
   jmcr:      'a1000000-0000-0000-0000-000000000001',
@@ -545,8 +551,15 @@ async function selectFamily(key){
   state.familyName = key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
   document.getElementById('familyScreen').classList.add('hidden');
   document.getElementById('loadingScreen').classList.remove('hidden');
-  // persist choice
+  // Reset and show precheck for this load
+  const pre = document.getElementById('precheck');
+  if(pre){ pre.innerHTML=''; pre.style.display='block'; }
   localStorage.setItem('familyKey', key);
+  // Ensure sb is initialized
+  if(!sb){
+    if(pre) pre.innerHTML='<span style="color:#FF6B6B">❌ Supabase not initialized. Reload page.</span>';
+    return;
+  }
   await loadAll();
 }
 
@@ -2084,14 +2097,11 @@ document.addEventListener('click',e=>{
   }
   log('✅ Supabase library loaded','#90EE90');
 
-  // Init client
-  try {
-    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    window.sb = sb;
-    log('✅ Supabase client created','#90EE90');
-  } catch(e){
-    log('❌ Client creation failed: '+e.message,'#FF6B6B'); return;
+  if(!sb){
+    log('❌ Supabase client not initialized — reload page','#FF6B6B');
+    return;
   }
+  log('✅ Supabase client ready','#90EE90');
 
   // Quick connectivity test
   try {

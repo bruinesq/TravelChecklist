@@ -9,13 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Travel">
 <title>Family Travel App</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<script>
-// Inline minimal Supabase client loader with fallback
-window._sbLoaded = false;
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"
-  onload="window._sbLoaded=true;"
-  onerror="document.getElementById('precheck').innerHTML='<span style=color:#FF6B6B>❌ Supabase library failed to load. Check your internet connection.</span>';"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 /* ── RESET & BASE ─────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -2052,26 +2046,16 @@ document.addEventListener('click',e=>{
 
   log('🚀 App starting...','#90EE90');
 
-  // Check Supabase loaded
-  if(typeof supabase === 'undefined' || !window._sbLoaded){
-    log('❌ Supabase library not loaded! Trying inline init...','#FF6B6B');
-    // Try loading from alternate CDN
-    await new Promise((resolve,reject)=>{
-      const s=document.createElement('script');
-      s.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js';
-      s.onload=()=>{ log('✅ Loaded from unpkg','#90EE90'); resolve(); };
-      s.onerror=()=>{ log('❌ Both CDNs failed','#FF6B6B'); reject(); };
-      document.head.appendChild(s);
-    }).catch(()=>{ log('Please check your internet connection and reload.','#FFD700'); return; });
-  } else {
-    log('✅ Supabase library loaded','#90EE90');
+  if(typeof supabase === 'undefined'){
+    log('❌ Supabase library not loaded — check internet','#FF6B6B');
+    return;
   }
-
-  if(typeof supabase === 'undefined'){ log('❌ Cannot continue — library missing','#FF6B6B'); return; }
+  log('✅ Supabase library loaded','#90EE90');
 
   // Init client
   try {
-    window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.sb = sb;
     log('✅ Supabase client created','#90EE90');
   } catch(e){
     log('❌ Client creation failed: '+e.message,'#FF6B6B'); return;
@@ -2080,7 +2064,7 @@ document.addEventListener('click',e=>{
   // Quick connectivity test
   try {
     log('🔌 Testing connection...','#FFD700');
-    const {data,error} = await sb.from('families').select('name').limit(1);
+    const {data,error} = await window.sb.from('families').select('name').limit(1);
     if(error) throw error;
     log('✅ Connected — found: '+(data?.[0]?.name||'?'),'#90EE90');
   } catch(e){

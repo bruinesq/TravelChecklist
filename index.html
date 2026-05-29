@@ -9,7 +9,13 @@
 <meta name="apple-mobile-web-app-title" content="Travel">
 <title>Family Travel App</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Inline minimal Supabase client loader with fallback
+window._sbLoaded = false;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"
+  onload="window._sbLoaded=true;"
+  onerror="document.getElementById('precheck').innerHTML='<span style=color:#FF6B6B>❌ Supabase library failed to load. Check your internet connection.</span>';"></script>
 <style>
 /* ── RESET & BASE ─────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -350,6 +356,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 <body>
 
 <!-- FAMILY TOGGLE SCREEN -->
+<!-- PRECHECK: visible immediately, before any JS runs -->
+<div id="precheck" style="position:fixed;top:0;left:0;right:0;z-index:99999;
+  background:#1a3a4a;color:#90EE90;font-size:0.78rem;font-family:monospace;
+  padding:0.5rem 0.75rem;display:none;"></div>
+
 <div class="family-screen" id="familyScreen">
   <div class="fs-wave">✈️🌊</div>
   <div class="fs-title">Family Travel</div>
@@ -468,7 +479,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 // ════════════════════════════════════════════════
 const SUPABASE_URL     = 'https://dehktexgwfurefdihtfn.supabase.co';
 const SUPABASE_ANON_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let sb; // initialized in boot()
 
 const FAMILY_IDS = {
   jmcr:     'a1000000-0000-0000-0000-000000000001',
@@ -2033,17 +2044,68 @@ document.addEventListener('click',e=>{
 //  BOOT
 // ════════════════════════════════════════════════
 (async function boot(){
-  // Show family screen initially — always let user pick
-  // (avoids stale localStorage causing blank screen)
+  const pre = document.getElementById('precheck');
+  function log(msg, color){
+    if(pre){ pre.style.display='block'; pre.innerHTML += (color?'<span style="color:'+color+'">':'<span>')+msg+'</span><br>'; }
+    console.log(msg);
+  }
+
+  log('🚀 App starting...','#90EE90');
+
+  // Check Supabase loaded
+  if(typeof supabase === 'undefined' || !window._sbLoaded){
+    log('❌ Supabase library not loaded! Trying inline init...','#FF6B6B');
+    // Try loading from alternate CDN
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js';
+      s.onload=()=>{ log('✅ Loaded from unpkg','#90EE90'); resolve(); };
+      s.onerror=()=>{ log('❌ Both CDNs failed','#FF6B6B'); reject(); };
+      document.head.appendChild(s);
+    }).catch(()=>{ log('Please check your internet connection and reload.','#FFD700'); return; });
+  } else {
+    log('✅ Supabase library loaded','#90EE90');
+  }
+
+  if(typeof supabase === 'undefined'){ log('❌ Cannot continue — library missing','#FF6B6B'); return; }
+
+  // Init client
+  try {
+    window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    log('✅ Supabase client created','#90EE90');
+  } catch(e){
+    log('❌ Client creation failed: '+e.message,'#FF6B6B'); return;
+  }
+
+  // Quick connectivity test
+  try {
+    log('🔌 Testing connection...','#FFD700');
+    const {data,error} = await sb.from('families').select('name').limit(1);
+    if(error) throw error;
+    log('✅ Connected — found: '+(data?.[0]?.name||'?'),'#90EE90');
+  } catch(e){
+    log('❌ Connection test failed: '+e.message,'#FF6B6B');
+    log('Check Supabase URL and anon key','#FFD700');
+    return;
+  }
+
+  // Check saved family
   const saved = localStorage.getItem('familyKey');
+  log('💾 Saved family: '+(saved||'none'),'#90EE90');
+
   if(saved && FAMILY_IDS[saved]){
-    // reset member state so it re-populates for this family
     state.activeUser   = null;
     state.activeMember = null;
+    log('🔄 Auto-loading family: '+saved,'#90EE90');
+    // Hide precheck after 3s if all goes well
+    setTimeout(()=>{ if(pre) pre.style.display='none'; }, 3000);
     await selectFamily(saved);
+  } else {
+    log('👋 Showing family selector','#90EE90');
+    setTimeout(()=>{ if(pre) pre.style.display='none'; }, 2000);
   }
-  // else family screen is already visible — nothing to do
 })();
+;
 </script>
 
 <!--

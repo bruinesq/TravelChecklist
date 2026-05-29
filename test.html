@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test</title></head>
+<body>
+<div id="out" style="padding:20px;font-family:monospace;font-size:16px;">Starting...</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://dehktexgwfurefdihtfn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
+
+function log(msg) {
+  document.getElementById('out').innerHTML += '<br>' + msg;
+  console.log(msg);
+}
+
+log('JS is running');
+
+try {
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  log('Supabase client created');
+  sb.from('families').select('name').then(({data, error}) => {
+    if (error) { log('ERROR: ' + error.message); }
+    else { log('SUCCESS: ' + JSON.stringify(data)); }
+  });
+} catch(e) {
+  log('CATCH: ' + e.message);
+}
+</script>
+</body>
+</html>

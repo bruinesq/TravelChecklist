@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- v3.1 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -341,6 +342,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 .pill-past   {background:#f0e8d0;color:#8a6020;}
 .section-sep{padding:0.38rem 0.85rem;background:#f2f0eb;font-size:0.55rem;
   font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.05em;}
+.pax-family-group{margin-bottom:0.75rem;}
+.pax-family-label{font-size:0.58rem;font-weight:700;color:#888;text-transform:uppercase;
+  letter-spacing:0.05em;margin-bottom:0.35rem;padding:0.22rem 0.5rem;
+  background:#f2f0eb;border-radius:0.3rem;display:block;}
+.pax-family-tiles{display:flex;flex-wrap:wrap;gap:0.38rem;}
 .fab{position:fixed;bottom:1.4rem;right:1.1rem;width:3.2rem;height:3.2rem;
   border-radius:50%;border:none;font-size:1.4rem;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
@@ -369,6 +375,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
       <span class="fs-tile-ico">🚢</span>
       <span class="fs-tile-name">Matthews</span>
       <span class="fs-tile-members">Dad · Mom · Reagan<br>Lincoln · Nixon</span>
+    </div>
+    <div class="fs-tile" onclick="selectFamily('silvermans')">
+      <span class="fs-tile-ico">⭐</span>
+      <span class="fs-tile-name">Silvermans</span>
+      <span class="fs-tile-members">Josh · Lori<br>Mikayla · Zach</span>
     </div>
   </div>
 </div>
@@ -476,29 +487,31 @@ const SUPABASE_ANON_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 let sb; // initialized in boot()
 
 const FAMILY_IDS = {
-  jmcr:     'a1000000-0000-0000-0000-000000000001',
-  matthews: 'a2000000-0000-0000-0000-000000000002'
+  jmcr:      'a1000000-0000-0000-0000-000000000001',
+  matthews:  'a2000000-0000-0000-0000-000000000002',
+  silvermans:'a3000000-0000-0000-0000-000000000003'
 };
 
 // ════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════
 let state = {
-  familyKey:    null,   // 'jmcr' | 'matthews'
-  familyId:     null,
-  familyName:   null,
-  activeUser:   null,   // member object
-  activeTab:    'ryan', // ryan|family|flight|hotel|reservations
-  ryanSub:      'Backpack',
-  activeMember: null,   // for family tab
-  trip:         null,   // active trip row
-  members:      [],
-  categories:   [],     // Ryan's sub-lists
-  checkItems:   [],     // all checklist items for active trip
-  flights:      [],
-  hotels:       [],
-  reservations: [],
-  realtimeSubs: [],
+  familyKey:      null,
+  familyId:       null,
+  familyName:     null,
+  activeUser:     null,
+  activeTab:      'ryan',
+  ryanSub:        'Backpack',
+  activeMember:   null,
+  trip:           null,
+  members:        [],       // current family's members
+  allMembers:     [],       // ALL members across ALL families (for flight pax)
+  categories:     [],
+  checkItems:     [],
+  flights:        [],
+  hotels:         [],
+  reservations:   [],
+  realtimeSubs:   [],
 };
 
 // ════════════════════════════════════════════════
@@ -529,7 +542,7 @@ function isPast(dt){ return dt && new Date(dt) < new Date(); }
 async function selectFamily(key){
   state.familyKey  = key;
   state.familyId   = FAMILY_IDS[key];
-  state.familyName = key==='jmcr'?'JMCR':'Matthews';
+  state.familyName = key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
   document.getElementById('familyScreen').classList.add('hidden');
   document.getElementById('loadingScreen').classList.remove('hidden');
   // persist choice
@@ -566,10 +579,16 @@ async function loadAll(){
     state.members = members||[];
     dbg('✅ members loaded: '+state.members.length);
 
+    // Load ALL families' members for cross-family flight passengers
+    const {data:allMem} = await sb.from('members')
+      .select('*, families(name)').order('family_id').order('display_order');
+    state.allMembers = allMem||[];
+    dbg('✅ all members (all families): '+state.allMembers.length);
+
     const packers = state.members.filter(m=>!m.is_subject);
     state.activeUser   = packers[0]||null;
     state.activeMember = packers[0]||null;
-    if(state.familyKey==='matthews') state.activeTab='family';
+    if(state.familyKey==='matthews'||state.familyKey==='silvermans') state.activeTab='family';
 
     dbg('2. Loading categories...');
     const {data:cats, error:cErr} = await sb.from('categories')
@@ -976,6 +995,46 @@ function renderItemRow(item, tab){
   </li>`;
 }
 
+// Build cross-family passenger tiles grouped by family
+function buildPaxTilesHTML(selectedIds, tileGroupId){
+  // Group allMembers by family
+  const groups = {};
+  const familyOrder = [];
+  (state.allMembers||[]).forEach(m=>{
+    const fid = m.family_id;
+    const fname = m.families?.name || fid;
+    if(!groups[fid]){ groups[fid]={name:fname,members:[]}; familyOrder.push(fid); }
+    groups[fid].members.push(m);
+  });
+  return familyOrder.map(fid=>{
+    const g = groups[fid];
+    const isCurrentFamily = fid===state.familyId;
+    const tiles = g.members.map(m=>{
+      const isSel = selectedIds ? selectedIds.includes(m.id) : isCurrentFamily;
+      return '<div class="mtile'+(isSel?' selected':'')+'" data-mid="'+m.id+'"'
+        +' data-fname="'+g.name+'"'
+        +' style="border-color:'+(isSel?(m.icon_color||'#378ADD'):'#e0d8c8')+'"'
+        +' onclick="toggleMtile(this,\''+( m.icon_color||'#378ADD')+'\');">'
+        +'<i class="ti '+(m.icon||'ti-user')+' mtile-ico" style="color:'+(m.icon_color||'#666')+'"></i>'
+        +'<span class="mtile-name">'+esc(m.name)+'</span>'
+        +'</div>';
+    }).join('');
+    return '<div class="pax-family-group">'
+      +'<span class="pax-family-label">'+g.name+(isCurrentFamily?' (your family)':'')+'</span>'
+      +'<div class="pax-family-tiles" id="'+tileGroupId+'_'+fid+'">'+tiles+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// Get all selected member IDs from cross-family pax tiles
+function getSelectedPaxIds(containerSelector){
+  const ids=[];
+  document.querySelectorAll(containerSelector+' .mtile.selected[data-mid]').forEach(el=>{
+    ids.push(el.dataset.mid);
+  });
+  return ids;
+}
+
 function attachCheckHandlers(){
   document.querySelectorAll('.chk[data-id]').forEach(btn=>{
     btn.onclick = ()=>toggleCheck(btn.dataset.id);
@@ -1164,22 +1223,13 @@ async function submitAddItem(tab){
 //  ADD FLIGHT
 // ════════════════════════════════════════════════
 function openAddFlight(){
-  const allMembers = state.members;
-  const defaultSelected = allMembers.map(m=>m.id);
-  state._companions = [];
+    state._companions = [];
+  const defaultSelIds = state.members.map(m=>m.id);
 
   openCPanel('Add Flight',`
     <div class="form-section">
-      <label class="form-label">Passengers (tap to select)</label>
-      <div class="member-tiles" id="flightPaxTiles">
-        ${allMembers.map(m=>`
-          <div class="mtile selected" data-mid="${m.id}"
-               style="border-color:${m.icon_color||'#378ADD'}"
-               onclick="toggleMtile(this,'${m.icon_color||'#378ADD'}')">
-            <i class="ti ${m.icon||'ti-user'} mtile-ico" style="color:${m.icon_color||'#666'}"></i>
-            <span class="mtile-name">${esc(m.name)}</span>
-          </div>`).join('')}
-      </div>
+      <label class="form-label">Passengers — select from any family</label>
+      <div id="flightPaxTiles">${buildPaxTilesHTML(defaultSelIds,'fpx')}</div>
     </div>
     <div class="form-section">
       <label class="form-label">Add companion (one-time)</label>
@@ -1241,14 +1291,9 @@ function openAddFlight(){
       <label class="form-label">Policy #</label>
       <input class="form-input" id="fPolicy" placeholder="Policy number"/>
     </div>
-    <div class="form-section">
-      <label class="form-label">Seat assignments (members)</label>
+    <div class="form-section"><label class="form-label">Seat assignments</label>
       <div id="seatAssignWrap">
-        ${allMembers.map(m=>`
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
-            <span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;">${esc(m.name)}</span>
-            <input class="form-input" data-seat-mid="${m.id}" placeholder="Seat (optional)" style="flex:1;"/>
-          </div>`).join('')}
+        ${(state.allMembers.length?state.allMembers:state.members).map(m=>'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;"><span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;color:'+(m.icon_color||'#555')+'">'+esc(m.name)+'</span><input class="form-input" data-seat-mid="'+m.id+'" placeholder="Seat (optional)" style="flex:1;"/></div>').join('')}
       </div>
     </div>
     <div class="form-section">
@@ -1327,9 +1372,8 @@ async function submitAddFlight(){
 
   // passengers
   const paxRows=[];
-  document.querySelectorAll('#flightPaxTiles .mtile.selected').forEach(el=>{
-    const mid = el.dataset.mid;
-    const seat = document.querySelector(`[data-seat-mid="${mid}"]`)?.value?.trim()||null;
+  getSelectedPaxIds('#flightPaxTiles').forEach(mid=>{
+    const seat = document.querySelector('[data-seat-mid="'+mid+'"]')?.value?.trim()||null;
     paxRows.push({flight_id:flightData.id,member_id:mid,seat,is_companion:false});
   });
   state._companions.forEach(c=>{
@@ -1575,27 +1619,16 @@ async function submitAddReservation(){
 function openFlightDetail(id){
   const f = state.flights.find(x=>x.id===id);
   if(!f) return;
-  const allMembers = state.members;
   const pax = f.flight_passengers||[];
   const depLocal = f.departure_dt ? new Date(f.departure_dt).toISOString().slice(0,16) : '';
   const arrLocal = f.arrival_dt  ? new Date(f.arrival_dt).toISOString().slice(0,16)  : '';
   state._companions = pax.filter(p=>p.is_companion).map(p=>({name:p.companion_name,seat:p.seat||''}));
+  const selPaxIds = pax.filter(p=>!p.is_companion).map(p=>p.member_id);
 
   openCPanel('Edit Flight',`
     <div class="form-section">
-      <label class="form-label">Passengers</label>
-      <div class="member-tiles" id="editFlightPax">
-        ${allMembers.map(m=>{
-          const isSel = pax.some(p=>p.member_id===m.id);
-          const seatVal = pax.find(p=>p.member_id===m.id)?.seat||'';
-          return `<div class="mtile${isSel?' selected':''}" data-mid="${m.id}"
-            style="border-color:${isSel?(m.icon_color||'#378ADD'):'#e0d8c8'}"
-            onclick="toggleMtile(this,'${m.icon_color||'#378ADD'}')">
-            <i class="ti ${m.icon||'ti-user'} mtile-ico" style="color:${m.icon_color||'#666'}"></i>
-            <span class="mtile-name">${esc(m.name)}</span>
-          </div>`;
-        }).join('')}
-      </div>
+      <label class="form-label">Passengers — select from any family</label>
+      <div id="editFlightPax">${buildPaxTilesHTML(selPaxIds,'epx')}</div>
     </div>
     <div class="form-section">
       <label class="form-label">Companions</label>
@@ -1643,14 +1676,14 @@ function openFlightDetail(id){
       <label class="form-label">Policy #</label>
       <input class="form-input" id="fPolicy" value="${esc(f.insurance_policy_no||'')}"/>
     </div>
-    <div class="form-section"><label class="form-label">Seat assignments</label>
+    <div class="form-section"><label class="form-label">Seat assignments (all selectable passengers)</label>
       <div id="seatAssignWrap">
-        ${allMembers.map(m=>{
+        ${(state.allMembers||state.members).map(m=>{
           const seat = pax.find(p=>p.member_id===m.id)?.seat||'';
-          return `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
-            <span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;">${esc(m.name)}</span>
-            <input class="form-input" data-seat-mid="${m.id}" value="${esc(seat)}" placeholder="Seat (optional)" style="flex:1;"/>
-          </div>`;
+          return '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">'
+            +'<span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;color:'+(m.icon_color||'#555')+'">'+esc(m.name)+'</span>'
+            +'<input class="form-input" data-seat-mid="'+m.id+'" value="'+esc(seat)+'" placeholder="Seat (optional)" style="flex:1;"/>'
+            +'</div>';
         }).join('')}
       </div>
     </div>
@@ -1692,8 +1725,7 @@ async function submitEditFlight(id){
   // rebuild passengers: delete old, insert new
   await sb.from('flight_passengers').delete().eq('flight_id',id);
   const paxRows=[];
-  document.querySelectorAll('#editFlightPax .mtile.selected').forEach(el=>{
-    const mid=el.dataset.mid;
+  getSelectedPaxIds('#editFlightPax').forEach(mid=>{
     const seat=document.querySelector('[data-seat-mid="'+mid+'"]')?.value?.trim()||null;
     paxRows.push({flight_id:id,member_id:mid,seat,is_companion:false});
   });

@@ -296,6 +296,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   color:#002B5C;outline:none;width:100%;}
 .trip-name-input::placeholder{color:#6090B0;}
 
+
+/* ── DROPDOWN SELECTOR ─────────────────────────── */
+.dropdown-wrap{position:relative;display:inline-block;width:100%;}
+.dropdown-sel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;
+  padding:0.55rem 0.85rem;font-size:0.82rem;font-weight:600;color:#111;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  gap:0.5rem;-webkit-appearance:none;}
+.dropdown-sel:active{background:#f8f6f2;}
+.dropdown-sel-ico{font-size:1rem;}
+.dropdown-sel-lbl{flex:1;text-align:left;}
+.dropdown-sel-cnt{font-size:0.6rem;padding:0.1rem 0.42rem;border-radius:99px;
+  background:#CECBF6;color:#3C3489;}
+.dropdown-sel-cnt.family{background:#9FE1CB;color:#085041;}
+.dropdown-arrow{font-size:0.8rem;color:#aaa;transition:transform 0.18s;}
+.dropdown-arrow.open{transform:rotate(180deg);}
+.dropdown-menu{position:absolute;top:100%;left:0;right:0;background:white;
+  border:1px solid #e0d8c8;border-top:none;border-radius:0 0 0.65rem 0.65rem;
+  z-index:400;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;overflow:hidden;}
+.dropdown-menu.open{display:block;}
+.dropdown-item{display:flex;align-items:center;gap:0.55rem;padding:0.72rem 0.85rem;
+  cursor:pointer;font-size:0.8rem;color:#111;border-bottom:0.5px solid #f0ede6;
+  transition:background 0.1s;}
+.dropdown-item:last-child{border-bottom:none;}
+.dropdown-item:active{background:#f5f0e8;}
+.dropdown-item.active{background:#EEEDFE;color:#3C3489;font-weight:600;}
+.dropdown-item.active.family{background:#E1F5EE;color:#085041;}
+.dropdown-item-ico{font-size:1.1rem;}
+.dropdown-item-cnt{margin-left:auto;font-size:0.58rem;padding:0.08rem 0.38rem;
+  border-radius:99px;background:#e8e4dc;color:#555;}
+/* edit button in detail panel */
+.edit-btn{width:100%;padding:0.65rem;border:1.5px solid #378ADD;border-radius:0.65rem;
+  font-size:0.8rem;font-weight:500;cursor:pointer;margin-top:0.5rem;
+  background:white;color:#378ADD;display:flex;align-items:center;
+  justify-content:center;gap:0.4rem;}
+.edit-btn:active{background:#E6F1FB;}
+
 /* ── MISC ─────────────────────────────────────── */
 .pill{display:inline-block;font-size:0.52rem;font-weight:600;padding:0.1rem 0.38rem;
   border-radius:99px;margin-right:0.2rem;}
@@ -336,6 +372,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-ico">✈️</div>
   <div class="loading-txt">Loading your trip...</div>
+  <div id="debugPanel" style="display:none;margin-top:1.5rem;background:rgba(0,0,0,0.5);border-radius:0.75rem;padding:1rem;width:min(90vw,22rem);max-height:60vh;overflow-y:auto;text-align:left;"></div>
 </div>
 
 <!-- MAIN APP -->
@@ -509,53 +546,98 @@ function switchFamily(){
 //  LOAD ALL DATA
 // ════════════════════════════════════════════════
 async function loadAll(){
-  // members
-  const {data:members} = await sb.from('members')
-    .select('*').eq('family_id',state.familyId).order('display_order');
-  state.members = members||[];
-
-  // set default active user
-  const packers = state.members.filter(m=>!m.is_subject);
-  if(!state.activeUser && packers.length) state.activeUser = packers[0];
-
-  // set default active member for family tab
-  if(!state.activeMember && packers.length) state.activeMember = packers[0];
-
-  // categories (Ryan's sub-lists — JMCR only)
-  const {data:cats} = await sb.from('categories')
-    .select('*').eq('family_id',state.familyId).order('display_order');
-  state.categories = cats||[];
-
-  // active trip
-  const {data:trips} = await sb.from('trips')
-    .select('*').eq('family_id',state.familyId).eq('is_active',true).limit(1);
-  state.trip = trips?.[0]||null;
-
-  if(state.trip){
-    await loadCheckItems();
+  function dbg(msg, color){
+    color = color||'#90EE90';
+    const el = document.getElementById('debugPanel');
+    if(el){ el.style.display='block'; el.innerHTML += '<div style="color:'+color+';font-size:0.75rem;padding:0.18rem 0;">'+msg+'</div>'; }
+    console.log(msg);
   }
+  dbg('loadAll started — familyId: '+state.familyId);
+  try {
+    dbg('1. Loading members...');
+    const {data:members, error:mErr} = await sb.from('members')
+      .select('*').eq('family_id',state.familyId).order('display_order');
+    if(mErr){ dbg('❌ members error: '+mErr.message,'#FF6B6B'); throw mErr; }
+    state.members = members||[];
+    dbg('✅ members loaded: '+state.members.length);
 
-  // shared data (all families see flights/hotels/reservations)
-  await loadFlights();
-  await loadHotels();
-  await loadReservations();
+    const packers = state.members.filter(m=>!m.is_subject);
+    state.activeUser   = packers[0]||null;
+    state.activeMember = packers[0]||null;
+    if(state.familyKey==='matthews') state.activeTab='family';
 
-  // app_state
-  const {data:as} = await sb.from('app_state').select('*').eq('family_id',state.familyId).limit(1);
-  if(as?.[0]){
-    state.activeTab  = as[0].active_tab  || 'ryan';
-    state.ryanSub    = as[0].active_sub  || 'Backpack';
-    const savedMember = state.members.find(m=>m.id===as[0].active_member);
-    if(savedMember) state.activeMember = savedMember;
+    dbg('2. Loading categories...');
+    const {data:cats, error:cErr} = await sb.from('categories')
+      .select('*').eq('family_id',state.familyId).order('display_order');
+    if(cErr){ dbg('❌ categories error: '+cErr.message,'#FF6B6B'); throw cErr; }
+    state.categories = cats||[];
+    dbg('✅ categories: '+state.categories.length);
+
+    dbg('3. Loading trips...');
+    const {data:trips, error:tErr} = await sb.from('trips')
+      .select('*').eq('family_id',state.familyId).eq('is_active',true).limit(1);
+    if(tErr){ dbg('❌ trips error: '+tErr.message,'#FF6B6B'); throw tErr; }
+    state.trip = trips?.[0]||null;
+    dbg('✅ trip: '+(state.trip?state.trip.name:'none'));
+
+    if(state.trip){
+      dbg('4. Loading checklist items...');
+      await loadCheckItems();
+      dbg('✅ checklist items: '+state.checkItems.length);
+    }
+
+    dbg('5. Loading flights...');
+    await loadFlights();
+    dbg('✅ flights: '+state.flights.length);
+
+    dbg('6. Loading hotels...');
+    await loadHotels();
+    dbg('✅ hotels: '+state.hotels.length);
+
+    dbg('7. Loading reservations...');
+    await loadReservations();
+    dbg('✅ reservations: '+state.reservations.length);
+
+    dbg('8. Loading app_state...');
+    const {data:as, error:asErr} = await sb.from('app_state')
+      .select('*').eq('family_id',state.familyId).limit(1);
+    if(asErr){ dbg('⚠️ app_state error: '+asErr.message,'#FFD700'); }
+    if(as?.[0]){
+      if(state.familyKey==='jmcr'){
+        state.activeTab = as[0].active_tab||'ryan';
+      } else {
+        state.activeTab = (as[0].active_tab==='ryan')?'family':(as[0].active_tab||'family');
+      }
+      state.ryanSub = as[0].active_sub||'Backpack';
+      const sm = state.members.find(m=>m.id===as[0].active_member);
+      if(sm) state.activeMember=sm;
+    }
+    dbg('✅ app_state loaded, tab: '+state.activeTab);
+
+    dbg('9. Setting up realtime...');
+    setupRealtime();
+    dbg('✅ realtime OK');
+
+    dbg('10. Rendering...');
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('familyScreen').classList.add('hidden');
+    document.getElementById('app').style.display='block';
+    render();
+    dbg('✅ render complete — hiding debug in 4s');
+    setTimeout(()=>{
+      const el=document.getElementById('debugPanel');
+      if(el) el.style.display='none';
+    },4000);
+
+  } catch(err){
+    dbg('❌ FATAL: '+err.message,'#FF6B6B');
+    dbg('Check browser console for details','#FFD700');
+    const el=document.getElementById('debugPanel');
+    if(el){
+      el.innerHTML+='<button onclick="location.reload()" style="margin-top:0.5rem;padding:0.5rem 1rem;background:#378ADD;color:white;border:none;border-radius:0.5rem;font-size:0.8rem;cursor:pointer;">Retry</button>';
+    }
+    console.error('loadAll fatal:', err);
   }
-
-  // subscribe realtime
-  setupRealtime();
-
-  // render
-  document.getElementById('loadingScreen').classList.add('hidden');
-  document.getElementById('app').style.display='block';
-  render();
 }
 
 async function loadCheckItems(){
@@ -688,14 +770,37 @@ function renderRyanPanel(){
   const done  = items.filter(i=>i.is_done).length;
   const total = items.filter(i=>!i.is_skipped).length;
 
+  const subDefs = [
+    {name:'Backpack',ico:'ti-backpack',color:'#085041'},
+    {name:'Meds',    ico:'ti-pill',    color:'#712B13'},
+    {name:'Equip',   ico:'ti-stethoscope',color:'#0C447C'},
+  ];
+  const activeSub = subDefs.find(s=>s.name===state.ryanSub)||subDefs[0];
+
+  const dropItems = subDefs.map(s=>{
+    const sCat = state.categories.find(c=>c.name===s.name);
+    const sDone = sCat ? state.checkItems.filter(i=>i.category_id===sCat.id&&i.is_done).length : 0;
+    const sTot  = sCat ? state.checkItems.filter(i=>i.category_id===sCat.id&&!i.is_skipped).length : 0;
+    return `<div class="dropdown-item${state.ryanSub===s.name?' active':''}"
+      onclick="setRyanSub('${s.name}');closeDropdown('ryanDrop')">
+      <i class="ti ${s.ico} dropdown-item-ico" style="color:${s.color}"></i>
+      <span>${s.name}</span>
+      <span class="dropdown-item-cnt">${sDone}/${sTot}</span>
+    </div>`;
+  }).join('');
+
   return `
-  <div class="ryan-subnav">
-    ${['Backpack','Meds','Equip'].map(s=>`
-      <button class="ryan-sub-btn${state.ryanSub===s?' active':''}"
-        onclick="setRyanSub('${s}')">${s}</button>`).join('')}
+  <div class="dropdown-wrap">
+    <button class="dropdown-sel" onclick="toggleDropdown('ryanDrop')">
+      <i class="ti ${activeSub.ico} dropdown-sel-ico" style="color:${activeSub.color}"></i>
+      <span class="dropdown-sel-lbl">Ryan — ${esc(state.ryanSub)}</span>
+      <span class="dropdown-sel-cnt">${done}/${total}</span>
+      <i class="ti ti-chevron-down dropdown-arrow" id="ryanDropArrow"></i>
+    </button>
+    <div class="dropdown-menu" id="ryanDrop">${dropItems}</div>
   </div>
   <div class="ph ph-ryan">
-    <i class="ti ti-bolt" style="color:#7F77DD;font-size:1.1rem;"></i>
+    <i class="ti ${activeSub.ico}" style="color:${activeSub.color};font-size:1.1rem;"></i>
     <span class="ph-title">Ryan — ${esc(state.ryanSub)}</span>
     <span class="ph-cnt" style="background:#CECBF6;color:#3C3489;">${done}/${total}</span>
     <button class="ph-add ph-add-ryan" onclick="openAddItem('ryan')"><i class="ti ti-plus"></i> Add</button>
@@ -707,33 +812,48 @@ function renderRyanPanel(){
 // ── FAMILY PANEL ───────────────────────────────
 function renderFamilyPanel(){
   const packers = state.members.filter(m=>!m.is_subject);
-  // member picker row
-  const pickerHTML = `<div style="display:flex;gap:0.38rem;padding:0.55rem 0.85rem;background:#f8f6f2;border-bottom:1px solid #ece8e0;overflow-x:auto;">
-    ${packers.map(m=>`
-      <div class="mtile${state.activeMember?.id===m.id?' selected':''}"
-           style="border-color:${state.activeMember?.id===m.id?(m.icon_color||'#1D9E75'):'#e0d8c8'}"
-           onclick="setActiveMember('${m.id}')">
-        <i class="ti ${m.icon||'ti-user'} mtile-ico" style="color:${m.icon_color||'#666'}"></i>
-        <span class="mtile-name">${esc(m.name)}</span>
-      </div>`).join('')}
-  </div>`;
-
   const m = state.activeMember;
-  if(!m) return pickerHTML+'<div class="empty-state">Select a family member above</div>';
-
-  const items = sortItems(state.checkItems.filter(i=>i.member_id===m.id));
+  const items = m ? sortItems(state.checkItems.filter(i=>i.member_id===m.id)) : [];
   const done  = items.filter(i=>i.is_done).length;
   const total = items.filter(i=>!i.is_skipped).length;
 
-  return `${pickerHTML}
-  <div class="ph ph-family" style="background:${m.bg_color||'#E1F5EE'}88;border-color:${m.icon_color||'#1D9E75'};">
-    <i class="ti ${m.icon||'ti-user'}" style="color:${m.icon_color||'#1D9E75'};font-size:1.1rem;"></i>
-    <span class="ph-title">${esc(m.name)}'s List</span>
-    <span class="ph-cnt" style="background:${m.icon_color||'#1D9E75'}22;color:${m.icon_color||'#085041'};">${done}/${total}</span>
-    <button class="ph-add ph-add-family" onclick="openAddItem('family')"><i class="ti ti-plus"></i> Add</button>
-  </div>
-  <ul class="ilist">${items.map(i=>renderItemRow(i,'family')).join('')}</ul>
-  ${items.length===0?'<div class="empty-state">No items yet — tap Add to get started</div>':''}`;
+  const dropItems = packers.map(p=>{
+    const pDone = state.checkItems.filter(i=>i.member_id===p.id&&i.is_done).length;
+    const pTot  = state.checkItems.filter(i=>i.member_id===p.id&&!i.is_skipped).length;
+    const isSel = state.activeMember?.id===p.id;
+    return '<div class="dropdown-item'+(isSel?' active family':'')+'"'
+      +' style="'+(isSel?'background:'+p.bg_color+';':'')+'"'
+      +' onclick="setActiveMember(''+p.id+'');closeDropdown('familyDrop')">'
+      +'<i class="ti '+(p.icon||'ti-user')+' dropdown-item-ico" style="color:'+(p.icon_color||'#666')+'"></i>'
+      +'<span>'+esc(p.name)+'</span>'
+      +'<span class="dropdown-item-cnt" style="background:'+(p.icon_color||'#999')+'22;color:'+(p.icon_color||'#555')+'">'+pDone+'/'+pTot+'</span>'
+      +'</div>';
+  }).join('');
+
+  const selIco  = m ? '<i class="ti '+(m.icon||'ti-user')+' dropdown-sel-ico" style="color:'+(m.icon_color||'#1D9E75')+'"></i>' : '<i class="ti ti-users dropdown-sel-ico"></i>';
+  const selLbl  = m ? esc(m.name)+"'s List" : 'Select person';
+  const selCnt  = m ? '<span class="dropdown-sel-cnt family">'+done+'/'+total+'</span>' : '';
+
+  const dropHTML = '<div class="dropdown-wrap">'
+    +'<button class="dropdown-sel" onclick="toggleDropdown('familyDrop')">'
+    +selIco+'<span class="dropdown-sel-lbl">'+selLbl+'</span>'+selCnt
+    +'<i class="ti ti-chevron-down dropdown-arrow" id="familyDropArrow"></i>'
+    +'</button>'
+    +'<div class="dropdown-menu" id="familyDrop">'+dropItems+'</div>'
+    +'</div>';
+
+  if(!m) return dropHTML+'<div class="empty-state">Select a family member above</div>';
+
+  const bgStyle = 'background:'+( m.bg_color||'#E1F5EE')+';';
+  return dropHTML
+    +'<div class="ph ph-family" style="'+bgStyle+'border-color:'+(m.icon_color||'#1D9E75')+';">'
+    +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+(m.icon_color||'#1D9E75')+';font-size:1.1rem;"></i>'
+    +'<span class="ph-title">'+esc(m.name)+"'s List</span>"
+    +'<span class="ph-cnt" style="background:'+(m.icon_color||'#1D9E75')+'33;color:'+(m.icon_color||'#085041')+';">'+done+'/'+total+'</span>'
+    +'<button class="ph-add ph-add-family" onclick="openAddItem('family')"><i class="ti ti-plus"></i> Add</button>'
+    +'</div>'
+    +'<ul class="ilist" style="'+bgStyle+'18;">'+items.map(i=>renderItemRow(i,'family')).join('')+'</ul>'
+    +(items.length===0?'<div class="empty-state">No items yet — tap Add to get started</div>':'');
 }
 
 // ── FLIGHT PANEL ───────────────────────────────
@@ -1450,73 +1570,287 @@ async function submitAddReservation(){
 function openFlightDetail(id){
   const f = state.flights.find(x=>x.id===id);
   if(!f) return;
+  const allMembers = state.members;
   const pax = f.flight_passengers||[];
-  const members = pax.filter(p=>!p.is_companion);
-  const comps   = pax.filter(p=> p.is_companion);
-  const paxList = [
-    ...members.map(p=>`${p.members?.name||'?'} ${p.seat?'('+p.seat+')':''}`),
-    ...comps.map(p=>`${p.companion_name||'?'} ${p.seat?'('+p.seat+')':''} ★companion`)
-  ].join(', ') || '—';
+  const depLocal = f.departure_dt ? new Date(f.departure_dt).toISOString().slice(0,16) : '';
+  const arrLocal = f.arrival_dt  ? new Date(f.arrival_dt).toISOString().slice(0,16)  : '';
+  state._companions = pax.filter(p=>p.is_companion).map(p=>({name:p.companion_name,seat:p.seat||''}));
 
-  openCPanel('Flight Details',`
-    <div class="detail-row"><span class="detail-lbl">Route</span><span class="detail-val">${esc(f.origin_city)} → ${esc(f.dest_city)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Departure</span><span class="detail-val">${fmtDT(f.departure_dt)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Arrival</span><span class="detail-val">${fmtDT(f.arrival_dt)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Airline</span><span class="detail-val">${esc(f.airline||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Flight #</span><span class="detail-val">${esc(f.flight_number||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Gate</span><span class="detail-val">${esc(f.gate||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Confirmation</span><span class="detail-val">${esc(f.confirmation_no||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Passengers</span><span class="detail-val">${esc(paxList)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Insurance</span><span class="detail-val">${f.is_insured?'Yes — '+esc(f.insurance_policy_no||'—'):'No'}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Baggage</span><span class="detail-val">${esc(f.baggage_notes||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Notes</span><span class="detail-val">${esc(f.notes||'—')}</span></div>
+  openCPanel('Edit Flight',`
+    <div class="form-section">
+      <label class="form-label">Passengers</label>
+      <div class="member-tiles" id="editFlightPax">
+        ${allMembers.map(m=>{
+          const isSel = pax.some(p=>p.member_id===m.id);
+          const seatVal = pax.find(p=>p.member_id===m.id)?.seat||'';
+          return `<div class="mtile${isSel?' selected':''}" data-mid="${m.id}"
+            style="border-color:${isSel?(m.icon_color||'#378ADD'):'#e0d8c8'}"
+            onclick="toggleMtile(this,'${m.icon_color||'#378ADD'}')">
+            <i class="ti ${m.icon||'ti-user'} mtile-ico" style="color:${m.icon_color||'#666'}"></i>
+            <span class="mtile-name">${esc(m.name)}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="form-section">
+      <label class="form-label">Companions</label>
+      <div class="companion-row">
+        <input class="form-input" id="compName" placeholder="Name" style="flex:2"/>
+        <input class="form-input" id="compSeat" placeholder="Seat" style="flex:1"/>
+        <button class="companion-add-btn" onclick="addCompanion()"><i class="ti ti-plus"></i></button>
+      </div>
+      <div class="companion-list" id="companionList">${state._companions.map((c,i)=>`
+        <div class="companion-item"><span style="flex:1;">${esc(c.name)}${c.seat?' — '+esc(c.seat):''}</span>
+        <button class="companion-del" onclick="removeCompanion(${i})"><i class="ti ti-x"></i></button></div>`).join('')}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">From</label>
+        <input class="form-input" id="fFrom" value="${esc(f.origin_city||'')}"/></div>
+      <div class="form-section"><label class="form-label">To</label>
+        <input class="form-input" id="fTo" value="${esc(f.dest_city||'')}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">Departure</label>
+        <input class="form-input" type="datetime-local" id="fDep" value="${depLocal}"/></div>
+      <div class="form-section"><label class="form-label">Arrival</label>
+        <input class="form-input" type="datetime-local" id="fArr" value="${arrLocal}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">Airline</label>
+        <input class="form-input" id="fAirline" value="${esc(f.airline||'')}"/></div>
+      <div class="form-section"><label class="form-label">Flight #</label>
+        <input class="form-input" id="fFlightNum" value="${esc(f.flight_number||'')}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">Gate</label>
+        <input class="form-input" id="fGate" value="${esc(f.gate||'')}"/></div>
+      <div class="form-section"><label class="form-label">Confirmation #</label>
+        <input class="form-input" id="fConf" value="${esc(f.confirmation_no||'')}"/></div>
+    </div>
+    <div class="form-section"><label class="form-label">Travel Insurance</label>
+      <div class="form-toggle" id="insToggle">
+        <button class="form-toggle-opt${!f.is_insured?' active':''}" onclick="pickToggle(this,'insToggle')">No</button>
+        <button class="form-toggle-opt${f.is_insured?' active':''}" onclick="pickToggle(this,'insToggle')">Yes</button>
+      </div>
+    </div>
+    <div class="form-section" id="insPolicyWrap" style="display:${f.is_insured?'block':'none'};">
+      <label class="form-label">Policy #</label>
+      <input class="form-input" id="fPolicy" value="${esc(f.insurance_policy_no||'')}"/>
+    </div>
+    <div class="form-section"><label class="form-label">Seat assignments</label>
+      <div id="seatAssignWrap">
+        ${allMembers.map(m=>{
+          const seat = pax.find(p=>p.member_id===m.id)?.seat||'';
+          return `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
+            <span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;">${esc(m.name)}</span>
+            <input class="form-input" data-seat-mid="${m.id}" value="${esc(seat)}" placeholder="Seat (optional)" style="flex:1;"/>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="form-section"><label class="form-label">Baggage notes</label>
+      <textarea class="form-input form-textarea" id="fBaggage">${esc(f.baggage_notes||'')}</textarea></div>
+    <div class="form-section"><label class="form-label">Notes</label>
+      <textarea class="form-input form-textarea" id="fNotes">${esc(f.notes||'')}</textarea></div>
+    <button class="submit-btn submit-btn-flight" onclick="submitEditFlight('${f.id}')">
+      <i class="ti ti-check"></i> Save Changes</button>
     <button class="delete-btn" onclick="confirmDelete('flight','${f.id}')"><i class="ti ti-trash"></i> Delete Flight</button>
   `,`${esc(f.origin_city)} → ${esc(f.dest_city)}`);
+  document.getElementById('insToggle').addEventListener('click',()=>{
+    const active = document.querySelector('#insToggle .active')?.textContent;
+    document.getElementById('insPolicyWrap').style.display = active==='Yes'?'block':'none';
+  });
+}
+async function submitEditFlight(id){
+  const from = document.getElementById('fFrom')?.value?.trim();
+  const to   = document.getElementById('fTo')?.value?.trim();
+  const dep  = document.getElementById('fDep')?.value;
+  if(!from||!to||!dep){ alert('From, To and Departure are required.'); return; }
+  setSyncDot('saving');
+  const isInsured = document.querySelector('#insToggle .active')?.textContent==='Yes';
+  const updates = {
+    origin_city:from, dest_city:to,
+    departure_dt: new Date(dep).toISOString(),
+    arrival_dt: document.getElementById('fArr')?.value ? new Date(document.getElementById('fArr').value).toISOString():null,
+    airline:document.getElementById('fAirline')?.value?.trim()||null,
+    flight_number:document.getElementById('fFlightNum')?.value?.trim()||null,
+    gate:document.getElementById('fGate')?.value?.trim()||null,
+    confirmation_no:document.getElementById('fConf')?.value?.trim()||null,
+    is_insured:isInsured,
+    insurance_policy_no:isInsured?(document.getElementById('fPolicy')?.value?.trim()||null):null,
+    baggage_notes:document.getElementById('fBaggage')?.value?.trim()||null,
+    notes:document.getElementById('fNotes')?.value?.trim()||null,
+  };
+  const {error} = await sb.from('flights').update(updates).eq('id',id);
+  if(error){ setSyncDot('error'); console.error(error); return; }
+  // rebuild passengers: delete old, insert new
+  await sb.from('flight_passengers').delete().eq('flight_id',id);
+  const paxRows=[];
+  document.querySelectorAll('#editFlightPax .mtile.selected').forEach(el=>{
+    const mid=el.dataset.mid;
+    const seat=document.querySelector('[data-seat-mid="'+mid+'"]')?.value?.trim()||null;
+    paxRows.push({flight_id:id,member_id:mid,seat,is_companion:false});
+  });
+  state._companions.forEach(co=>{
+    paxRows.push({flight_id:id,companion_name:co.name,seat:co.seat||null,is_companion:true});
+  });
+  if(paxRows.length) await sb.from('flight_passengers').insert(paxRows);
+  state._companions=[];
+  setSyncDot('');
+  await loadFlights();
+  closeAll();
+  renderPanel();
 }
 
 function openHotelDetail(id){
   const h = state.hotels.find(x=>x.id===id);
   if(!h) return;
-  const isCruise = h.accom_type==='Cruise Ship';
-  openCPanel('Stay Details',`
-    <div class="detail-row"><span class="detail-lbl">Type</span><span class="detail-val">${esc(h.accom_type||'Hotel')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Name</span><span class="detail-val">${esc(h.name)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Location</span><span class="detail-val">${esc(h.location||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Check-in</span><span class="detail-val">${fmtDT(h.check_in_dt)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Check-out</span><span class="detail-val">${fmtDT(h.check_out_dt)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Room #</span><span class="detail-val">${esc(h.room_number||'Not assigned yet')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Confirmation</span><span class="detail-val">${esc(h.confirmation_no||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Reserved by</span><span class="detail-val">${esc(h.reserved_by||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Phone</span><span class="detail-val">${esc(h.contact_phone||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Email</span><span class="detail-val">${esc(h.contact_email||'—')}</span></div>
-    ${isCruise?`
-    <div class="detail-row"><span class="detail-lbl">Ship</span><span class="detail-val">${esc(h.ship_name||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Cabin</span><span class="detail-val">${esc(h.cabin_number||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Deck</span><span class="detail-val">${esc(h.deck||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Dining</span><span class="detail-val">${esc(h.dining_assignment||'—')}</span></div>`:''}
-    <div class="detail-row"><span class="detail-lbl">Cancellation</span><span class="detail-val">${esc(h.cancellation_notes||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Notes</span><span class="detail-val">${esc(h.notes||'—')}</span></div>
-    <button class="delete-btn" onclick="confirmDelete('hotel','${h.id}')"><i class="ti ti-trash"></i> Delete Stay</button>
-  `,esc(h.name));
+  const inLocal  = h.check_in_dt  ? new Date(h.check_in_dt).toISOString().slice(0,16)  : '';
+  const outLocal = h.check_out_dt ? new Date(h.check_out_dt).toISOString().slice(0,16) : '';
+  const types = ['Hotel','Cruise Ship','Vacation Rental','Other'];
+  const typeToggles = types.map(t=>'<button class="form-toggle-opt'+(h.accom_type===t?' active':'')+'" onclick="pickToggle(this,'accomType');toggleCruiseFields()">'+t+'</button>').join('');
+  const memberRows = state.members.map(m=>'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;"><span style="font-size:0.72rem;width:4.5rem;flex-shrink:0;">'+esc(m.name)+'</span></div>').join('');
+  const cruiseDisplay = h.accom_type==='Cruise Ship' ? 'block' : 'none';
+  let bodyHTML = '<div class="form-section"><label class="form-label">Type</label>'
+    +'<div class="form-toggle" id="accomType">'+typeToggles+'</div></div>'
+    +'<div class="form-section"><label class="form-label">Name</label>'
+    +'<input class="form-input" id="hName" value="'+esc(h.name||'')+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Location</label>'
+    +'<input class="form-input" id="hLocation" value="'+esc(h.location||'')+'"/></div>'
+    +'<div class="form-row">'
+    +'<div class="form-section"><label class="form-label">Check-in</label>'
+    +'<input class="form-input" type="datetime-local" id="hIn" value="'+inLocal+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Check-out</label>'
+    +'<input class="form-input" type="datetime-local" id="hOut" value="'+outLocal+'"/></div></div>'
+    +'<div class="form-row">'
+    +'<div class="form-section"><label class="form-label">Confirmation #</label>'
+    +'<input class="form-input" id="hConf" value="'+esc(h.confirmation_no||'')+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Room # / Cabin</label>'
+    +'<input class="form-input" id="hRoom" value="'+esc(h.room_number||'')+'"/></div></div>'
+    +'<div class="form-section"><label class="form-label">Reserved by</label>'
+    +'<input class="form-input" id="hReservedBy" value="'+esc(h.reserved_by||'')+'"/></div>'
+    +'<div class="form-row">'
+    +'<div class="form-section"><label class="form-label">Phone</label>'
+    +'<input class="form-input" id="hPhone" value="'+esc(h.contact_phone||'')+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Email</label>'
+    +'<input class="form-input" type="email" id="hEmail" value="'+esc(h.contact_email||'')+'"/></div></div>'
+    +'<div id="cruiseFields" style="display:'+cruiseDisplay+';">'
+    +'<div class="form-row">'
+    +'<div class="form-section"><label class="form-label">Ship Name</label>'
+    +'<input class="form-input" id="hShip" value="'+esc(h.ship_name||'')+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Cabin #</label>'
+    +'<input class="form-input" id="hCabin" value="'+esc(h.cabin_number||'')+'"/></div></div>'
+    +'<div class="form-row">'
+    +'<div class="form-section"><label class="form-label">Deck</label>'
+    +'<input class="form-input" id="hDeck" value="'+esc(h.deck||'')+'"/></div>'
+    +'<div class="form-section"><label class="form-label">Dining</label>'
+    +'<input class="form-input" id="hDining" value="'+esc(h.dining_assignment||'')+'"/></div></div></div>'
+    +'<div class="form-section"><label class="form-label">Cancellation Policy</label>'
+    +'<textarea class="form-input form-textarea" id="hCancel">'+esc(h.cancellation_notes||'')+'</textarea></div>'
+    +'<div class="form-section"><label class="form-label">Notes</label>'
+    +'<textarea class="form-input form-textarea" id="hNotes">'+esc(h.notes||'')+'</textarea></div>'
+    +'<button class="submit-btn submit-btn-hotel" onclick="submitEditHotel(''+h.id+'')"><i class="ti ti-check"></i> Save Changes</button>'
+    +'<button class="delete-btn" onclick="confirmDelete('hotel',''+h.id+'')"><i class="ti ti-trash"></i> Delete Stay</button>';
+  openCPanel('Edit Stay', bodyHTML, esc(h.name));
+}
+async function submitEditHotel(id){
+  const name = document.getElementById('hName')?.value?.trim();
+  if(!name){ alert('Name is required.'); return; }
+  setSyncDot('saving');
+  const accomType = document.querySelector('#accomType .active')?.textContent||'Hotel';
+  const isCruise  = accomType==='Cruise Ship';
+  const updates = {
+    accom_type:accomType, name,
+    location:document.getElementById('hLocation')?.value?.trim()||null,
+    check_in_dt:document.getElementById('hIn')?.value ? new Date(document.getElementById('hIn').value).toISOString():null,
+    check_out_dt:document.getElementById('hOut')?.value ? new Date(document.getElementById('hOut').value).toISOString():null,
+    room_number:document.getElementById('hRoom')?.value?.trim()||null,
+    confirmation_no:document.getElementById('hConf')?.value?.trim()||null,
+    reserved_by:document.getElementById('hReservedBy')?.value?.trim()||null,
+    contact_phone:document.getElementById('hPhone')?.value?.trim()||null,
+    contact_email:document.getElementById('hEmail')?.value?.trim()||null,
+    cancellation_notes:document.getElementById('hCancel')?.value?.trim()||null,
+    notes:document.getElementById('hNotes')?.value?.trim()||null,
+    ship_name:isCruise?(document.getElementById('hShip')?.value?.trim()||null):null,
+    cabin_number:isCruise?(document.getElementById('hCabin')?.value?.trim()||null):null,
+    deck:isCruise?(document.getElementById('hDeck')?.value?.trim()||null):null,
+    dining_assignment:isCruise?(document.getElementById('hDining')?.value?.trim()||null):null,
+  };
+  const {error} = await sb.from('accommodations').update(updates).eq('id',id);
+  if(error){ setSyncDot('error'); console.error(error); return; }
+  const idx = state.hotels.findIndex(x=>x.id===id);
+  if(idx>-1) state.hotels[idx]={...state.hotels[idx],...updates};
+  setSyncDot('');
+  closeAll();
+  renderPanel();
 }
 
 function openReserveDetail(id){
   const r = state.reservations.find(x=>x.id===id);
   if(!r) return;
-  openCPanel('Reservation Details',`
-    <div class="detail-row"><span class="detail-lbl">Type</span><span class="detail-val">${esc(r.res_type||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Name</span><span class="detail-val">${esc(r.name)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Date & Time</span><span class="detail-val">${fmtDT(r.reservation_dt)}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Location</span><span class="detail-val">${esc(r.location||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">People</span><span class="detail-val">${r.num_people||'—'}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Confirmation</span><span class="detail-val">${esc(r.confirmation_no||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Reserved by</span><span class="detail-val">${esc(r.reserved_by||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Phone</span><span class="detail-val">${esc(r.contact_phone||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Email</span><span class="detail-val">${esc(r.contact_email||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Cancellation</span><span class="detail-val">${esc(r.cancellation_notes||'—')}</span></div>
-    <div class="detail-row"><span class="detail-lbl">Notes</span><span class="detail-val">${esc(r.notes||'—')}</span></div>
+  const dtLocal = r.reservation_dt ? new Date(r.reservation_dt).toISOString().slice(0,16) : '';
+  const resTypes = ['Restaurant','Tour','Activity','Transport','Other'];
+  openCPanel('Edit Reservation',`
+    <div class="form-section"><label class="form-label">Type</label>
+      <div class="form-toggle" id="resType">
+        ${resTypes.map(t=>`<button class="form-toggle-opt${r.res_type===t?' active':''}"
+          onclick="pickToggle(this,'resType')">${t}</button>`).join('')}
+      </div>
+    </div>
+    <div class="form-section"><label class="form-label">Name / Description</label>
+      <input class="form-input" id="rName" value="${esc(r.name||'')}"/></div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">Date & Time</label>
+        <input class="form-input" type="datetime-local" id="rDT" value="${dtLocal}"/></div>
+      <div class="form-section"><label class="form-label"># of People</label>
+        <input class="form-input" type="number" id="rPeople" value="${r.num_people||''}" min="1"/></div>
+    </div>
+    <div class="form-section"><label class="form-label">Location</label>
+      <input class="form-input" id="rLocation" value="${esc(r.location||'')}"/></div>
+    <div class="form-section"><label class="form-label">Confirmation #</label>
+      <input class="form-input" id="rConf" value="${esc(r.confirmation_no||'')}"/></div>
+    <div class="form-section"><label class="form-label">Reserved by</label>
+      <input class="form-input" id="rReservedBy" value="${esc(r.reserved_by||'')}"/></div>
+    <div class="form-row">
+      <div class="form-section"><label class="form-label">Phone</label>
+        <input class="form-input" id="rPhone" value="${esc(r.contact_phone||'')}"/></div>
+      <div class="form-section"><label class="form-label">Email</label>
+        <input class="form-input" type="email" id="rEmail" value="${esc(r.contact_email||'')}"/></div>
+    </div>
+    <div class="form-section"><label class="form-label">Cancellation Policy</label>
+      <textarea class="form-input form-textarea" id="rCancel">${esc(r.cancellation_notes||'')}</textarea></div>
+    <div class="form-section"><label class="form-label">Notes</label>
+      <textarea class="form-input form-textarea" id="rNotes">${esc(r.notes||'')}</textarea></div>
+    <button class="submit-btn submit-btn-reserve" onclick="submitEditReservation('${r.id}')">
+      <i class="ti ti-check"></i> Save Changes</button>
     <button class="delete-btn" onclick="confirmDelete('reservation','${r.id}')"><i class="ti ti-trash"></i> Delete Reservation</button>
   `,esc(r.name));
+}
+async function submitEditReservation(id){
+  const name = document.getElementById('rName')?.value?.trim();
+  if(!name){ alert('Name is required.'); return; }
+  setSyncDot('saving');
+  const updates = {
+    name,
+    res_type:document.querySelector('#resType .active')?.textContent||'Other',
+    reservation_dt:document.getElementById('rDT')?.value ? new Date(document.getElementById('rDT').value).toISOString():null,
+    num_people:parseInt(document.getElementById('rPeople')?.value)||null,
+    location:document.getElementById('rLocation')?.value?.trim()||null,
+    confirmation_no:document.getElementById('rConf')?.value?.trim()||null,
+    reserved_by:document.getElementById('rReservedBy')?.value?.trim()||null,
+    contact_phone:document.getElementById('rPhone')?.value?.trim()||null,
+    contact_email:document.getElementById('rEmail')?.value?.trim()||null,
+    cancellation_notes:document.getElementById('rCancel')?.value?.trim()||null,
+    notes:document.getElementById('rNotes')?.value?.trim()||null,
+  };
+  const {error} = await sb.from('reservations').update(updates).eq('id',id);
+  if(error){ setSyncDot('error'); console.error(error); return; }
+  const idx = state.reservations.findIndex(x=>x.id===id);
+  if(idx>-1) state.reservations[idx]={...state.reservations[idx],...updates};
+  setSyncDot('');
+  closeAll();
+  renderPanel();
 }
 
 // ════════════════════════════════════════════════
@@ -1629,6 +1963,18 @@ function setRyanSub(sub){
   renderPanel();
   renderNav();
 }
+function toggleDropdown(id){
+  const menu  = document.getElementById(id);
+  const arrow = document.getElementById(id+'Arrow');
+  const isOpen = menu?.classList.contains('open');
+  document.querySelectorAll('.dropdown-menu.open').forEach(m=>m.classList.remove('open'));
+  document.querySelectorAll('.dropdown-arrow.open').forEach(a=>a.classList.remove('open'));
+  if(!isOpen){ menu?.classList.add('open'); arrow?.classList.add('open'); }
+}
+function closeDropdown(id){
+  document.getElementById(id)?.classList.remove('open');
+  document.getElementById(id+'Arrow')?.classList.remove('open');
+}
 function setActiveMember(id){
   state.activeMember = state.members.find(m=>m.id===id)||null;
   saveAppState();
@@ -1677,18 +2023,43 @@ function closeAll(){
 document.addEventListener('click',e=>{
   if(!e.target.closest('#ctxMenu')&&!e.target.closest('.dotbtn'))
     document.getElementById('ctxMenu').classList.remove('open');
+  if(!e.target.closest('.dropdown-wrap')){
+    document.querySelectorAll('.dropdown-menu.open').forEach(m=>m.classList.remove('open'));
+    document.querySelectorAll('.dropdown-arrow.open').forEach(a=>a.classList.remove('open'));
+  }
 });
 
 // ════════════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════════════
 (async function boot(){
+  // Show family screen initially — always let user pick
+  // (avoids stale localStorage causing blank screen)
   const saved = localStorage.getItem('familyKey');
   if(saved && FAMILY_IDS[saved]){
+    // reset member state so it re-populates for this family
+    state.activeUser   = null;
+    state.activeMember = null;
     await selectFamily(saved);
   }
-  // else show family screen (already visible)
+  // else family screen is already visible — nothing to do
 })();
 </script>
+
+<!--
+  === RUN THIS SQL IN SUPABASE TO SET MATTHEWS MEMBER COLORS ===
+  Copy to: Supabase Dashboard → SQL Editor → New query → Run
+
+  UPDATE members SET bg_color='#FFF9C4', icon_color='#E65100', icon='ti-anchor'
+    WHERE family_id='a2000000-0000-0000-0000-000000000002' AND name='Dad';
+  UPDATE members SET bg_color='#FCE4EC', icon_color='#880E4F', icon='ti-heart'
+    WHERE family_id='a2000000-0000-0000-0000-000000000002' AND name='Mom';
+  UPDATE members SET bg_color='#E8F5E9', icon_color='#1B5E20', icon='ti-star'
+    WHERE family_id='a2000000-0000-0000-0000-000000000002' AND name='Reagan';
+  UPDATE members SET bg_color='#E3F2FD', icon_color='#0D47A1', icon='ti-flag'
+    WHERE family_id='a2000000-0000-0000-0000-000000000002' AND name='Lincoln';
+  UPDATE members SET bg_color='#F3E5F5', icon_color='#4A148C', icon='ti-rocket'
+    WHERE family_id='a2000000-0000-0000-0000-000000000002' AND name='Nixon';
+-->
 </body>
 </html>

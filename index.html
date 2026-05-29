@@ -233,17 +233,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
   <div class="fscreen-title">Family Travel</div>
   <div class="fscreen-sub">Select your family to continue</div>
   <div class="fscreen-grid">
-    <div class="ftile" onclick="pickFamily('jmcr')">
+    <div class="ftile" onclick="this.style.opacity='0.5';pickFamily('jmcr')">
       <span class="ftile-ico">&#x1F3D6;&#xFE0F;</span>
       <span class="ftile-name">JMCR</span>
       <span class="ftile-members">Jon &middot; Mary &middot; Cordy &middot; Mav<br>+ Ryan</span>
     </div>
-    <div class="ftile" onclick="pickFamily('matthews')">
+    <div class="ftile" onclick="this.style.opacity='0.5';pickFamily('matthews')">
       <span class="ftile-ico">&#x1F6A2;</span>
       <span class="ftile-name">Matthews</span>
       <span class="ftile-members">Dad &middot; Mom &middot; Reagan<br>Lincoln &middot; Nixon</span>
     </div>
-    <div class="ftile" onclick="pickFamily('silvermans')">
+    <div class="ftile" onclick="this.style.opacity='0.5';pickFamily('silvermans')">
       <span class="ftile-ico">&#x2B50;</span>
       <span class="ftile-name">Silvermans</span>
       <span class="ftile-members">Josh &middot; Lori<br>Mikayla &middot; Zach</span>
@@ -314,9 +314,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
   </div>
 </div>
 <script>
-var SB_URL= + SUPABASE_URL + ;
-var SB_KEY= + SUPABASE_KEY + ;
-var sb=supabase.createClient(SB_URL,SB_KEY);
+window.onerror=function(msg,src,line,col,err){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;right:0;background:#900;color:white;padding:1rem;z-index:99999;font-size:0.8rem;font-family:monospace;white-space:pre-wrap;';
+  d.textContent='JS ERROR line '+line+': '+msg;
+  document.body.appendChild(d);
+};
+var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
+var sb=null;
+try{sb=supabase.createClient(SB_URL,SB_KEY);}catch(e){console.error('SB init failed:',e);}
 var FIDS={jmcr:'a1000000-0000-0000-0000-000000000001',matthews:'a2000000-0000-0000-0000-000000000002',silvermans:'a3000000-0000-0000-0000-000000000003'};
 var S={fkey:null,fid:null,fname:null,user:null,member:null,tab:'ryan',ryanSub:'Backpack',trip:null,members:[],allMembers:[],cats:[],items:[],flights:[],hotels:[],reserves:[],rsubs:[],companions:[]};
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -329,6 +336,14 @@ function showLoad(){document.getElementById('fscreen').classList.add('hide');doc
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamily(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 async function pickFamily(key){
+  // Safety check - supabase must be initialized
+  if(!sb){
+    try{sb=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+  }
+  if(!sb){
+    alert('Connection error: Supabase library not loaded. Please reload the page.');
+    return;
+  }
   S.fkey=key;S.fid=FIDS[key];
   S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
   S.tab=key==='jmcr'?'ryan':'family';

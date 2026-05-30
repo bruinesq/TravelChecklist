@@ -195,7 +195,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
   <div class="fscreen-sub">Select your family to continue</div>
   <div class="fscreen-grid">
     <div class="ftile" onclick="pickFamily('jmcr')"><span class="ftile-ico">&#x1F3D6;&#xFE0F;</span><span class="ftile-name">JMCR</span><span class="ftile-sub">Jon &middot; Mary &middot; Cordy &middot; Mav<br>+ Ryan</span></div>
-    <div class="ftile" onclick="pickFamily('matthews')"><span class="ftile-ico">&#x1F6A2;</span><span class="ftile-name">Matthews</span><span class="ftile-sub">Nick &middot; Christine &middot; Reagan<br>Lincoln &middot; Nixon</span></div>
+    <div class="ftile" onclick="pickFamily('matthews')"><span class="ftile-ico">&#x1F985;</span><span class="ftile-name">Matthews</span><span class="ftile-sub">Nick &middot; Christine &middot; Reagan<br>Lincoln &middot; Nixon</span></div>
     <div class="ftile" onclick="pickFamily('silvermans')"><span class="ftile-ico">&#x2B50;</span><span class="ftile-name">Silvermans</span><span class="ftile-sub">Josh &middot; Lori<br>Mikayla &middot; Zach</span></div>
   </div>
 </div>
@@ -280,6 +280,13 @@ function showLoad(){document.getElementById('fscreen').classList.add('hide');doc
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamScreen(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 
+
+function nowLocal(){
+  var d=new Date();
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
+    +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+}
 function pickFamily(key){
   S.fkey=key;S.fid=FIDS[key];S.isJMCR=(key==='jmcr');
   S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
@@ -410,7 +417,7 @@ function renderNav(){
     {id:'pack',lbl:'Pack List',ico:'ti-briefcase',cls:'t-pack'},
     {id:'flight',lbl:'Flight',ico:'ti-plane',cls:'t-flight'},
     {id:'hotel',lbl:'Hotel',ico:'ti-building',cls:'t-hotel'},
-    {id:'reservations',lbl:'Reserve',ico:'ti-calendar-event',cls:'t-reserve'}
+    {id:'reservations',lbl:'Schedules',ico:'ti-calendar-event',cls:'t-reserve'}
   ];
   tabs.forEach(function(t){
     var b=document.createElement('button');
@@ -859,8 +866,8 @@ function getSelPax(sel){return[].slice.call(document.querySelectorAll(sel+' .mti
 function openAddFlight(){S.companions=[];doOpenFlight(null);}
 function doOpenFlight(f){
   var selIds=f?(f.flight_passengers||[]).filter(function(p){return!p.is_companion;}).map(function(p){return p.member_id;}):S.members.map(function(m){return m.id;});
-  var depL=f&&f.departure_dt?new Date(f.departure_dt).toISOString().slice(0,16):'';
-  var arrL=f&&f.arrival_dt?new Date(f.arrival_dt).toISOString().slice(0,16):'';
+  var depL=f&&f.departure_dt?new Date(f.departure_dt).toISOString().slice(0,16):nowLocal();
+  var arrL=f&&f.arrival_dt?new Date(f.arrival_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(d.getHours()+3);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}());
   S.companions=f?(f.flight_passengers||[]).filter(function(p){return p.is_companion;}).map(function(p){return{name:p.companion_name,seat:p.seat||''};}):[]; 
   var compHtml=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');
   var ins=f&&f.is_insured;
@@ -913,8 +920,8 @@ function flightDetail(id){
 }
 function openAddHotel(h){
   h=h||{};
-  var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):'';
-  var outL=h.check_out_dt?new Date(h.check_out_dt).toISOString().slice(0,16):'';
+  var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(15,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T15:00';}());
+  var outL=h.check_out_dt?new Date(h.check_out_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setDate(d.getDate()+7);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T11:00';}());
   var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&t==='Hotel')?' on':'')+'" type="button" onclick="togFtog(this,\'acType\')">'+t+'</button>';}).join('');
   openCP(h.id?'Edit Stay':'Add Accommodation',
@@ -954,8 +961,8 @@ function hotelDetail(id){
 }
 function openAddReservation(r){
   r=r||{};
-  var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):'';
-  var types=['Restaurant','Tour','Activity','Transport','Other'];
+  var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(19,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T19:00';}());
+  var types=['Restaurant','Tour','Activity','Transport','Docking'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&t==='Restaurant')?' on':'')+'" type="button" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('');
   openCP(r.id?'Edit Reservation':'Add Reservation',
     '<div class="fsec"><label class="flbl">Guests</label><div id="rpaxTiles">'+paxTiles(r.id?[]:S.members.map(function(m){return m.id;}))+'</div></div>'

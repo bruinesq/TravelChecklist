@@ -71,7 +71,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .ntab.active.t-hotel .ntab-cnt{background:#F5C4B3;color:#712B13;}
 .ntab.active.t-reserve .ntab-cnt{background:#E8C8F8;color:#6B2F9E;}
 .ddwrap{position:relative;width:100%;}
-.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,0.1);user-select:none;}
+.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none;}
 .ddsel-ico{font-size:.95rem;}.ddsel-lbl{flex:1;text-align:left;}
 .ddsel-cnt{font-size:.58rem;padding:.08rem .38rem;border-radius:99px;background:#CECBF6;color:#3C3489;}
 .ddsel-cnt.fam{background:#9FE1CB;color:#085041;}
@@ -278,7 +278,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 </div>
 
 <script>
-var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
+var Svar SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false},global:{headers:{'x-client-info':'travel-app'}}});
 
@@ -544,12 +544,12 @@ function ryanPanel(){
   var rows='';
   items.forEach(function(i){rows+=itemRow(i,'ryan');});
   return '<div class="ddwrap">'
-    +'<div class="ddsel" onclick="toggleDD(\'ryanDD\')">'
+    +'<button class="ddsel" onclick="toggleDD(\'ryanDD\')" type="button">'
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
     +'<span class="ddsel-lbl">Ryan \u2014 '+S.ryanSub+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+total+'</span>'
     +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i>'
-    +'</div>'
+    +'</button>'
     +'<div class="ddmenu" id="ryanDD">'+dropItems+'</div>'
     +'</div>'
     +'<div style="display:flex;align-items:center;padding:.35rem .85rem;'
@@ -584,12 +584,12 @@ function familyPanel(){
   var done=m?S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length:0;
   var total=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
   var html='<div class="ddwrap">'
-    +'<div class="ddsel" onclick="toggleDD(\'famDD\')">'
+    +'<button class="ddsel" onclick="toggleDD(\'famDD\')" type="button">'
     +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+mic+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+total+'</span>':'')
     +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
-    +'</div>'
+    +'</button>'
     +'<div class="ddmenu" id="famDD">'+dropItems+'</div>'
     +'</div>';
   if(!m)return html+'<div class="empty">Select a family member above</div>';
@@ -1246,6 +1246,6 @@ document.addEventListener('click',function(e){
   if(saved&&FIDS[saved])pickFamily(saved);
 }());
 
-</script>
+ipt>
 </body>
 </html>

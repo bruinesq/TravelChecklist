@@ -87,7 +87,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .dditem-cnt{font-size:.7rem;font-weight:700;color:#555;white-space:nowrap}
 .dddivider{height:2px;background:#ece8e0;margin:.2rem 0}
 .ilist{list-style:none}
-.irow{display:flex;align-items:center;gap:.38rem;padding:.7rem .75rem;border-bottom:.5px solid rgba(0,0,0,.055);min-height:2.8rem;background:rgba(255,255,255,.82);width:100%}
+.irow{display:flex;align-items:center;gap:.38rem;padding:.7rem .75rem;border-bottom:.5px solid rgba(0,0,0,.07);min-height:2.8rem;background:rgba(255,255,255,.72);width:100%}
 .irow:last-child{border-bottom:none}
 .irow.done{opacity:.48}
 .irow.skip{background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.02) 8px,rgba(0,0,0,.02) 9px)}
@@ -113,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .secsep{padding:.3rem .85rem;background:#f2f0eb;font-size:.58rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.05em}
 .addbar{display:flex;align-items:center;padding:.5rem .85rem;border-bottom:1px solid rgba(0,0,0,.07)}
 .addbar-lbl{font-size:.9rem;font-weight:800;flex:1}
-.addbar-btn{border:none;border-radius:.5rem;padding:.35rem .75rem;font-size:.8rem;font-weight:700;cursor:pointer;color:white}
+.addbar-btn{border:none;background:none;padding:.35rem .75rem;font-size:.88rem;font-weight:800;cursor:pointer}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
 .cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
@@ -574,7 +574,7 @@ function flightPanel(){
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(fc).join('');
   return'<div class="addbar" style="background:#E6F1FB;border-bottom:2px solid #378ADD">'
     +'<span class="addbar-lbl" style="color:#0C447C">Flights</span>'
-    +'<button class="addbar-btn" style="background:#378ADD" id="addFlightBtn" type="button">+ Add</button>'
+    +'<button class="addbar-btn" style="color:#0C447C" id="addFlightBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No flights yet</div>');
 }
 
@@ -596,7 +596,7 @@ function hotelPanel(){
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(hc).join('');
   return'<div class="addbar" style="background:#FAECE7;border-bottom:2px solid #D85A30">'
     +'<span class="addbar-lbl" style="color:#712B13">Hotels &amp; Stays</span>'
-    +'<button class="addbar-btn" style="background:#D85A30" id="addHotelBtn" type="button">+ Add</button>'
+    +'<button class="addbar-btn" style="color:#712B13" id="addHotelBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No accommodations yet</div>');
 }
 
@@ -618,7 +618,7 @@ function reservePanel(){
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(rc).join('');
   return'<div class="addbar" style="background:#F3E8FD;border-bottom:2px solid #9B59B6">'
     +'<span class="addbar-lbl" style="color:#6B2F9E">Reservations</span>'
-    +'<button class="addbar-btn" style="background:#9B59B6" id="addReserveBtn" type="button">+ Add</button>'
+    +'<button class="addbar-btn" style="color:#6B2F9E" id="addReserveBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
 }
 
@@ -915,7 +915,8 @@ function openAddHotel(h){
   var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&t==='Hotel')?' on':'')+'" type="button" onclick="togFtog(this,\'acType\')">'+t+'</button>';}).join('');
   openCP(h.id?'Edit Stay':'Add Accommodation',
-    '<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="acType">'+typeBtns+'</div></div>'
+    '<div class="fsec"><label class="flbl">Guests</label><div id="hpaxTiles">'+paxTiles(h.id?((h.hotel_guests||[]).map(function(g){return g.member_id;})):S.members.map(function(m){return m.id;}))+'</div></div>'
+    +'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="acType">'+typeBtns+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="hName" value="'+esc(h.name||'')+'" placeholder="Hotel name"/></div>'
     +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="hLoc" value="'+esc(h.location||'')+'"/></div>'
     +'<div class="frow"><div class="fsec"><label class="flbl">Check-in</label><input class="finp" type="datetime-local" id="hIn" value="'+inL+'"/></div><div class="fsec"><label class="flbl">Check-out</label><input class="finp" type="datetime-local" id="hOut" value="'+outL+'"/></div></div>'
@@ -944,7 +945,8 @@ function openAddReservation(r){
   var types=['Restaurant','Tour','Activity','Transport','Other'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&t==='Restaurant')?' on':'')+'" type="button" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('');
   openCP(r.id?'Edit Reservation':'Add Reservation',
-    '<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="resType">'+typeBtns+'</div></div>'
+    '<div class="fsec"><label class="flbl">Guests</label><div id="rpaxTiles">'+paxTiles(r.id?[]:S.members.map(function(m){return m.id;}))+'</div></div>'
+    +'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="resType">'+typeBtns+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="rName" value="'+esc(r.name||'')+'"/></div>'
     +'<div class="frow"><div class="fsec"><label class="flbl">Date &amp; Time</label><input class="finp" type="datetime-local" id="rDT" value="'+dtL+'"/></div><div class="fsec"><label class="flbl"># People</label><input class="finp" type="number" id="rPpl" value="'+(r.num_people||'')+'" min="1"/></div></div>'
     +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="rLoc" value="'+esc(r.location||'')+'"/></div>'

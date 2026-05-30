@@ -547,7 +547,7 @@ function ryanPanel(){
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
     +'<span class="ddsel-lbl">Ryan — '+S.ryanSub+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+total+'</span>'
-    +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i></button>'
+    +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i></div>'
     +'<div class="ddmenu" id="ryanDD">'+dropItems+'</div></div>'
     +'<div style="display:flex;align-items:center;padding:.35rem .85rem;background:#DAEEF9;border-bottom:2px solid #7F77DD">'
     +'<button class="ph-add ryan" data-action="addItem" data-tab="ryan" style="margin-left:auto"><i class="ti ti-plus"></i> Add</button></div>'
@@ -575,7 +575,7 @@ function familyPanel(){
     +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+(m.icon_color||'#1D9E75')+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+total+'</span>':'')
-    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i></button>'
+    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i></div>'
     +'<div class="ddmenu" id="famDD">'+dropItems+'</div></div>';
   if(!m)return html+'<div class="empty">Select a family member above</div>';
   var items=sortItems(S.items.filter(function(i){return i.member_id===m.id;}));

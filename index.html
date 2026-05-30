@@ -226,6 +226,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .cmod-cancel{flex:1;padding:0.62rem;border:1.5px solid #e0d0b0;border-radius:0.6rem;background:none;font-size:0.75rem;cursor:pointer;color:#666;}
 .cmod-ok{flex:1;padding:0.62rem;border:none;border-radius:0.6rem;background:#E53935;color:white;font-size:0.75rem;font-weight:600;cursor:pointer;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="fscreen" id="fscreen">
@@ -322,222 +323,11 @@ window.onerror=function(msg,src,line,col,err){
 };
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
+var sb = supabase.createClient(SB_URL, SB_KEY, {
+  realtime: { params: { eventsPerSecond: 10 } },
+  global: { fetch: function(url, opts) { return fetch(url, opts); } }
+});
 
-// Pure fetch-based Supabase client - bypasses Safari Headers clone bug
-var sb = (function(){
-  var BASE = SB_URL + '/rest/v1/';
-  var HEADERS = {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY,
-                 'Content-Type': 'application/json', 'Prefer': 'return=representation'};
-
-  function qb(table) {
-    var _table = table;
-    var _filters = [];
-    var _select = '*';
-    var _order = null;
-    var _limit = null;
-    var _single = false;
-    var _upsertConflict = null;
-
-    var q = {
-      select: function(s){ _select=s; return q; },
-      eq: function(col,val){ _filters.push(col+'=eq.'+encodeURIComponent(val)); return q; },
-      order: function(col){ if(!_order) _order=col; else _order+=','+col; return q; },
-      limit: function(n){ _limit=n; return q; },
-      single: function(){ _single=true; return q; },
-
-      _url: function(method){
-        var url = BASE + _table + '?select=' + encodeURIComponent(_select);
-        _filters.forEach(function(f){ url += '&' + f; });
-        if(_order) url += '&order=' + _order;
-        if(_limit) url += '&limit=' + _limit;
-        return url;
-      },
-
-      then: function(){ throw new Error('Use await, not .then()'); },
-
-      // Terminal ops
-      _exec: async function(method, body){
-        var url = q._url(method);
-        var opts = { method: method,
-          headers: Object.assign({}, HEADERS,
-            _single ? {'Accept':'application/vnd.pgrst.object+json'} : {}) };
-        if(body !== undefined) opts.body = JSON.stringify(body);
-        try {
-          var res = await fetch(url, opts);
-          var text = await res.text();
-          var data = text ? JSON.parse(text) : (_single ? null : []);
-          if(!res.ok) return {data: null, error: {message: (data && data.message) || res.statusText}};
-          return {data: _single ? data : (Array.isArray(data)?data:[data]), error: null};
-        } catch(e) {
-          return {data: null, error: {message: e.message}};
-        }
-      }
-    };
-
-    // Make the query object awaitable by being a thenable
-    // but we need it to work with await - override select/insert/update/delete
-    q.select = function(s){ _select=s; return Object.assign({}, q, {
-      then: function(res,rej){ return q._exec('GET').then(res,rej); }
-    }); };
-
-    return q;
-  }
-
-  // Full chainable builder
-  function builder(table) {
-    var _table = table;
-    var _filters = [];
-    var _select = '*';
-    var _orders = [];
-    var _limit = null;
-    var _single = false;
-    var _method = 'GET';
-    var _body = undefined;
-    var _upsertConflict = null;
-
-    function url() {
-      var u = BASE + _table + '?select=' + encodeURIComponent(_select);
-      _filters.forEach(function(f){ u += '&' + f; });
-      if(_orders.length) u += '&order=' + _orders.join(',');
-      if(_limit) u += '&limit=' + _limit;
-      return u;
-    }
-
-    async function exec() {
-      var h = {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY,
-               'Content-Type': 'application/json'};
-      if(_upsertConflict) h['Prefer'] = 'return=representation,resolution=merge-duplicates,on_conflict='+_upsertConflict;
-      else if(_method !== 'GET' && _method !== 'DELETE') h['Prefer'] = 'return=representation';
-      if(_single) h['Accept'] = 'application/vnd.pgrst.object+json';
-      var opts = {method:_method, headers:h};
-      if(_body !== undefined) opts.body = JSON.stringify(_body);
-      try {
-        var res = await fetch(url(), opts);
-        var text = await res.text();
-        var data = null;
-        try { data = text ? JSON.parse(text) : null; } catch(e){}
-        if(!res.ok) {
-          var msg = (data && (data.message || data.hint || data.details)) || res.statusText || 'Request failed';
-          return {data:null, error:{message:msg}};
-        }
-        if(_single) return {data: data, error:null};
-        return {data: Array.isArray(data)?data:(data?[data]:[]), error:null};
-      } catch(e) {
-        return {data:null, error:{message:e.message}};
-      }
-    }
-
-    var b = {
-      select:  function(s){ _select=s||'*'; return b; },
-      eq:      function(col,val){ _filters.push(col+'=eq.'+encodeURIComponent(val)); return b; },
-      order:   function(col){ _orders.push(col); return b; },
-      limit:   function(n){ _limit=n; return b; },
-      single:  function(){ _single=true; return b; },
-      then:    function(res,rej){ return exec().then(res,rej); },
-      catch:   function(rej){ return exec().catch(rej); },
-
-      insert:  function(data){ _method='POST'; _body=data; return b; },
-      update:  function(data){ _method='PATCH'; _body=data; return b; },
-      upsert:  function(data, opts){
-        _method='POST'; _body=data;
-        _upsertConflict = (opts&&opts.onConflict) || '';
-        return b;
-      },
-      delete:  function(){ _method='DELETE'; return b; },
-    };
-    return b;
-  }
-
-  // RPC calls
-  async function rpc(fnName, params) {
-    try {
-      var res = await fetch(SB_URL + '/rest/v1/rpc/' + fnName, {
-        method: 'POST',
-        headers: {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
-        body: JSON.stringify(params||{})
-      });
-      var text = await res.text();
-      var data = text ? JSON.parse(text) : null;
-      if(!res.ok) return {data:null,error:{message:(data&&data.message)||res.statusText}};
-      return {data:data,error:null};
-    } catch(e) {
-      return {data:null,error:{message:e.message}};
-    }
-  }
-
-  // Realtime via WebSocket
-  var _channels = {};
-  var _ws = null;
-  var _wsReady = false;
-  var _pendingSubs = [];
-  var _channelCallbacks = {};
-
-  function connectWS() {
-    if(_ws) return;
-    var wsUrl = SB_URL.replace('https://','wss://').replace('http://','ws://') 
-                + '/realtime/v1/websocket?apikey=' + SB_KEY + '&vsn=1.0.0';
-    try {
-      _ws = new WebSocket(wsUrl);
-      _ws.onopen = function() {
-        _wsReady = true;
-        _pendingSubs.forEach(function(fn){ fn(); });
-        _pendingSubs = [];
-      };
-      _ws.onmessage = function(evt) {
-        try {
-          var msg = JSON.parse(evt.data);
-          if(msg.event === 'postgres_changes' || (msg.payload && msg.payload.type === 'broadcast')) {
-            var topic = msg.topic;
-            if(_channelCallbacks[topic]) {
-              _channelCallbacks[topic].forEach(function(cb){ try{cb(msg);}catch(e){} });
-            }
-          }
-        } catch(e) {}
-      };
-      _ws.onerror = function(e){ console.warn('Realtime WS error',e); };
-      _ws.onclose = function(){ _ws=null; _wsReady=false; };
-    } catch(e) { console.warn('Realtime not available',e); }
-  }
-
-  function channel(name) {
-    var _name = name;
-    var _subs = [];
-
-    var ch = {
-      on: function(event, filter, callback) {
-        _subs.push({event:event, filter:filter, callback:callback});
-        return ch;
-      },
-      subscribe: function() {
-        // Poll-based fallback (10s intervals) since WS setup is complex
-        // Real apps would use proper WS subscription; polling works fine for this use case
-        var pollInterval = setInterval(async function() {
-          _subs.forEach(async function(sub) {
-            if(sub.callback) {
-              try { sub.callback({}); } catch(e) {}
-            }
-          });
-        }, 10000);
-        ch._interval = pollInterval;
-        return ch;
-      },
-      _interval: null
-    };
-    _channels[name] = ch;
-    return ch;
-  }
-
-  function removeChannel(ch) {
-    if(ch && ch._interval) clearInterval(ch._interval);
-  }
-
-  return {
-    from: builder,
-    rpc: rpc,
-    channel: channel,
-    removeChannel: removeChannel
-  };
-})();
 var FIDS={jmcr:'a1000000-0000-0000-0000-000000000001',matthews:'a2000000-0000-0000-0000-000000000002',silvermans:'a3000000-0000-0000-0000-000000000003'};
 var S={fkey:null,fid:null,fname:null,user:null,member:null,tab:'ryan',ryanSub:'Backpack',trip:null,members:[],allMembers:[],cats:[],items:[],flights:[],hotels:[],reserves:[],rsubs:[],companions:[]};
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -550,32 +340,16 @@ function showLoad(){document.getElementById('fscreen').classList.add('hide');doc
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamily(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 async function pickFamily(key){
-  try {
-    // Step 1: check sb
-    if(!sb){ alert('Internal error: sb not initialized.'); return; }
-
-    // Step 2: set state
-    S.fkey=key; S.fid=FIDS[key];
-    S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
-    S.tab=key==='jmcr'?'ryan':'family';
-    S.user=null; S.member=null; S.rsubs=[];
-    localStorage.setItem('fkey',key);
-
-    // Step 3: show loading screen
-    document.getElementById('fscreen').classList.add('hide');
-    document.getElementById('lscreen').classList.remove('hide');
-    var dbg=document.getElementById('ldbg');
-    dbg.classList.add('show');
-    dbg.innerHTML='<div>Step 3: loading screen shown</div>';
-
-    // Step 4: full load
-    dbg.innerHTML+='<div>Step 4: loading data...</div>';
-    await loadAll();
-  } catch(e) {
-    alert('pickFamily CRASH: '+e.message+' stack: '+e.stack);
-  }
+  S.fkey=key; S.fid=FIDS[key];
+  S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
+  S.tab=key==='jmcr'?'ryan':'family';
+  S.user=null; S.member=null; S.rsubs=[];
+  localStorage.setItem('fkey',key);
+  showLoad();
+  await loadAll();
 }
-function switchFamily(){S.rsubs.forEach(function(ch){sb.removeChannel(ch);});S.rsubs=[];localStorage.removeItem('fkey');showFamily();}
+
+function switchFamily(){S.rsubs.forEach(function(ch){if(ch&&ch._interval)clearInterval(ch._interval);else if(sb.removeChannel)sb.removeChannel(ch);});S.rsubs=[];localStorage.removeItem('fkey');showFamily();}
 async function loadAll(){
   try{
     dbg('Loading members...');
@@ -616,21 +390,14 @@ async function loadAll(){
   }catch(err){dbg('ERROR: '+err.message,'#FF6B6B');console.error(err);}
 }
 function setupRT(){
-  var ch=sb.channel('rt'+Date.now())
-    .on('postgres_changes',{event:'*',schema:'public',table:'checklist_items'},async function(){
-      if(!S.trip)return;var r=await sb.from('checklist_items').select('*').eq('trip_id',S.trip.id);S.items=r.data||[];renderPanel();updateProg();
-    })
-    .on('postgres_changes',{event:'*',schema:'public',table:'flights'},async function(){
-      var r=await sb.from('flights').select('*,flight_passengers(*,members(name,icon,icon_color))').order('departure_dt');S.flights=r.data||[];renderPanel();
-    })
-    .on('postgres_changes',{event:'*',schema:'public',table:'accommodations'},async function(){
-      var r=await sb.from('accommodations').select('*').order('check_in_dt');S.hotels=r.data||[];renderPanel();
-    })
-    .on('postgres_changes',{event:'*',schema:'public',table:'reservations'},async function(){
-      var r=await sb.from('reservations').select('*').order('reservation_dt');S.reserves=r.data||[];renderPanel();
-    })
-    .subscribe();
-  S.rsubs.push(ch);
+  // Use polling instead of Supabase Realtime WebSocket
+  // to avoid Safari DataCloneError from WebSocket message handling
+  var interval = setInterval(async function(){
+    if(!S.trip) return;
+    var r=await sb.from('checklist_items').select('*').eq('trip_id',S.trip.id);
+    if(r.data) { S.items=r.data; renderPanel(); updateProg(); }
+  }, 8000);
+  S.rsubs.push({_interval: interval});
 }
 function render(){
   document.getElementById('hBadge').textContent=S.fname;
@@ -1146,8 +913,6 @@ function closeAll(){document.getElementById('cpanel').classList.remove('open');d
 function closeCtx(){document.getElementById('ctx').classList.remove('open');}
 document.addEventListener('click',function(e){if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))document.getElementById('ctx').classList.remove('open');if(!e.target.closest('.ddwrap'))closeDD();});
 
-} // auto-close
-
 // Global delegated event handler for data-action elements
 document.addEventListener('click', function(e) {
   var el = e.target.closest('[data-action]');
@@ -1184,6 +949,8 @@ document.addEventListener('click', function(e) {
   else if(action==='submitHotel') { submitHotel(id==='null'?null:id); }
   else if(action==='submitReserve') { submitReserve(id==='null'?null:id); }
 });
+
+} // close remaining open brace
 
 (function boot(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);})();
 </script>

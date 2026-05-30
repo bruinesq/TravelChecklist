@@ -499,16 +499,16 @@ function ryanPanel(){
   items.forEach(function(i){rows+=irow(i,'ryan');});
 
   return '<div class="ddwrap">'
-    +'<button class="ddsel" id="ryanSelBtn" type="button">'
+    +'<div style="display:flex;align-items:center;background:#DAEEF9;border-bottom:2px solid #7F77DD">'
+    +'<button class="ddsel" id="ryanSelBtn" type="button" style="flex:1;background:transparent;border:none;border-bottom:none">'
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
     +'<span class="ddsel-lbl">Ryan &mdash; '+esc(S.sub)+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+tot+'</span>'
     +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i>'
     +'</button>'
-    +'<div class="ddmenu" id="ryanDD">'+dropHtml+'</div>'
+    +'<button class="ph-add" style="background:#7F77DD;margin-right:.5rem" id="addRyanBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
     +'</div>'
-    +'<div class="addbar" style="background:#DAEEF9;border-bottom-color:#7F77DD">'
-    +'<button class="ph-add" style="background:#7F77DD" id="addRyanBtn"><i class="ti ti-plus"></i> Add</button>'
+    +'<div class="ddmenu" id="ryanDD">'+dropHtml+'</div>'
     +'</div>'
     +'<ul class="ilist">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
@@ -538,12 +538,15 @@ function famPanel(){
   var tot=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
 
   var html='<div class="ddwrap">'
-    +'<button class="ddsel" id="famSelBtn" type="button">'
+    +'<div style="display:flex;align-items:center;background:'+mc.bg+';border-bottom:2px solid '+mc.ic+'">'
+    +'<button class="ddsel" id="famSelBtn" type="button" style="flex:1;background:transparent;border:none;border-bottom:none">'
     +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+mc.ic+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+tot+'</span>':'')
     +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
     +'</button>'
+    +'<button class="ph-add" style="background:'+mc.ic+';margin-right:.5rem" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'</div>'
     +'<div class="ddmenu" id="famDD">'+dropHtml+'</div>'
     +'</div>';
 
@@ -553,9 +556,6 @@ function famPanel(){
   var rows='';items.forEach(function(i){rows+=irow(i,'family');});
 
   return html
-    +'<div class="addbar" style="background:'+mc.bg+';border-bottom:2px solid '+mc.ic+'">'
-    +'<button class="ph-add" style="background:'+mc.ic+'" id="addFamBtn"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
     +'<ul class="ilist" style="background:'+mc.bg+'18">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
 }
@@ -642,7 +642,6 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('.ddwrap')){
     document.querySelectorAll('.ddmenu.open').forEach(function(m){m.classList.remove('open');});
     document.querySelectorAll('.ddarrow.open').forEach(function(a){a.classList.remove('open');});
-    return;
   }
   // Ryan dropdown toggle
   var rBtn=e.target.closest('#ryanSelBtn');

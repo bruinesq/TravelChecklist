@@ -543,17 +543,14 @@ function ryanPanel(){
   var rows='';
   items.forEach(function(i){rows+=itemRow(i,'ryan');});
   return '<div class="ddwrap">'
-    +'<button class="ddsel" data-dd="ryanDD">'
+    +'<div class="ddsel" data-dd="ryanDD">'
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
     +'<span class="ddsel-lbl">Ryan — '+S.ryanSub+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+total+'</span>'
     +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i></button>'
     +'<div class="ddmenu" id="ryanDD">'+dropItems+'</div></div>'
-    +'<div class="ph ryan">'
-    +'<i class="ti '+cur.ico+'" style="color:'+cur.c+';font-size:1.05rem"></i>'
-    +'<span class="ph-title">Ryan — '+S.ryanSub+'</span>'
-    +'<span class="ph-cnt" style="background:#CECBF6;color:#3C3489">'+done+'/'+total+'</span>'
-    +'<button class="ph-add ryan" data-action="addItem" data-tab="ryan"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<div style="display:flex;align-items:center;padding:.35rem .85rem;background:#DAEEF9;border-bottom:2px solid #7F77DD">'
+    +'<button class="ph-add ryan" data-action="addItem" data-tab="ryan" style="margin-left:auto"><i class="ti ti-plus"></i> Add</button></div>'
     +'<ul class="ilist">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
 }
@@ -565,15 +562,16 @@ function familyPanel(){
     var pd=S.items.filter(function(i){return i.member_id===p.id&&i.is_done;}).length;
     var pt=S.items.filter(function(i){return i.member_id===p.id&&!i.is_skipped;}).length;
     var isSel=m&&m.id===p.id;
-    dropItems+='<div class="dditem'+(isSel?' sel fam':'')+'" style="'+(isSel?'background:'+p.bg_color+';':'')+'" data-action="setMember" data-id="'+p.id+'">'
-      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+(p.icon_color||'#666')+'"></i>'
+    var pc=memberColor(p,packers.indexOf(p));
+    dropItems+='<div class="dditem'+(isSel?' sel fam':'')+'" style="'+(isSel?'background:'+pc.bg+';':'')+'" data-action="setMember" data-id="'+p.id+'">'
+      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+(pc.ic||'#666')+'"></i>'
       +'<span>'+esc(p.name)+'</span>'
       +'<span class="dditem-cnt" style="background:'+(p.icon_color||'#999')+'22;color:'+(p.icon_color||'#555')+'">'+pd+'/'+pt+'</span></div>';
   });
   var done=m?S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length:0;
   var total=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
   var html='<div class="ddwrap">'
-    +'<button class="ddsel" data-dd="famDD">'
+    +'<div class="ddsel" data-dd="famDD">'
     +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+(m.icon_color||'#1D9E75')+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+total+'</span>':'')
@@ -583,11 +581,8 @@ function familyPanel(){
   var items=sortItems(S.items.filter(function(i){return i.member_id===m.id;}));
   var rows='';items.forEach(function(i){rows+=itemRow(i,'family');});
   return html
-    +'<div class="ph family" style="background:'+(m.bg_color||'#E1F5EE')+';border-color:'+(m.icon_color||'#1D9E75')+'">'
-    +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+(m.icon_color||'#1D9E75')+';font-size:1.05rem"></i>'
-    +'<span class="ph-title">'+esc(m.name)+"'s List</span>"
-    +'<span class="ph-cnt" style="background:'+(m.icon_color||'#1D9E75')+'33;color:'+(m.icon_color||'#085041')+'">'+done+'/'+total+'</span>'
-    +'<button class="ph-add family" data-action="addItem" data-tab="family"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<div style="display:flex;align-items:center;padding:.4rem .85rem;background:'+(m.bg_color||'#E1F5EE')+';border-bottom:2px solid '+(m.icon_color||'#1D9E75')+'">'
+    +'<button class="ph-add family" data-action="addItem" data-tab="family" style="margin-left:auto"><i class="ti ti-plus"></i> Add</button></div>'
     +'<ul class="ilist" style="background:'+(m.bg_color||'#E1F5EE')+'18">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
 }
@@ -680,6 +675,18 @@ function closeDD(){
 }
 function setRyanSub(sub){S.ryanSub=sub;closeDD();saveAS();renderNav();renderPanel();}
 function setMember(id){S.member=S.members.find(function(m){return m.id===id;})||null;closeDD();saveAS();renderPanel();}
+// Fallback colors if DB colors not set
+var FALLBACK_COLORS=[
+  {bg:'#E8F5E9',ic:'#1B5E20'},{bg:'#E3F2FD',ic:'#0D47A1'},
+  {bg:'#FCE4EC',ic:'#880E4F'},{bg:'#FFF3E0',ic:'#E65100'},
+  {bg:'#F3E5F5',ic:'#4A148C'},{bg:'#FFF9C4',ic:'#F57F17'}
+];
+function memberColor(m,idx){
+  return {
+    bg: m.bg_color||FALLBACK_COLORS[idx%FALLBACK_COLORS.length].bg,
+    ic: m.icon_color||FALLBACK_COLORS[idx%FALLBACK_COLORS.length].ic
+  };
+}
 
 // ── CHECKLIST ACTIONS ──────────────────────────────────────────
 function toggleCheck(id){

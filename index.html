@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Travel">
 <title>Family Travel</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -71,7 +71,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .ntab.active.t-hotel .ntab-cnt{background:#F5C4B3;color:#712B13;}
 .ntab.active.t-reserve .ntab-cnt{background:#E8C8F8;color:#6B2F9E;}
 .ddwrap{position:relative;width:100%;}
-.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;}
+.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,0.1);user-select:none;}
 .ddsel-ico{font-size:.95rem;}.ddsel-lbl{flex:1;text-align:left;}
 .ddsel-cnt{font-size:.58rem;padding:.08rem .38rem;border-radius:99px;background:#CECBF6;color:#3C3489;}
 .ddsel-cnt.fam{background:#9FE1CB;color:#085041;}
@@ -273,14 +273,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
   <div class="cmod-m" id="cmod-m"></div>
   <div class="cmod-btns">
     <button class="cmod-cancel" onclick="closeCon()">Cancel</button>
-    <button class="cmod-ok" id="cmod-ok">Confirm</button>
-  </div>
-</div>
-
+    <button class="cmo
 <script>
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-var sb=supabase.createClient(SB_URL,SB_KEY);
+var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false},global:{headers:{'x-client-info':'travel-app'}}});
 
 var FIDS={
   jmcr:'a1000000-0000-0000-0000-000000000001',
@@ -536,56 +533,74 @@ function ryanPanel(){
     var sc=S.cats.find(function(c){return c.name===s.n;});
     var sd=sc?S.items.filter(function(i){return i.category_id===sc.id&&i.is_done;}).length:0;
     var st=sc?S.items.filter(function(i){return i.category_id===sc.id&&!i.is_skipped;}).length:0;
-    dropItems+='<div class="dditem'+(S.ryanSub===s.n?' sel':'')+'" data-action="setRyan" data-sub="'+s.n+'">'
+    var sel=S.ryanSub===s.n;
+    dropItems+='<div class="dditem'+(sel?' sel':'')+'" onclick="setRyanSub(\''+s.n+'\')">'
       +'<i class="ti '+s.ico+' dditem-ico" style="color:'+s.c+'"></i>'
       +'<span>'+s.n+'</span><span class="dditem-cnt">'+sd+'/'+st+'</span></div>';
   });
   var rows='';
   items.forEach(function(i){rows+=itemRow(i,'ryan');});
   return '<div class="ddwrap">'
-    +'<div class="ddsel" data-dd="ryanDD">'
+    +'<div class="ddsel" onclick="toggleDD(\'ryanDD\')">'
     +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
-    +'<span class="ddsel-lbl">Ryan — '+S.ryanSub+'</span>'
+    +'<span class="ddsel-lbl">Ryan \u2014 '+S.ryanSub+'</span>'
     +'<span class="ddsel-cnt">'+done+'/'+total+'</span>'
-    +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i></div>'
-    +'<div class="ddmenu" id="ryanDD">'+dropItems+'</div></div>'
-    +'<div style="display:flex;align-items:center;padding:.35rem .85rem;background:#DAEEF9;border-bottom:2px solid #7F77DD">'
-    +'<button class="ph-add ryan" data-action="addItem" data-tab="ryan" style="margin-left:auto"><i class="ti ti-plus"></i> Add</button></div>'
+    +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i>'
+    +'</div>'
+    +'<div class="ddmenu" id="ryanDD">'+dropItems+'</div>'
+    +'</div>'
+    +'<div style="display:flex;align-items:center;padding:.35rem .85rem;'
+    +'background:#DAEEF9;border-bottom:2px solid #7F77DD">'
+    +'<button class="ph-add ryan" onclick="openAddItem(\'ryan\')" style="margin-left:auto">'
+    +'<i class="ti ti-plus"></i> Add</button></div>'
     +'<ul class="ilist">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
 }
+
 function familyPanel(){
   var m=S.member;
   var packers=S.members.filter(function(p){return!p.is_subject;});
   var dropItems='';
-  packers.forEach(function(p){
+  packers.forEach(function(p,idx){
+    var bg=p.bg_color||FALLBACK_COLORS[idx%FALLBACK_COLORS.length].bg;
+    var ic=p.icon_color||FALLBACK_COLORS[idx%FALLBACK_COLORS.length].ic;
     var pd=S.items.filter(function(i){return i.member_id===p.id&&i.is_done;}).length;
     var pt=S.items.filter(function(i){return i.member_id===p.id&&!i.is_skipped;}).length;
     var isSel=m&&m.id===p.id;
-    var pc=memberColor(p,packers.indexOf(p));
-    dropItems+='<div class="dditem'+(isSel?' sel fam':'')+'" style="'+(isSel?'background:'+pc.bg+';':'')+'" data-action="setMember" data-id="'+p.id+'">'
-      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+(pc.ic||'#666')+'"></i>'
+    dropItems+='<div class="dditem'+(isSel?' sel fam':'')+'"'
+      +' style="'+(isSel?'background:'+bg+';':'')+'"'
+      +' onclick="setMember(\''+p.id+'\')">'
+      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+ic+'"></i>'
       +'<span>'+esc(p.name)+'</span>'
-      +'<span class="dditem-cnt" style="background:'+(p.icon_color||'#999')+'22;color:'+(p.icon_color||'#555')+'">'+pd+'/'+pt+'</span></div>';
+      +'<span class="dditem-cnt" style="background:'+ic+'22;color:'+ic+'">'+pd+'/'+pt+'</span>'
+      +'</div>';
   });
+  var mIdx=m?packers.indexOf(m):0;
+  var mbg=m?(m.bg_color||FALLBACK_COLORS[mIdx%FALLBACK_COLORS.length].bg):'#E1F5EE';
+  var mic=m?(m.icon_color||FALLBACK_COLORS[mIdx%FALLBACK_COLORS.length].ic):'#1D9E75';
   var done=m?S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length:0;
   var total=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
   var html='<div class="ddwrap">'
-    +'<div class="ddsel" data-dd="famDD">'
-    +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+(m.icon_color||'#1D9E75')+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
+    +'<div class="ddsel" onclick="toggleDD(\'famDD\')">'
+    +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+mic+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
     +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
     +(m?'<span class="ddsel-cnt fam">'+done+'/'+total+'</span>':'')
-    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i></div>'
-    +'<div class="ddmenu" id="famDD">'+dropItems+'</div></div>';
+    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
+    +'</div>'
+    +'<div class="ddmenu" id="famDD">'+dropItems+'</div>'
+    +'</div>';
   if(!m)return html+'<div class="empty">Select a family member above</div>';
   var items=sortItems(S.items.filter(function(i){return i.member_id===m.id;}));
   var rows='';items.forEach(function(i){rows+=itemRow(i,'family');});
   return html
-    +'<div style="display:flex;align-items:center;padding:.4rem .85rem;background:'+(m.bg_color||'#E1F5EE')+';border-bottom:2px solid '+(m.icon_color||'#1D9E75')+'">'
-    +'<button class="ph-add family" data-action="addItem" data-tab="family" style="margin-left:auto"><i class="ti ti-plus"></i> Add</button></div>'
-    +'<ul class="ilist" style="background:'+(m.bg_color||'#E1F5EE')+'18">'+rows+'</ul>'
+    +'<div style="display:flex;align-items:center;padding:.35rem .85rem;'
+    +'background:'+mbg+';border-bottom:2px solid '+mic+'">'
+    +'<button class="ph-add family" onclick="openAddItem(\'family\')" style="margin-left:auto;background:'+mic+'">'
+    +'<i class="ti ti-plus"></i> Add</button></div>'
+    +'<ul class="ilist" style="background:'+mbg+'22">'+rows+'</ul>'
     +(items.length?'':'<div class="empty">No items yet</div>');
 }
+
 function flightPanel(){
   var sorted=S.flights.slice().sort(function(a,b){return new Date(a.departure_dt)-new Date(b.departure_dt);});
   var up=sorted.filter(function(f){return!isPast(f.departure_dt);});
@@ -1188,8 +1203,6 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))
     document.getElementById('ctx').classList.remove('open');
   if(!e.target.closest('.ddwrap'))closeDD();
-  var dd=e.target.closest('[data-dd]');
-  if(dd){toggleDD(dd.dataset.dd);return;}
   var el=e.target.closest('[data-action]');
   if(!el)return;
   var action=el.dataset.action;

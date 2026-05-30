@@ -116,7 +116,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .addbar-btn{border:none;background:none;padding:.35rem .75rem;font-size:.88rem;font-weight:800;cursor:pointer}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
-.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}.cpanel.flight-detail{background:#FFF176}.cpanel.flight-detail .cp-head{background:#FFD600;border-bottom:2px solid #F9A825}.cpanel.flight-detail .cp-title{color:#1A237E;font-size:1.1rem;font-weight:800}.cpanel.flight-detail .drow{border-bottom-color:#F9A825}.cpanel.flight-detail .dlbl{color:#1A237E;font-size:.72rem;font-weight:800}.cpanel.flight-detail .dval{color:#0D0D0D;font-size:1rem;font-weight:600}
+.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}.cpanel.flight-detail{background:#FFF176}.cpanel.flight-detail .cp-head{background:#FFD600;border-bottom:2px solid #F9A825}.cpanel.flight-detail .cp-title{color:#1A237E;font-size:1.1rem;font-weight:800}.cpanel.flight-detail .drow{border-bottom-color:#F9A825}.cpanel.flight-detail .dlbl{color:#1A237E;font-size:.72rem;font-weight:800}.cpanel.flight-detail .dval{color:#0D0D0D;font-size:1rem;font-weight:600}.cpanel.hotel-detail{background:#F0F0F0}.cpanel.hotel-detail .cp-head{background:#DCDCDC;border-bottom:2px solid #BDBDBD}.cpanel.hotel-detail .cp-title{color:#1A1A1A;font-size:1.1rem;font-weight:800}.cpanel.hotel-detail .drow{border-bottom-color:#BDBDBD}.cpanel.hotel-detail .dlbl{color:#333333;font-size:.72rem;font-weight:800}.cpanel.hotel-detail .dval{color:#111111;font-size:1rem;font-weight:600}.cpanel.hotel-detail .sbtn{font-size:1.05rem}.cpanel.hotel-detail .dbtn{font-size:.9rem}.cpanel.reserve-detail{background:#1B5E20}.cpanel.reserve-detail .cp-head{background:#145218;border-bottom:2px solid #0A3D12}.cpanel.reserve-detail .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail .drow{border-bottom-color:#2E7D32}.cpanel.reserve-detail .dlbl{color:#A5D6A7;font-size:.72rem;font-weight:800}.cpanel.reserve-detail .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail .sbtn{font-size:1.05rem}.cpanel.reserve-detail .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
 .cpanel.open{display:block}
 .cp-head{display:flex;align-items:center;gap:.5rem;padding:.85rem 1rem .65rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
 .cp-title{font-size:.92rem;font-weight:700;flex:1;color:#111}
@@ -240,7 +240,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 </div>
 
 <script>
-
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 
@@ -949,7 +948,7 @@ function submitHotel(editId){
 }
 function hotelDetail(id){
   var h=S.hotels.find(function(x){return x.id===id;});if(!h)return;
-  openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)+DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))+DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)+(function(){var g=(h.accommodation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
+  document.getElementById('cpanel').classList.add('hotel-detail');openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)+DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))+DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)+(function(){var g=(h.accommodation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
     +'<button class="sbtn hotel" type="button" style="margin-top:.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===\''+h.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>');
 }
@@ -989,7 +988,7 @@ function submitReserve(editId){
 }
 function reserveDetail(id){
   var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
-  openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)+(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
+  document.getElementById('cpanel').classList.add('reserve-detail');openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)+(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
     +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }
@@ -1033,10 +1032,38 @@ function closeAll(){
   var cp=document.getElementById('cpanel');
   cp.classList.remove('open');
   cp.classList.remove('flight-detail');
+  cp.classList.remove('hotel-detail');
+  cp.classList.remove('reserve-detail');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
+
+function openCP(title,body){
+  document.getElementById('cpTitle').textContent=title;
+  document.getElementById('cpBody').innerHTML=body;
+  document.getElementById('cpanel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('cpanel').scrollTop=0;
+}
+function openConfirm(title,msg,onOk,extra){
+  document.getElementById('cmod-t').textContent=title;
+  document.getElementById('cmod-m').innerHTML=msg+(extra||'');
+  document.getElementById('cmod-ok').onclick=onOk;
+  document.getElementById('cmod').classList.add('open');
+  document.getElementById('covr').classList.add('open');
+}
+function closeCon(){document.getElementById('cmod').classList.remove('open');document.getElementById('covr').classList.remove('open');}
+function closeAll(){
+  var cp=document.getElementById('cpanel');
+  cp.classList.remove('open');
+  cp.classList.remove('flight-detail');
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('ctx').classList.remove('open');
+}
+(function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 
 </script>

@@ -87,14 +87,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .dditem-cnt{font-size:.7rem;font-weight:700;color:#555;white-space:nowrap}
 .dddivider{height:2px;background:#ece8e0;margin:.2rem 0}
 .ilist{list-style:none}
-.irow{display:flex;align-items:center;gap:.38rem;padding:.7rem .75rem;border-bottom:.5px solid rgba(0,0,0,.07);min-height:2.8rem;background:rgba(255,255,255,.72);width:100%}
+.irow{display:flex;align-items:center;gap:.38rem;padding:.75rem .75rem;border-bottom:1px solid rgba(0,0,0,.1);min-height:3rem;background:rgba(255,255,255,.82);width:100%}
 .irow:last-child{border-bottom:none}
 .irow.done{opacity:.48}
 .irow.skip{background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.02) 8px,rgba(0,0,0,.02) 9px)}
-.ichk{width:1.35rem;height:1.35rem;border-radius:50%;border:1.5px solid #b0c8b0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;color:transparent}
+.ichk{width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid #9abf9a;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;color:transparent}
 .ichk.on{background:#1D9E75;border-color:#1D9E75;color:white}
-.itxt{flex:1;font-size:.82rem;color:#111;min-width:0;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.itxt.struck{text-decoration:line-through;color:#bbb}
+.itxt{flex:1;font-size:.95rem;font-weight:600;color:#0a0a0a;min-width:0;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.itxt.struck{text-decoration:line-through;color:#999;font-weight:400}
 .itxt.skp{font-style:italic;color:#b0a070}
 .iundo{font-size:.56rem;color:#1D9E75;cursor:pointer;text-decoration:underline;display:block;border:none;background:none;padding:0;margin-top:.1rem}
 .istamp{font-size:.5rem;padding:.07rem .35rem;border-radius:99px;font-weight:600;flex-shrink:0;white-space:nowrap}
@@ -116,7 +116,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .addbar-btn{border:none;background:none;padding:.35rem .75rem;font-size:.88rem;font-weight:800;cursor:pointer}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
-.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
+.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}.cpanel.flight-detail{background:#FFF176}.cpanel.flight-detail .cp-head{background:#FFD600;border-bottom:2px solid #F9A825}.cpanel.flight-detail .cp-title{color:#1A237E;font-size:1.1rem;font-weight:800}.cpanel.flight-detail .drow{border-bottom-color:#F9A825}.cpanel.flight-detail .dlbl{color:#1A237E;font-size:.72rem;font-weight:800}.cpanel.flight-detail .dval{color:#0D0D0D;font-size:1rem;font-weight:600}
 .cpanel.open{display:block}
 .cp-head{display:flex;align-items:center;gap:.5rem;padding:.85rem 1rem .65rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
 .cp-title{font-size:.92rem;font-weight:700;flex:1;color:#111}
@@ -240,6 +240,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 </div>
 
 <script>
+
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 
@@ -433,9 +434,10 @@ function renderPanel(){
 }
 
 function sortedItems(arr){
-  var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;});
-  var s=arr.filter(function(i){return i.is_skipped;});
-  var d=arr.filter(function(i){return i.is_done;});
+  function alpha(a,b){return(a.text||'').localeCompare(b.text||'');}
+  var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;}).sort(alpha);
+  var s=arr.filter(function(i){return i.is_skipped;}).sort(alpha);
+  var d=arr.filter(function(i){return i.is_done;}).sort(alpha);
   return a.concat(s,d);
 }
 
@@ -902,7 +904,7 @@ function submitFlight(editId){
 function flightDetail(id){
   var f=S.flights.find(function(x){return x.id===id;});if(!f)return;
   var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name||p.companion_name||'?')+(p.seat?' ('+p.seat+')':'');}).join(', ')||'-';
-  openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
+  document.getElementById('cpanel').classList.add('flight-detail');openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
     DR('Route',f.origin_city+' \u2192 '+f.dest_city)+DR('Departure',fmtDT(f.departure_dt))+DR('Arrival',fmtDT(f.arrival_dt))
     +DR('Airline',f.airline)+DR('Flight #',f.flight_number)+DR('Gate',f.gate)+DR('Confirmation',f.confirmation_no)
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+esc(pax)+'</span></div>'
@@ -1028,11 +1030,14 @@ function openConfirm(title,msg,onOk,extra){
 }
 function closeCon(){document.getElementById('cmod').classList.remove('open');document.getElementById('covr').classList.remove('open');}
 function closeAll(){
-  document.getElementById('cpanel').classList.remove('open');
+  var cp=document.getElementById('cpanel');
+  cp.classList.remove('open');
+  cp.classList.remove('flight-detail');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 </script>
 </body>

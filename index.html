@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;overscroll-behavior:none}
@@ -20,8 +21,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .fscreen-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;max-width:22rem}
 .ftile{display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1.5rem 1rem;border-radius:1rem;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);cursor:pointer}
 .ftile:active{background:rgba(255,255,255,.3)}
-.ftile-ico{font-size:2rem}
-.ftile-name{font-size:.95rem;font-weight:700;color:white}
+.ftile-ico{font-size:2rem}.ftile-name{font-size:.95rem;font-weight:700;color:white}
 .ftile-sub{font-size:.6rem;color:rgba(255,255,255,.65);text-align:center;line-height:1.4}
 .lscreen{position:fixed;inset:0;background:linear-gradient(160deg,#1a6b8a,#0a3d54);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:8000}
 .lscreen.hide{display:none}
@@ -30,11 +30,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 #app{display:none}
 .hero{background:#87CEEB;padding:.75rem .9rem 4.2rem;position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1.6rem;background:#f2f0eb;clip-path:ellipse(55% 100% at 50% 100%)}
-.hero-sun{position:absolute;top:.5rem;right:.5rem;width:2rem;height:2rem;border-radius:50%;background:radial-gradient(circle,#FFE566 40%,#FFD700 70%,transparent 100%);pointer-events:none;z-index:0}
+.hero-sun{position:absolute;top:.5rem;right:.5rem;width:2rem;height:2rem;border-radius:50%;background:radial-gradient(circle,#FFE566 40%,#FFD700 70%,transparent 100%);pointer-events:none;z-index:1}
+.hero-badge{position:absolute;top:.45rem;right:3rem;z-index:2;display:inline-flex;align-items:center;gap:.25rem;background:rgba(0,43,92,.25);border-radius:99px;padding:.2rem .55rem;font-size:.6rem;font-weight:700;color:#002B5C;cursor:pointer;border:none;-webkit-appearance:none}
+.hero-badge:active{background:rgba(0,43,92,.4)}
 .hero-row{display:flex;align-items:center;gap:.5rem;position:relative;z-index:1}
 .hero-emoji{font-size:2.6rem;line-height:1;flex-shrink:0}
 .hero-txt{flex:1}
-.hero-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(0,43,92,.18);border-radius:99px;padding:.15rem .5rem;font-size:.58rem;font-weight:600;color:#002B5C;cursor:pointer;margin-bottom:.15rem;border:none;-webkit-appearance:none}
 .hero-title{font-size:.95rem;font-weight:700;color:#002B5C}
 .hero-sub{font-size:.58rem;color:#003A7A;margin-top:.1rem}
 .prog-row{display:flex;align-items:center;gap:.5rem;margin-top:.55rem;position:relative;z-index:1}
@@ -45,127 +46,126 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .sdot{width:.45rem;height:.45rem;border-radius:50%;background:rgba(0,43,92,.28);display:inline-block;margin-left:.3rem;transition:background .3s;flex-shrink:0}
 .sdot.saving{background:#FFD700}.sdot.err{background:#E53935}
 .hero-beach{position:absolute;bottom:.6rem;left:0;right:0;width:100%;height:2.8rem;pointer-events:none}
-.toolbar{background:white;padding:.45rem .7rem;border-bottom:1px solid #e4e0d8;display:flex;align-items:center;gap:.3rem;overflow-x:auto}
-.ulbl{font-size:.58rem;color:#999;white-space:nowrap;flex-shrink:0}
-.ubtn{display:flex;align-items:center;gap:.22rem;padding:.3rem .55rem;border-radius:99px;border:1.5px solid transparent;font-size:.62rem;cursor:pointer;background:transparent;flex-shrink:0;white-space:nowrap}
+.toolbar{background:white;padding:.35rem .7rem;border-bottom:1px solid #e4e0d8;display:flex;align-items:center;gap:.3rem;overflow-x:auto;min-height:2.4rem}
+.ulbl{font-size:.55rem;color:#999;white-space:nowrap;flex-shrink:0}
+.ubtn{display:flex;align-items:center;gap:.22rem;padding:.28rem .5rem;border-radius:99px;border:1.5px solid transparent;font-size:.6rem;cursor:pointer;background:transparent;flex-shrink:0;white-space:nowrap}
 .ubtn.active{font-weight:600}
-.udot{width:.4rem;height:.4rem;border-radius:50%;flex-shrink:0}
-.pencilbtn{background:none;border:none;cursor:pointer;font-size:.95rem;color:#bbb;padding:.2rem}
-.nav{display:flex;border-bottom:2px solid #ddd8cc;background:#f2f0eb}
-.ntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1rem;padding:.5rem .2rem .55rem;border:none;cursor:pointer;background:transparent;border-top:3px solid transparent;border-right:1px solid #e0d8c8}
+.udot{width:.38rem;height:.38rem;border-radius:50%;flex-shrink:0}
+.mgrbtn{background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:.2rem .3rem;margin-left:auto;flex-shrink:0}
+.tripname{font-size:.55rem;color:#aaa;white-space:nowrap;margin-left:.2rem}
+.nav{display:flex;border-bottom:1.5px solid #ddd8cc;background:#f2f0eb}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.08rem;padding:.38rem .15rem .42rem;border:none;cursor:pointer;background:transparent;border-top:3px solid transparent;border-right:1px solid #e0d8c8}
 .ntab:last-child{border-right:none}
 .ntab.active{background:white}
-.ntab.active.t-ryan{border-top-color:#7F77DD}
 .ntab.active.t-family{border-top-color:#1D9E75}
 .ntab.active.t-flight{border-top-color:#378ADD}
 .ntab.active.t-hotel{border-top-color:#D85A30}
 .ntab.active.t-reserve{border-top-color:#9B59B6}
-.ntab-ico{font-size:1.1rem;line-height:1}
-.ntab-lbl{font-size:.5rem;font-weight:600;color:#777;white-space:nowrap}
+.ntab-ico{font-size:.95rem;line-height:1}
+.ntab-lbl{font-size:.45rem;font-weight:600;color:#777;white-space:nowrap}
 .ntab.active .ntab-lbl{color:#222}
-.ntab-cnt{font-size:.44rem;padding:.04rem .28rem;border-radius:99px;background:#e0d8c8;color:#555}
-.ntab.active.t-ryan .ntab-cnt{background:#CECBF6;color:#3C3489}
+.ntab-cnt{font-size:.42rem;padding:.03rem .25rem;border-radius:99px;background:#e0d8c8;color:#555}
 .ntab.active.t-family .ntab-cnt{background:#9FE1CB;color:#085041}
 .ntab.active.t-flight .ntab-cnt{background:#B5D4F4;color:#0C447C}
 .ntab.active.t-hotel .ntab-cnt{background:#F5C4B3;color:#712B13}
 .ntab.active.t-reserve .ntab-cnt{background:#E8C8F8;color:#6B2F9E}
 .ddwrap{position:relative;width:100%}
-.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none}
+.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.8rem .85rem;font-size:.9rem;font-weight:700;color:#111;display:flex;align-items:center;gap:.55rem;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none;min-height:3.2rem}
 .ddsel:active{background:#f5f5f5}
 .ddsel-lbl{flex:1;text-align:left}
-.ddsel-cnt{font-size:.58rem;padding:.08rem .38rem;border-radius:99px;background:#CECBF6;color:#3C3489}
-.ddsel-cnt.fam{background:#9FE1CB;color:#085041}
-.ddarrow{font-size:.75rem;color:#aaa;transition:transform .18s;pointer-events:none}
+.ddsel-cnt{font-size:.62rem;padding:.1rem .45rem;border-radius:99px;color:white;font-weight:700}
+.ddarrow{font-size:.8rem;color:#aaa;transition:transform .18s;pointer-events:none;flex-shrink:0}
 .ddarrow.open{transform:rotate(180deg)}
-.ddmenu{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #e0d8c8;border-top:none;border-radius:0 0 .6rem .6rem;z-index:400;box-shadow:0 6px 20px rgba(0,0,0,.12);display:none;overflow:hidden}
+.ddmenu{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #e0d8c8;border-top:none;border-radius:0 0 .6rem .6rem;z-index:400;box-shadow:0 6px 20px rgba(0,0,0,.15);display:none;overflow:hidden}
 .ddmenu.open{display:block}
-.dditem{display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;cursor:pointer;font-size:.78rem;color:#111;border-bottom:.5px solid #f0ede6}
+.dditem{display:flex;align-items:center;gap:.55rem;padding:.75rem .85rem;cursor:pointer;font-size:.82rem;color:#111;border-bottom:.5px solid rgba(0,0,0,.06);border-left:5px solid transparent}
 .dditem:last-child{border-bottom:none}
-.dditem:active,.dditem:hover{background:#f5f0e8}
-.dditem.sel{background:#EEEDFE;color:#3C3489;font-weight:600}
-.dditem.selfam{background:#E1F5EE;color:#085041;font-weight:600}
-.dditem-ico{font-size:1rem;flex-shrink:0}
-.dditem-cnt{margin-left:auto;font-size:.55rem;padding:.06rem .35rem;border-radius:99px;background:#e8e4dc;color:#555}
-.addbar{display:flex;align-items:center;padding:.4rem .85rem;border-bottom:1px solid rgba(0,0,0,.08)}
-.ph-add{display:flex;align-items:center;gap:.2rem;padding:.28rem .6rem;border-radius:.5rem;border:none;font-size:.62rem;font-weight:600;cursor:pointer;color:white;margin-left:auto}
+.dditem:active{filter:brightness(.95)}
+.dditem.sel{font-weight:700;outline:2px solid rgba(0,0,0,.15);outline-offset:-2px}
+.dditem-ico{font-size:1.05rem;flex-shrink:0}
+.dditem-cnt{margin-left:auto;font-size:.58rem;padding:.07rem .38rem;border-radius:99px;color:white;font-weight:600;flex-shrink:0}
+.dddivider{height:2px;background:#e8e0d0;margin:.25rem 0}
+.addbar{display:flex;align-items:center;padding:.5rem .85rem;border-bottom:1px solid rgba(0,0,0,.08)}
+.ph-add{display:flex;align-items:center;gap:.2rem;padding:.32rem .65rem;border-radius:.5rem;border:none;font-size:.65rem;font-weight:600;cursor:pointer;color:white;margin-left:auto}
 .ilist{list-style:none}
-.irow{display:flex;align-items:center;gap:.38rem;padding:.65rem .85rem;border-bottom:.5px solid rgba(0,0,0,.06);min-height:2.6rem;background:white}
+.irow{display:flex;align-items:center;gap:.38rem;padding:.7rem .85rem;border-bottom:.5px solid rgba(0,0,0,.06);min-height:2.8rem;background:rgba(255,255,255,.78)}
 .irow:last-child{border-bottom:none}
 .irow.done{opacity:.48}
 .irow.skip{background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.02) 8px,rgba(0,0,0,.02) 9px)}
-.ichk{width:1.3rem;height:1.3rem;border-radius:50%;border:1.5px solid #b0c8b0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;color:transparent}
+.ichk{width:1.4rem;height:1.4rem;border-radius:50%;border:1.5px solid #b0c8b0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:transparent}
 .ichk.on{background:#1D9E75;border-color:#1D9E75;color:white}
-.itxt{flex:1;font-size:.76rem;color:#111;min-width:0;line-height:1.35}
+.itxt{flex:1;font-size:.78rem;color:#111;min-width:0;line-height:1.35}
 .itxt.struck{text-decoration:line-through;color:#bbb}
 .itxt.skp{font-style:italic;color:#b0a070}
 .iundo{font-size:.56rem;color:#1D9E75;cursor:pointer;text-decoration:underline;margin-top:.1rem;display:block;border:none;background:none;padding:0}
 .istamp{font-size:.5rem;padding:.08rem .38rem;border-radius:99px;font-weight:600;flex-shrink:0}
 .iskip{font-size:.48rem;padding:.08rem .35rem;border-radius:.25rem;background:rgba(0,0,0,.07);color:#8a7040;font-style:italic;border:1px dashed #c0a868;flex-shrink:0}
-.idot{background:none;border:none;cursor:pointer;font-size:.9rem;color:#c0a878;padding:.1rem .15rem;flex-shrink:0;min-width:1.6rem;min-height:1.6rem;display:flex;align-items:center;justify-content:center}
-.empty{padding:2rem 1.5rem;text-align:center;color:#aaa;font-size:.75rem;background:white}
+.idot{background:none;border:none;cursor:pointer;font-size:.9rem;color:#c0a878;padding:.1rem .15rem;flex-shrink:0;min-width:1.8rem;min-height:1.8rem;display:flex;align-items:center;justify-content:center}
+.empty{padding:2rem 1.5rem;text-align:center;color:#aaa;font-size:.78rem;background:rgba(255,255,255,.6)}
 .cards{display:flex;flex-direction:column}
-.card{background:white;border-bottom:1px solid #ece8e0;padding:.8rem;cursor:pointer;position:relative}
-.card:active{background:#faf8f4}
-.card.past{opacity:.5}
-.card-title{font-size:.82rem;font-weight:600;color:#111;margin-bottom:.18rem}
-.card-sub{font-size:.62rem;color:#666;line-height:1.4}
+.card{background:white;border-bottom:1px solid #ece8e0;padding:.85rem;cursor:pointer;position:relative}
+.card:active{background:#faf8f4}.card.past{opacity:.5}
+.card-title{font-size:.84rem;font-weight:600;color:#111;margin-bottom:.2rem}
+.card-sub{font-size:.64rem;color:#666;line-height:1.4}
 .card-chev{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;color:#ccc}
-.pill{display:inline-block;font-size:.5rem;font-weight:600;padding:.08rem .35rem;border-radius:99px;margin-right:.2rem}
-.pill.fl{background:#B5D4F4;color:#0C447C}
-.pill.ht{background:#F5C4B3;color:#712B13}
-.pill.rs{background:#E8C8F8;color:#6B2F9E}
-.pill.pt{background:#f0e8d0;color:#8a6020}
+.pill{display:inline-block;font-size:.52rem;font-weight:600;padding:.08rem .38rem;border-radius:99px;margin-right:.2rem}
+.pill.fl{background:#B5D4F4;color:#0C447C}.pill.ht{background:#F5C4B3;color:#712B13}
+.pill.rs{background:#E8C8F8;color:#6B2F9E}.pill.pt{background:#f0e8d0;color:#8a6020}
 .secsep{padding:.35rem .85rem;background:#f2f0eb;font-size:.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.05em}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
-.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:82vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
+.cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
 .cpanel.open{display:block}
 .cp-head{display:flex;align-items:center;gap:.5rem;padding:.9rem 1rem .7rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
-.cp-title{font-size:.88rem;font-weight:600;flex:1;color:#111}
+.cp-title{font-size:.9rem;font-weight:700;flex:1;color:#111}
 .cp-close{background:none;border:none;font-size:1.2rem;color:#aaa;cursor:pointer}
 .cp-body{padding:.8rem 1rem 1.2rem}
 .fsec{margin-bottom:.9rem}
-.flbl{font-size:.58rem;font-weight:700;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.25rem;display:block}
-.finp{width:100%;border:1.5px solid #e0d8c8;border-radius:.5rem;padding:.5rem .6rem;font-size:.82rem;background:#faf9f6;-webkit-appearance:none;outline:none;font-family:inherit;color:#111}
+.flbl{font-size:.58rem;font-weight:700;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.28rem;display:block}
+.finp{width:100%;border:1.5px solid #e0d8c8;border-radius:.5rem;padding:.52rem .65rem;font-size:.84rem;background:#faf9f6;-webkit-appearance:none;outline:none;font-family:inherit;color:#111}
 .finp:focus{border-color:#378ADD;background:white}
 .fta{resize:none;min-height:3rem;line-height:1.4}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
 .ftog{display:flex;border:1.5px solid #e0d8c8;border-radius:.5rem;overflow:hidden}
-.ftog-opt{flex:1;padding:.45rem .25rem;border:none;font-size:.68rem;font-weight:500;cursor:pointer;background:white;color:#666;text-align:center}
+.ftog-opt{flex:1;padding:.45rem .25rem;border:none;font-size:.7rem;font-weight:500;cursor:pointer;background:white;color:#666;text-align:center}
 .ftog-opt.on{background:#378ADD;color:white;font-weight:600}
 .mtiles{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}
-.mtile{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .5rem;border-radius:.55rem;border:1.5px solid #e0d8c8;background:white;cursor:pointer;min-width:2.6rem}
+.mtile{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .5rem;border-radius:.55rem;border:1.5px solid #e0d8c8;background:white;cursor:pointer;min-width:2.8rem}
 .mtile.sel{border-color:#1D9E75;background:#E1F5EE}
 .fam-group{margin-bottom:.65rem}
 .fam-group-lbl{font-size:.55rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;padding:.18rem .45rem;background:#f2f0eb;border-radius:.3rem;display:block;margin-bottom:.3rem}
 .comp-row{display:flex;gap:.35rem;align-items:center;margin-bottom:.35rem}
 .comp-add{background:#E6F1FB;border:none;border-radius:.5rem;padding:.45rem .55rem;font-size:.8rem;cursor:pointer;color:#0C447C;flex-shrink:0}
 .comp-list{margin-top:.25rem}
-.comp-item{display:flex;align-items:center;gap:.35rem;padding:.28rem 0;font-size:.68rem;color:#333;border-bottom:.5px solid #f0ede6}
+.comp-item{display:flex;align-items:center;gap:.35rem;padding:.28rem 0;font-size:.7rem;color:#333;border-bottom:.5px solid #f0ede6}
 .comp-del{background:none;border:none;font-size:.8rem;color:#E53935;cursor:pointer}
-.sbtn{width:100%;padding:.7rem;border:none;border-radius:.6rem;font-size:.88rem;font-weight:600;cursor:pointer;margin-top:.7rem;color:white}
-.sbtn.ryan{background:#7F77DD}.sbtn.family{background:#1D9E75}
-.sbtn.flight{background:#378ADD}.sbtn.hotel{background:#D85A30}
-.sbtn.reserve{background:#9B59B6}
-.dbtn{width:100%;padding:.58rem;border:1.5px solid #E53935;border-radius:.6rem;font-size:.76rem;cursor:pointer;margin-top:.45rem;background:white;color:#E53935}
+.sbtn{width:100%;padding:.72rem;border:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:.7rem;color:white}
+.sbtn.family{background:#1D9E75}.sbtn.flight{background:#378ADD}
+.sbtn.hotel{background:#D85A30}.sbtn.reserve{background:#9B59B6}
+.dbtn{width:100%;padding:.6rem;border:1.5px solid #E53935;border-radius:.6rem;font-size:.78rem;cursor:pointer;margin-top:.45rem;background:white;color:#E53935}
 .drow{display:flex;gap:.45rem;padding:.5rem 0;border-bottom:.5px solid #f0ede6;align-items:flex-start}
 .drow:last-child{border-bottom:none}
 .dlbl{font-size:.56rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;width:5rem;flex-shrink:0;padding-top:.05rem}
-.dval{font-size:.75rem;color:#111;flex:1;line-height:1.4}
-.ctx{display:none;position:fixed;background:white;border:1px solid #e0d0b0;border-radius:.6rem;z-index:700;min-width:9.5rem;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.13)}
+.dval{font-size:.77rem;color:#111;flex:1;line-height:1.4}
+.ctx{display:none;position:fixed;background:white;border:1px solid #e0d0b0;border-radius:.6rem;z-index:700;min-width:10rem;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.13)}
 .ctx.open{display:block}
-.cxi{padding:.65rem .82rem;font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:.45rem;color:#111;border:none;background:none;width:100%;text-align:left}
+.cxi{padding:.7rem .85rem;font-size:.74rem;cursor:pointer;display:flex;align-items:center;gap:.45rem;color:#111;border:none;background:none;width:100%;text-align:left}
 .cxi:active{background:#f5f0e8}.cxi.red{color:#E53935}
 .cxd{height:.5px;background:#ece8e0}
 .covr{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:750}
 .covr.open{display:block}
 .cmod{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(88vw,22rem);padding:1.3rem 1.1rem;z-index:760;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
 .cmod.open{display:block}
-.cmod-t{font-size:.88rem;font-weight:600;color:#111;margin-bottom:.45rem}
-.cmod-m{font-size:.7rem;color:#666;line-height:1.55;margin-bottom:.9rem}
+.cmod-t{font-size:.9rem;font-weight:700;color:#111;margin-bottom:.45rem}
+.cmod-m{font-size:.72rem;color:#666;line-height:1.55;margin-bottom:.9rem}
 .cmod-btns{display:flex;gap:.45rem}
-.cmod-cancel{flex:1;padding:.62rem;border:1.5px solid #e0d0b0;border-radius:.6rem;background:none;font-size:.75rem;cursor:pointer;color:#666}
-.cmod-ok{flex:1;padding:.62rem;border:none;border-radius:.6rem;background:#E53935;color:white;font-size:.75rem;font-weight:600;cursor:pointer}
+.cmod-cancel{flex:1;padding:.65rem;border:1.5px solid #e0d0b0;border-radius:.6rem;background:none;font-size:.78rem;cursor:pointer;color:#666}
+.cmod-ok{flex:1;padding:.65rem;border:none;border-radius:.6rem;background:#E53935;color:white;font-size:.78rem;font-weight:600;cursor:pointer}
+.mgrlist{list-style:none;margin-bottom:.8rem}
+.mgritem{display:flex;align-items:center;gap:.6rem;padding:.6rem .2rem;border-bottom:.5px solid #f0ede6}
+.mgritem:last-child{border-bottom:none}
+.mgrdot{width:1rem;height:1rem;border-radius:50%;flex-shrink:0}
+.mgrname{flex:1;font-size:.82rem;color:#111;font-weight:500}
 
 </style>
 </head>
@@ -184,7 +184,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
     <div class="ftile" onclick="pickFamily('matthews')">
       <span class="ftile-ico">&#x1F6A2;</span>
       <span class="ftile-name">Matthews</span>
-      <span class="ftile-sub">Dad &middot; Mom &middot; Reagan<br>Lincoln &middot; Nixon</span>
+      <span class="ftile-sub">Nick &middot; Christine &middot; Reagan<br>Lincoln &middot; Nixon</span>
     </div>
     <div class="ftile" onclick="pickFamily('silvermans')">
       <span class="ftile-ico">&#x2B50;</span>
@@ -202,10 +202,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 <div id="app">
   <div class="hero">
     <div class="hero-sun"></div>
+    <button class="hero-badge" onclick="switchFam()" type="button"><i class="ti ti-refresh"></i><span id="hBadge">Family</span></button>
     <div class="hero-row">
       <span class="hero-emoji">&#x2708;&#xFE0F;</span>
       <div class="hero-txt">
-        <button class="hero-badge" onclick="switchFam()"><i class="ti ti-refresh"></i><span id="hBadge">Family</span></button>
         <div class="hero-title">Family Vacation Checklist &#x1F30A;</div>
         <div class="hero-sub">Pack smart &mdash; adventure awaits!</div>
       </div>
@@ -216,19 +216,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
         <div class="pw"><div class="pb" id="pb" style="width:0%"></div></div>
         <div class="pl" id="pl"></div>
       </div>
-      <button class="newtrip-btn" onclick="openNewTrip()">&#x21BA; New trip</button>
+      <button class="newtrip-btn" onclick="openNewTrip()" type="button">&#x21BA; New trip</button>
     </div>
-    <svg class="hero-beach" viewBox="0 0 400 45" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-<rect width="400" height="45" fill="#87CEEB"/>
-<rect x="0" y="22" width="400" height="23" fill="#1565C0"/>
-<path d="M0 22 Q20 18 40 22 Q60 26 80 22 Q100 18 120 22 Q140 26 160 22 Q180 18 200 22 Q220 26 240 22 Q260 18 280 22 Q300 26 320 22 Q340 18 360 22 Q380 26 400 22 L400 45 L0 45Z" fill="#42A5F5"/>
-<path d="M0 33 Q50 30 100 33 Q150 36 200 33 Q250 30 300 33 Q350 36 400 33 L400 45 L0 45Z" fill="#EDD9A3"/>
-</svg>
+    <svg class="hero-beach" viewBox="0 0 400 45" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="45" fill="#87CEEB"/><rect x="0" y="22" width="400" height="23" fill="#1565C0"/><path d="M0 22 Q20 18 40 22 Q60 26 80 22 Q100 18 120 22 Q140 26 160 22 Q180 18 200 22 Q220 26 240 22 Q260 18 280 22 Q300 26 320 22 Q340 18 360 22 Q380 26 400 22 L400 45 L0 45Z" fill="#42A5F5"/><path d="M0 33 Q50 30 100 33 Q150 36 200 33 Q250 30 300 33 Q350 36 400 33 L400 45 L0 45Z" fill="#EDD9A3"/></svg>
   </div>
   <div class="toolbar" id="toolbar">
-    <span class="ulbl">As:</span>
-    <button class="pencilbtn" onclick="openRenameTrip()" title="Rename trip"><i class="ti ti-pencil"></i></button>
-    <span id="tripName" style="font-size:.58rem;color:#888;white-space:nowrap;margin-left:.2rem"></span>
+    <span class="ulbl" id="ulbl">As:</span>
+    <button class="mgrbtn" onclick="openMemberMgr()" type="button" title="Manage members"><i class="ti ti-users"></i></button>
+    <span class="tripname" id="tripName"></span>
   </div>
   <div class="nav" id="nav"></div>
   <div id="panel"></div>
@@ -254,11 +249,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 </div>
 
 <script>
-
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false}});
 
+var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false}});
 var FIDS={
   jmcr:'a1000000-0000-0000-0000-000000000001',
   matthews:'a2000000-0000-0000-0000-000000000002',
@@ -267,13 +261,22 @@ var FIDS={
 var COLORS=[
   {bg:'#E8F5E9',ic:'#1B5E20'},{bg:'#E3F2FD',ic:'#0D47A1'},
   {bg:'#FCE4EC',ic:'#880E4F'},{bg:'#FFF3E0',ic:'#E65100'},
-  {bg:'#F3E5F5',ic:'#4A148C'},{bg:'#E0F7FA',ic:'#006064'}
+  {bg:'#F3E5F5',ic:'#4A148C'},{bg:'#E0F7FA',ic:'#006064'},
+  {bg:'#FFF9C4',ic:'#F57F17'},{bg:'#FCE4EC',ic:'#AD1457'}
 ];
+var RYAN_COLORS={
+  Backpack:{bg:'#EEEDFE',ic:'#5048BE'},
+  Meds:    {bg:'#FCE4EC',ic:'#880E4F'},
+  Equip:   {bg:'#E3F2FD',ic:'#0D47A1'}
+};
 var S={
-  fkey:null,fid:null,fname:null,user:null,member:null,
-  tab:'ryan',sub:'Backpack',trip:null,
+  fkey:null,fid:null,fname:null,isJMCR:false,
+  user:null,sel:null,
+  tab:'family',
+  trip:null,
   members:[],allMembers:[],cats:[],items:[],
-  flights:[],hotels:[],reserves:[],rsubs:[],companions:[]
+  flights:[],hotels:[],reserves:[],
+  rsubs:[],companions:[]
 };
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -283,8 +286,9 @@ function past(dt){return dt&&new Date(dt)<new Date();}
 function sdot(s){document.getElementById('sdot').className='sdot'+(s?' '+s:'');}
 function col(m,i){return{bg:m.bg_color||COLORS[i%COLORS.length].bg,ic:m.icon_color||COLORS[i%COLORS.length].ic};}
 function V(id){var e=document.getElementById(id);return e?e.value.trim():'';}
-function DR(l,v){return '<div class="drow"><span class="dlbl">'+l+'</span><span class="dval">'+esc(String(v||'-'))+'</span></div>';}
+function DR(l,v){return'<div class="drow"><span class="dlbl">'+l+'</span><span class="dval">'+esc(String(v||'-'))+'</span></div>';}
 
+/* ── SCREENS ── */
 function showLoad(){
   document.getElementById('fscreen').classList.add('hide');
   document.getElementById('lscreen').classList.remove('hide');
@@ -295,37 +299,37 @@ function showApp(){
   document.getElementById('lscreen').classList.add('hide');
   document.getElementById('app').style.display='block';
 }
-function showFam(){
+function showFamScreen(){
   document.getElementById('fscreen').classList.remove('hide');
   document.getElementById('lscreen').classList.add('hide');
   document.getElementById('app').style.display='none';
 }
 
+/* ── PICK FAMILY ── */
 function pickFamily(key){
-  S.fkey=key;
-  S.fid=FIDS[key];
+  S.fkey=key;S.fid=FIDS[key];
+  S.isJMCR=(key==='jmcr');
   S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
-  S.tab=key==='jmcr'?'ryan':'family';
-  S.user=null;S.member=null;
-  S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});
-  S.rsubs=[];
+  S.tab='family';S.user=null;S.sel=null;
+  S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});S.rsubs=[];
   localStorage.setItem('fkey',key);
   showLoad();
   loadAll();
 }
 function switchFam(){
-  S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});
-  S.rsubs=[];
-  localStorage.removeItem('fkey');
-  showFam();
+  S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});S.rsubs=[];
+  localStorage.removeItem('fkey');showFamScreen();
 }
 
+/* ── LOAD ALL ── */
 function loadAll(){
   sb.from('members').select('*').eq('family_id',S.fid).order('display_order')
   .then(function(r){
     S.members=r.data||[];
     var pk=S.members.filter(function(m){return!m.is_subject;});
-    S.user=pk[0]||null; S.member=pk[0]||null;
+    S.user=pk[0]||null;
+    // default selection: first Ryan sublist for JMCR, first member for others
+    S.sel=S.isJMCR?{type:'ryan',sub:'Backpack'}:{type:'member',member:pk[0]||null};
     sb.from('members').select('*,families(name)').order('family_id').order('display_order')
     .then(function(r2){
       S.allMembers=r2.data||[];
@@ -351,10 +355,22 @@ function loadAll(){
                   .then(function(r9){
                     var as=r9.data&&r9.data[0];
                     if(as){
-                      S.tab=S.fkey==='jmcr'?(as.active_tab||'ryan'):(as.active_tab==='ryan'?'family':(as.active_tab||'family'));
-                      S.sub=as.active_sub||'Backpack';
-                      var sm=S.members.find(function(m){return m.id===as.active_member;});
-                      if(sm)S.member=sm;
+                      var pk2=S.members.filter(function(m){return!m.is_subject;});
+                      if(S.isJMCR){
+                        if(as.active_tab==='ryan'||as.active_tab==='family'){
+                          if(as.active_sub&&RYAN_COLORS[as.active_sub])
+                            S.sel={type:'ryan',sub:as.active_sub};
+                          else{
+                            var sm=pk2.find(function(m){return m.id===as.active_member;});
+                            if(sm)S.sel={type:'member',member:sm};
+                          }
+                        }
+                      }else{
+                        var sm2=pk2.find(function(m){return m.id===as.active_member;});
+                        if(sm2)S.sel={type:'member',member:sm2};
+                      }
+                      S.tab=as.active_tab||'family';
+                      if(S.tab==='ryan')S.tab='family';
                     }
                     var iv=setInterval(function(){
                       if(!S.trip)return;
@@ -362,8 +378,7 @@ function loadAll(){
                       .then(function(rp){S.items=rp.data||[];renderPanel();updateProg();});
                     },10000);
                     S.rsubs.push({_iv:iv});
-                    showApp();
-                    render();
+                    showApp();render();
                   });
                 });
               });
@@ -375,6 +390,7 @@ function loadAll(){
   });
 }
 
+/* ── RENDER ── */
 function render(){
   document.getElementById('hBadge').textContent=S.fname;
   document.getElementById('tripName').textContent=S.trip?S.trip.name:'';
@@ -384,33 +400,34 @@ function render(){
 function renderToolbar(){
   var tb=document.getElementById('toolbar');
   document.querySelectorAll('.ubtn').forEach(function(b){b.remove();});
-  var pencil=tb.querySelector('.pencilbtn');
-  var pk=S.members.filter(function(m){return!m.is_subject;});
-  pk.forEach(function(m,i){
-    var c=col(m,i);
-    var b=document.createElement('button');
-    b.className='ubtn'+(S.user&&S.user.id===m.id?' active':'');
-    b.style.borderColor=c.ic;b.style.color=c.ic;
-    if(S.user&&S.user.id===m.id)b.style.background=c.bg;
-    b.innerHTML='<span class="udot" style="background:'+c.ic+'"></span>'+esc(m.name);
-    b.onclick=function(){S.user=m;renderToolbar();};
-    pencil.before(b);
-  });
+  var mgr=tb.querySelector('.mgrbtn');
+  if(S.isJMCR){
+    // show packer selector pills
+    var pk=S.members.filter(function(m){return!m.is_subject;});
+    pk.forEach(function(m,i){
+      var c=col(m,i);
+      var b=document.createElement('button');
+      b.className='ubtn'+(S.user&&S.user.id===m.id?' active':'');
+      b.style.borderColor=c.ic;b.style.color=c.ic;b.style.background=c.bg;
+      if(S.user&&S.user.id===m.id){b.style.background=c.ic;b.style.color='white';b.style.fontWeight='700';}
+      b.innerHTML='<span class="udot" style="background:'+(S.user&&S.user.id===m.id?'white':c.ic)+'"></span>'+esc(m.name);
+      b.onclick=function(){S.user=m;renderToolbar();};
+      mgr.before(b);
+    });
+    document.getElementById('ulbl').style.display='';
+  }else{
+    document.getElementById('ulbl').style.display='none';
+  }
 }
 
 function renderNav(){
   var nav=document.getElementById('nav');nav.innerHTML='';
-  var isJ=S.fkey==='jmcr';
-  var tabs=isJ
-    ?[{id:'ryan',lbl:'Ryan',ico:'ti-bolt',cls:'t-ryan'},
-      {id:'family',lbl:'Family',ico:'ti-users',cls:'t-family'},
-      {id:'flight',lbl:'Flight',ico:'ti-plane',cls:'t-flight'},
-      {id:'hotel',lbl:'Hotel',ico:'ti-building',cls:'t-hotel'},
-      {id:'reservations',lbl:'Reserve',ico:'ti-calendar-event',cls:'t-reserve'}]
-    :[{id:'family',lbl:'Family',ico:'ti-users',cls:'t-family'},
-      {id:'flight',lbl:'Flight',ico:'ti-plane',cls:'t-flight'},
-      {id:'hotel',lbl:'Hotel',ico:'ti-building',cls:'t-hotel'},
-      {id:'reservations',lbl:'Reserve',ico:'ti-calendar-event',cls:'t-reserve'}];
+  var tabs=[
+    {id:'family',lbl:'Family',ico:'ti-users',cls:'t-family'},
+    {id:'flight',lbl:'Flight',ico:'ti-plane',cls:'t-flight'},
+    {id:'hotel',lbl:'Hotel',ico:'ti-building',cls:'t-hotel'},
+    {id:'reservations',lbl:'Reserve',ico:'ti-calendar-event',cls:'t-reserve'}
+  ];
   tabs.forEach(function(t){
     var btn=document.createElement('button');
     btn.className='ntab '+t.cls+(S.tab===t.id?' active':'');
@@ -421,13 +438,18 @@ function renderNav(){
 }
 
 function tabCnt(tab){
-  if(tab==='ryan'){
-    var cat=S.cats.find(function(c){return c.name===S.sub;});
-    if(!cat)return'0/0';
-    var its=S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;});
-    return its.filter(function(i){return i.is_done;}).length+'/'+its.length;
+  if(tab==='family'){
+    if(S.isJMCR){
+      // count all ryan items + all member items
+      var n=0;
+      S.cats.forEach(function(c){n+=S.items.filter(function(i){return i.category_id===c.id&&!i.is_skipped;}).length;});
+      S.members.filter(function(m){return!m.is_subject;}).forEach(function(m){
+        n+=S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length;
+      });
+      return n;
+    }
+    return S.items.filter(function(i){return i.member_id&&!i.is_skipped;}).length;
   }
-  if(tab==='family')return S.items.filter(function(i){return i.member_id&&!i.is_skipped;}).length;
   if(tab==='flight')return S.flights.filter(function(f){return!past(f.departure_dt);}).length;
   if(tab==='hotel')return S.hotels.filter(function(h){return!past(h.check_out_dt);}).length;
   if(tab==='reservations')return S.reserves.filter(function(r){return!past(r.reservation_dt);}).length;
@@ -436,33 +458,134 @@ function tabCnt(tab){
 
 function renderPanel(){
   var el=document.getElementById('panel');
-  if(S.tab==='ryan')el.innerHTML=ryanPanel();
-  else if(S.tab==='family')el.innerHTML=famPanel();
+  if(S.tab==='family')el.innerHTML=famPanel();
   else if(S.tab==='flight')el.innerHTML=flightPanel();
   else if(S.tab==='hotel')el.innerHTML=hotelPanel();
   else el.innerHTML=reservePanel();
-  // bind checklist checkboxes
-  document.querySelectorAll('.ichk').forEach(function(btn){
-    btn.onclick=function(){toggleCheck(btn.dataset.id);};
-  });
-  document.querySelectorAll('.iundo').forEach(function(btn){
-    btn.onclick=function(){undoCheck(btn.dataset.id);};
-  });
-  document.querySelectorAll('.idot').forEach(function(btn){
-    btn.onclick=function(e){itemCtx(e,btn.dataset.id,btn.dataset.tab);};
-  });
+  document.querySelectorAll('.ichk').forEach(function(b){b.onclick=function(){toggleCheck(b.dataset.id);};});
+  document.querySelectorAll('.iundo').forEach(function(b){b.onclick=function(){undoCheck(b.dataset.id);};});
+  document.querySelectorAll('.idot').forEach(function(b){b.onclick=function(e){itemCtx(e,b.dataset.id,b.dataset.tab);};});
 }
 
-function sorted(arr){
+/* ── FAMILY PANEL ── */
+function famPanel(){
+  var pk=S.members.filter(function(m){return!m.is_subject;});
+  var ryan=S.members.find(function(m){return m.is_subject;});
+
+  // Build dropdown items
+  var dropHtml='';
+
+  if(S.isJMCR){
+    // Ryan sublists
+    ['Backpack','Meds','Equip'].forEach(function(sub){
+      var rc=RYAN_COLORS[sub];
+      var cat=S.cats.find(function(c){return c.name===sub;});
+      var dn=cat?S.items.filter(function(i){return i.category_id===cat.id&&i.is_done;}).length:0;
+      var tot=cat?S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;}).length:0;
+      var sel=S.sel&&S.sel.type==='ryan'&&S.sel.sub===sub;
+      dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-rysub="'+sub+'"'
+        +' style="background:'+rc.bg+';border-left-color:'+rc.ic+'">'
+        +'<i class="ti ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope')+' dditem-ico" style="color:'+rc.ic+'"></i>'
+        +'<span style="color:'+rc.ic+';font-weight:'+(sel?'700':'600')+'">Ryan &mdash; '+sub+'</span>'
+        +'<span class="dditem-cnt" style="background:'+rc.ic+'">'+dn+'/'+tot+'</span>'
+        +'</div>';
+    });
+    dropHtml+='<div class="dddivider"></div>';
+  }
+
+  // Family members
+  pk.forEach(function(p,i){
+    var c=col(p,i);
+    var dn=S.items.filter(function(x){return x.member_id===p.id&&x.is_done;}).length;
+    var tot=S.items.filter(function(x){return x.member_id===p.id&&!x.is_skipped;}).length;
+    var sel=S.sel&&S.sel.type==='member'&&S.sel.member&&S.sel.member.id===p.id;
+    dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-mid="'+p.id+'"'
+      +' style="background:'+c.bg+';border-left-color:'+c.ic+'">'
+      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+c.ic+'"></i>'
+      +'<span style="color:'+c.ic+';font-weight:'+(sel?'700':'600')+'">'+esc(p.name)+'</span>'
+      +'<span class="dditem-cnt" style="background:'+c.ic+'">'+dn+'/'+tot+'</span>'
+      +'</div>';
+  });
+
+  // Compute header colors and label
+  var hbg,hic,hlbl,hico,hdn,htot;
+  if(S.sel&&S.sel.type==='ryan'){
+    var sub=S.sel.sub;
+    var rc=RYAN_COLORS[sub];
+    hbg=rc.bg;hic=rc.ic;
+    hico='ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope');
+    hlbl='Ryan &mdash; '+sub;
+    var cat=S.cats.find(function(c){return c.name===sub;});
+    hdn=cat?S.items.filter(function(i){return i.category_id===cat.id&&i.is_done;}).length:0;
+    htot=cat?S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;}).length:0;
+  }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
+    var m=S.sel.member;
+    var mi=pk.indexOf(m);
+    var mc=col(m,mi<0?0:mi);
+    hbg=mc.bg;hic=mc.ic;
+    hico=m.icon||'ti-user';
+    hlbl=esc(m.name)+"'s List";
+    hdn=S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length;
+    htot=S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length;
+  }else{
+    hbg='#f2f0eb';hic='#888';hico='ti-users';hlbl='Tap to select';hdn=0;htot=0;
+  }
+
+  var html='<div class="ddwrap">'
+    +'<button class="ddsel" id="famSelBtn" type="button"'
+    +' style="background:'+hbg+';border-bottom-color:'+hic+';border-left:6px solid '+hic+'">'
+    +'<i class="ti ti-chevrons-left-right" style="color:'+hic+';font-size:.9rem;opacity:.7;flex-shrink:0"></i>'
+    +'<i class="ti '+hico+' ddsel-ico" style="color:'+hic+'"></i>'
+    +'<span class="ddsel-lbl" style="font-weight:700;color:'+hic+'">'+hlbl+'</span>'
+    +(S.sel&&(S.sel.type==='ryan'||S.sel.member)?'<span class="ddsel-cnt" style="background:'+hic+'">'+hdn+'/'+htot+'</span>':'')
+    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
+    +'</button>'
+    +'<div class="ddmenu" id="famDD">'+dropHtml+'</div>'
+    +'</div>';
+
+  // Item list
+  var rows='';
+  var showStamp=S.isJMCR;
+
+  if(S.sel&&S.sel.type==='ryan'){
+    var sub2=S.sel.sub;
+    var cat2=S.cats.find(function(c){return c.name===sub2;});
+    var items2=cat2?sortedItems(S.items.filter(function(i){return i.category_id===cat2.id;})):[];
+    items2.forEach(function(i){rows+=irow(i,'family',showStamp);});
+    html+='<div class="addbar" style="background:'+hbg+';border-bottom:2px solid '+hic+'">'
+      +'<button class="ph-add" style="background:'+hic+'" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+      +'</div>'
+      +'<ul class="ilist" style="background:'+hbg+'66">'+rows+'</ul>'
+      +(items2.length?'':'<div class="empty">No items yet &mdash; tap Add</div>');
+  }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
+    var m2=S.sel.member;
+    var mi2=pk.indexOf(m2);
+    var mc2=col(m2,mi2<0?0:mi2);
+    var items3=sortedItems(S.items.filter(function(i){return i.member_id===m2.id;}));
+    items3.forEach(function(i){rows+=irow(i,'family',showStamp);});
+    html+='<div class="addbar" style="background:'+mc2.bg+';border-bottom:2px solid '+mc2.ic+'">'
+      +'<button class="ph-add" style="background:'+mc2.ic+'" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+      +'</div>'
+      +'<ul class="ilist" style="background:'+mc2.bg+'55">'+rows+'</ul>'
+      +(items3.length?'':'<div class="empty">No items yet &mdash; tap Add</div>');
+  }else{
+    html+='<div class="empty" style="margin:.5rem;border-radius:.5rem">Tap the bar above to choose a list</div>';
+  }
+
+  return html;
+}
+
+/* ── ITEM HELPERS ── */
+function sortedItems(arr){
   var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;}).sort(function(a,b){return a.text.localeCompare(b.text);});
   var s=arr.filter(function(i){return i.is_skipped;}).sort(function(a,b){return a.text.localeCompare(b.text);});
   var d=arr.filter(function(i){return i.is_done;}).sort(function(a,b){return a.text.localeCompare(b.text);});
   return a.concat(s,d);
 }
 
-function irow(item,tab){
-  var st=S.allMembers.find(function(m){return m.id===item.done_by;});
-  var stamp=st?'<span class="istamp" style="background:'+((st.icon_color||'#ccc')+'22')+';color:'+(st.icon_color||'#555')+'">'+esc(st.name)+'</span>':'';
+function irow(item,tab,showStamp){
+  var st=showStamp?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
+  var stamp=st?'<span class="istamp" style="background:'+(st.icon_color||'#ccc')+'22;color:'+(st.icon_color||'#888')+'">'+esc(st.name)+'</span>':'';
   var skip=item.is_skipped?'<span class="iskip">skip</span>':'';
   var undo=item.is_done?'<button class="iundo" data-id="'+item.id+'">Undo</button>':'';
   return '<li class="irow'+(item.is_done?' done':'')+(item.is_skipped?' skip':'')+'">'
@@ -473,100 +596,27 @@ function irow(item,tab){
     +'</li>';
 }
 
-function ryanPanel(){
-  var defs=[{n:'Backpack',ico:'ti-backpack',c:'#085041'},{n:'Meds',ico:'ti-pill',c:'#712B13'},{n:'Equip',ico:'ti-stethoscope',c:'#0C447C'}];
-  var cur=defs.find(function(d){return d.n===S.sub;})||defs[0];
-  var cat=S.cats.find(function(c){return c.name===S.sub;});
-  var items=cat?sorted(S.items.filter(function(i){return i.category_id===cat.id;})):[];
-  var done=items.filter(function(i){return i.is_done;}).length;
-  var tot=items.filter(function(i){return!i.is_skipped;}).length;
-
-  // build dropdown items using createElement to avoid ALL quote issues
-  var dropHtml='';
-  defs.forEach(function(d){
-    var sc=S.cats.find(function(c){return c.name===d.n;});
-    var sd=sc?S.items.filter(function(i){return i.category_id===sc.id&&i.is_done;}).length:0;
-    var st=sc?S.items.filter(function(i){return i.category_id===sc.id&&!i.is_skipped;}).length:0;
-    var sel=S.sub===d.n;
-    dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-sub="'+d.n+'">'
-      +'<i class="ti '+d.ico+' dditem-ico" style="color:'+d.c+'"></i>'
-      +'<span>'+d.n+'</span>'
-      +'<span class="dditem-cnt">'+sd+'/'+st+'</span>'
-      +'</div>';
+/* ── PROGRESS ── */
+function updateProg(){
+  if(!S.isJMCR){document.getElementById('pl').textContent='';document.getElementById('pb').style.width='0%';return;}
+  var tot=0,dn=0;
+  S.cats.forEach(function(c){
+    S.items.filter(function(i){return i.category_id===c.id&&!i.is_skipped;}).forEach(function(){tot++;});
+    S.items.filter(function(i){return i.category_id===c.id&&i.is_done;}).forEach(function(){dn++;});
   });
-
-  var rows='';
-  items.forEach(function(i){rows+=irow(i,'ryan');});
-
-  return '<div class="ddwrap">'
-    +'<div style="display:flex;align-items:center;background:#DAEEF9;border-bottom:2px solid #7F77DD">'
-    +'<button class="ddsel" id="ryanSelBtn" type="button" style="flex:1;background:transparent;border:none;border-bottom:none">'
-    +'<i class="ti '+cur.ico+' ddsel-ico" style="color:'+cur.c+'"></i>'
-    +'<span class="ddsel-lbl">Ryan &mdash; '+esc(S.sub)+'</span>'
-    +'<span class="ddsel-cnt">'+done+'/'+tot+'</span>'
-    +'<i class="ti ti-chevron-down ddarrow" id="ryanDDArr"></i>'
-    +'</button>'
-    +'<button class="ph-add" style="background:#7F77DD;margin-right:.5rem" id="addRyanBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
-    +'<div class="ddmenu" id="ryanDD">'+dropHtml+'</div>'
-    +'</div>'
-    +'<ul class="ilist">'+rows+'</ul>'
-    +(items.length?'':'<div class="empty">No items yet</div>');
+  var pct=tot?Math.round(dn/tot*100):0;
+  document.getElementById('pb').style.width=pct+'%';
+  document.getElementById('pl').textContent="Ryan: "+dn+"/"+tot+" ("+pct+"%)";
 }
 
-function famPanel(){
-  var m=S.member;
-  var pk=S.members.filter(function(p){return!p.is_subject;});
-
-  var dropHtml='';
-  pk.forEach(function(p,i){
-    var c=col(p,i);
-    var pd=S.items.filter(function(x){return x.member_id===p.id&&x.is_done;}).length;
-    var pt=S.items.filter(function(x){return x.member_id===p.id&&!x.is_skipped;}).length;
-    var sel=m&&m.id===p.id;
-    dropHtml+='<div class="dditem'+(sel?' selfam':'')+'" data-mid="'+p.id+'"'
-      +' style="'+(sel?'background:'+c.bg+';':'')+'">'
-      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+c.ic+'"></i>'
-      +'<span>'+esc(p.name)+'</span>'
-      +'<span class="dditem-cnt" style="background:'+c.ic+'22;color:'+c.ic+'">'+pd+'/'+pt+'</span>'
-      +'</div>';
-  });
-
-  var mi=m?pk.indexOf(m):0;
-  var mc=col(m||pk[0]||{},mi<0?0:mi);
-  var done=m?S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length:0;
-  var tot=m?S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length:0;
-
-  var html='<div class="ddwrap">'
-    +'<div style="display:flex;align-items:center;background:'+mc.bg+';border-bottom:2px solid '+mc.ic+'">'
-    +'<button class="ddsel" id="famSelBtn" type="button" style="flex:1;background:transparent;border:none;border-bottom:none">'
-    +(m?'<i class="ti '+(m.icon||'ti-user')+' ddsel-ico" style="color:'+mc.ic+'"></i>':'<i class="ti ti-users ddsel-ico"></i>')
-    +'<span class="ddsel-lbl">'+(m?esc(m.name)+"'s List":'Select person')+'</span>'
-    +(m?'<span class="ddsel-cnt fam">'+done+'/'+tot+'</span>':'')
-    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
-    +'</button>'
-    +'<button class="ph-add" style="background:'+mc.ic+';margin-right:.5rem" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
-    +'<div class="ddmenu" id="famDD">'+dropHtml+'</div>'
-    +'</div>';
-
-  if(!m)return html+'<div class="empty">Select a family member above</div>';
-
-  var items=sorted(S.items.filter(function(i){return i.member_id===m.id;}));
-  var rows='';items.forEach(function(i){rows+=irow(i,'family');});
-
-  return html
-    +'<ul class="ilist" style="background:'+mc.bg+'18">'+rows+'</ul>'
-    +(items.length?'':'<div class="empty">No items yet</div>');
-}
-
+/* ── FLIGHT PANEL ── */
 function flightPanel(){
   var srt=S.flights.slice().sort(function(a,b){return new Date(a.departure_dt)-new Date(b.departure_dt);});
   var up=srt.filter(function(f){return!past(f.departure_dt);});
   var old=srt.filter(function(f){return past(f.departure_dt);});
   function fc(f){
     var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name)||p.companion_name;}).filter(Boolean).join(', ');
-    return '<div class="card'+(past(f.departure_dt)?' past':'')+'" data-fid="'+f.id+'">'
+    return'<div class="card'+(past(f.departure_dt)?' past':'')+'" data-fid="'+f.id+'">'
       +'<div class="card-title">'+esc(f.origin_city)+' &rarr; '+esc(f.dest_city)+'</div>'
       +'<div class="card-sub"><span class="pill fl">'+esc(f.airline||'-')+'</span>'+fmtDT(f.departure_dt)+(f.gate?' &middot; Gate '+esc(f.gate):'')+'</div>'
       +(pax?'<div class="card-sub" style="margin-top:.15rem">'+esc(pax)+'</div>':'')
@@ -574,138 +624,117 @@ function flightPanel(){
   }
   var cards=up.map(fc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(fc).join('');
-  return '<div class="addbar" style="background:#E6F1FB;border-bottom:2px solid #378ADD">'
-    +'<span style="font-size:.78rem;font-weight:600;color:#0C447C">Flights</span>'
-    +'<button class="ph-add" style="background:#378ADD" id="addFlightBtn"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
-    +(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No flights yet</div>');
+  return'<div class="addbar" style="background:#E6F1FB;border-bottom:2px solid #378ADD">'
+    +'<span style="font-size:.82rem;font-weight:700;color:#0C447C">Flights</span>'
+    +'<button class="ph-add" style="background:#378ADD" id="addFlightBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No flights yet</div>');
 }
 
+/* ── HOTEL PANEL ── */
 function hotelPanel(){
   var srt=S.hotels.slice().sort(function(a,b){return new Date(a.check_in_dt)-new Date(b.check_in_dt);});
   var up=srt.filter(function(h){return!past(h.check_out_dt);});
   var old=srt.filter(function(h){return past(h.check_out_dt);});
   function hc(h){
-    return '<div class="card'+(past(h.check_out_dt)?' past':'')+'" data-hid="'+h.id+'">'
+    return'<div class="card'+(past(h.check_out_dt)?' past':'')+'" data-hid="'+h.id+'">'
       +'<div class="card-title">'+esc(h.name)+'</div>'
       +'<div class="card-sub"><span class="pill ht">'+esc(h.accom_type||'Hotel')+'</span>'+esc(h.location||'-')+' &middot; '+fmtD(h.check_in_dt)+' &rarr; '+fmtD(h.check_out_dt)+'</div>'
-      +(h.room_number?'<div class="card-sub" style="margin-top:.15rem">Room '+esc(h.room_number)+'</div>':'')
+      +(h.room_number?'<div class="card-sub" style="margin-top:.12rem">Room '+esc(h.room_number)+'</div>':'')
       +'<i class="ti ti-chevron-right card-chev"></i></div>';
   }
   var cards=up.map(hc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(hc).join('');
-  return '<div class="addbar" style="background:#FAECE7;border-bottom:2px solid #D85A30">'
-    +'<span style="font-size:.78rem;font-weight:600;color:#712B13">Hotels &amp; Stays</span>'
-    +'<button class="ph-add" style="background:#D85A30" id="addHotelBtn"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
-    +(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No accommodations yet</div>');
+  return'<div class="addbar" style="background:#FAECE7;border-bottom:2px solid #D85A30">'
+    +'<span style="font-size:.82rem;font-weight:700;color:#712B13">Hotels &amp; Stays</span>'
+    +'<button class="ph-add" style="background:#D85A30" id="addHotelBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No accommodations yet</div>');
 }
 
+/* ── RESERVE PANEL ── */
 function reservePanel(){
   var srt=S.reserves.slice().sort(function(a,b){return new Date(a.reservation_dt)-new Date(b.reservation_dt);});
   var up=srt.filter(function(r){return!past(r.reservation_dt);});
   var old=srt.filter(function(r){return past(r.reservation_dt);});
   function rc(r){
-    return '<div class="card'+(past(r.reservation_dt)?' past':'')+'" data-rid="'+r.id+'">'
+    return'<div class="card'+(past(r.reservation_dt)?' past':'')+'" data-rid="'+r.id+'">'
       +'<div class="card-title">'+esc(r.name)+'</div>'
       +'<div class="card-sub"><span class="pill rs">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' &middot; '+esc(r.location):'')+'</div>'
       +'<i class="ti ti-chevron-right card-chev"></i></div>';
   }
   var cards=up.map(rc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(rc).join('');
-  return '<div class="addbar" style="background:#F3E8FD;border-bottom:2px solid #9B59B6">'
-    +'<span style="font-size:.78rem;font-weight:600;color:#6B2F9E">Reservations</span>'
-    +'<button class="ph-add" style="background:#9B59B6" id="addReserveBtn"><i class="ti ti-plus"></i> Add</button>'
-    +'</div>'
-    +(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
+  return'<div class="addbar" style="background:#F3E8FD;border-bottom:2px solid #9B59B6">'
+    +'<span style="font-size:.82rem;font-weight:700;color:#6B2F9E">Reservations</span>'
+    +'<button class="ph-add" style="background:#9B59B6" id="addReserveBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
 }
 
-function updateProg(){
-  if(S.fkey!=='jmcr'){document.getElementById('pl').textContent='';return;}
-  var ci=S.cats.map(function(c){return c.id;});
-  var ry=S.members.find(function(m){return m.is_subject;});
-  var ri=S.items.filter(function(i){return ci.indexOf(i.category_id)>=0||(ry&&i.member_id===ry.id);});
-  var tot=ri.filter(function(i){return!i.is_skipped;}).length;
-  var dn=ri.filter(function(i){return i.is_done;}).length;
-  var pct=tot?Math.round(dn/tot*100):0;
-  document.getElementById('pb').style.width=pct+'%';
-  document.getElementById('pl').textContent="Ryan: "+dn+"/"+tot+" ("+pct+"%)";
-}
-
-// ── DROPDOWN - attached after renderPanel via event delegation on panel ──
+/* ── CLICK DELEGATION ── */
 document.addEventListener('click',function(e){
-  // Close ctx menu
-  if(!e.target.closest('#ctx')&&!e.target.closest('.idot')){
+  // close ctx
+  if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))
     document.getElementById('ctx').classList.remove('open');
-  }
-  // Close dropdowns when clicking outside
+
+  // close dropdown when clicking outside
   if(!e.target.closest('.ddwrap')){
     document.querySelectorAll('.ddmenu.open').forEach(function(m){m.classList.remove('open');});
     document.querySelectorAll('.ddarrow.open').forEach(function(a){a.classList.remove('open');});
   }
-  // Ryan dropdown toggle
-  var rBtn=e.target.closest('#ryanSelBtn');
-  if(rBtn){
-    var m=document.getElementById('ryanDD');
-    var a=document.getElementById('ryanDDArr');
-    if(m){
-      var wasOpen=m.classList.contains('open');
-      m.classList.toggle('open');
-      if(a)a.classList.toggle('open',!wasOpen);
-    }
+
+  // family selector toggle
+  var fsBtn=e.target.closest('#famSelBtn');
+  if(fsBtn){
+    var dd=document.getElementById('famDD');
+    var arr=document.getElementById('famDDArr');
+    if(dd){var wo=dd.classList.contains('open');dd.classList.toggle('open');if(arr)arr.classList.toggle('open',!wo);}
     return;
   }
-  // Family dropdown toggle
-  var fBtn=e.target.closest('#famSelBtn');
-  if(fBtn){
-    var m=document.getElementById('famDD');
-    var a=document.getElementById('famDDArr');
-    if(m){
-      var wasOpen=m.classList.contains('open');
-      m.classList.toggle('open');
-      if(a)a.classList.toggle('open',!wasOpen);
-    }
-    return;
-  }
-  // Ryan sub selection
-  var rItem=e.target.closest('#ryanDD .dditem');
-  if(rItem&&rItem.dataset.sub){
-    S.sub=rItem.dataset.sub;
-    document.getElementById('ryanDD').classList.remove('open');
-    var ra=document.getElementById('ryanDDArr');if(ra)ra.classList.remove('open');
-    saveAS();renderNav();renderPanel();
-    return;
-  }
-  // Family member selection
-  var fItem=e.target.closest('#famDD .dditem');
-  if(fItem&&fItem.dataset.mid){
-    S.member=S.members.find(function(m){return m.id===fItem.dataset.mid;})||null;
+
+  // ryan sublist selection
+  var rItem=e.target.closest('[data-rysub]');
+  if(rItem){
+    S.sel={type:'ryan',sub:rItem.dataset.rysub};
     document.getElementById('famDD').classList.remove('open');
-    var fa=document.getElementById('famDDArr');if(fa)fa.classList.remove('open');
-    saveAS();renderPanel();
+    var a=document.getElementById('famDDArr');if(a)a.classList.remove('open');
+    saveAS();renderPanel();return;
+  }
+
+  // family member selection
+  var mItem=e.target.closest('#famDD [data-mid]');
+  if(mItem){
+    var m=S.members.find(function(x){return x.id===mItem.dataset.mid;})||null;
+    S.sel={type:'member',member:m};
+    document.getElementById('famDD').classList.remove('open');
+    var a2=document.getElementById('famDDArr');if(a2)a2.classList.remove('open');
+    saveAS();renderPanel();return;
+  }
+
+  // add buttons
+  if(e.target.closest('#addFamBtn')){
+    if(S.sel&&S.sel.type==='ryan')openAddItem('ryan');
+    else openAddItem('family');
     return;
   }
-  // Add buttons
-  if(e.target.closest('#addRyanBtn')){openAddItem('ryan');return;}
-  if(e.target.closest('#addFamBtn')){openAddItem('family');return;}
   if(e.target.closest('#addFlightBtn')){openAddFlight();return;}
   if(e.target.closest('#addHotelBtn')){openAddHotel(null);return;}
   if(e.target.closest('#addReserveBtn')){openAddReservation(null);return;}
-  // Flight/hotel/reserve cards
+
+  // cards
   var fc=e.target.closest('[data-fid]');if(fc){flightDetail(fc.dataset.fid);return;}
   var hc=e.target.closest('[data-hid]');if(hc){hotelDetail(hc.dataset.hid);return;}
   var rc=e.target.closest('[data-rid]');if(rc){reserveDetail(rc.dataset.rid);return;}
 });
 
-// ── CHECKLIST ──
+/* ── CHECKLIST OPS ── */
 function toggleCheck(id){
   sdot('saving');
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var nd=!item.is_done;
-  sb.from('checklist_items').update({is_done:nd,done_by:nd?(S.user&&S.user.id||null):null,done_at:nd?new Date().toISOString():null,is_skipped:false}).eq('id',id)
+  var uid=S.isJMCR?(S.user&&S.user.id||null):null;
+  sb.from('checklist_items').update({is_done:nd,done_by:nd?uid:null,done_at:nd?new Date().toISOString():null,is_skipped:false}).eq('id',id)
   .then(function(r){
     if(r.error){sdot('err');return;}
-    item.is_done=nd;item.done_by=nd?(S.user&&S.user.id||null):null;item.is_skipped=false;
+    item.is_done=nd;item.done_by=nd?uid:null;item.is_skipped=false;
     sdot('');renderPanel();updateProg();
   });
 }
@@ -744,7 +773,7 @@ function itemCtx(e,id,tab){
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var ctx=document.getElementById('ctx');
   ctx.innerHTML='<button class="cxi" onclick="skipItem(\''+id+'\')">'+(item.is_skipped?'Unskip':'Skip')+'</button>'
-    +(item.is_done?'<button class="cxi" onclick="undoCheck(\''+id+'\');closeCtx()">Undo check</button>':'')
+    +(item.is_done?'<button class="cxi" onclick="undoCheck(\''+id+'\');closeCtx()">Undo</button>':'')
     +'<div class="cxd"></div>'
     +'<button class="cxi red" onclick="deleteItem(\''+id+'\')">Delete</button>';
   ctx.style.top=Math.min(e.clientY+4,window.innerHeight-130)+'px';
@@ -753,36 +782,38 @@ function itemCtx(e,id,tab){
 }
 function closeCtx(){document.getElementById('ctx').classList.remove('open');}
 
-// ── ADD ITEM ──
+/* ── ADD ITEM ── */
 function openAddItem(tab){
   var isFam=tab==='family';
   var pk=S.members.filter(function(m){return!m.is_subject;});
   var body='';
   if(isFam){
     var tiles='';
+    var selMem=S.sel&&S.sel.type==='member'?S.sel.member:null;
     pk.forEach(function(p,i){
-      var c=col(p,i);var sel=S.member&&S.member.id===p.id;
+      var c=col(p,i);var sel=selMem&&selMem.id===p.id;
       tiles+='<div class="mtile'+(sel?' sel':'')+'" data-mid="'+p.id+'" style="border-color:'+(sel?c.ic:'#e0d8c8')+'" onclick="this.classList.toggle(\'sel\');this.style.borderColor=this.classList.contains(\'sel\')?\''+c.ic+'\':\'#e0d8c8\'">'
-        +'<i class="ti '+(p.icon||'ti-user')+'" style="color:'+c.ic+'"></i>'
-        +'<span style="font-size:.5rem;font-weight:600">'+esc(p.name)+'</span></div>';
+        +'<i class="ti '+(p.icon||'ti-user')+'" style="color:'+c.ic+';font-size:1rem"></i>'
+        +'<span style="font-size:.52rem;font-weight:600;color:#333">'+esc(p.name)+'</span></div>';
     });
     body='<div class="fsec"><label class="flbl">Add to</label><div class="mtiles">'+tiles+'</div></div>';
   }else{
+    var curSub=S.sel&&S.sel.type==='ryan'?S.sel.sub:'Backpack';
     body='<div class="fsec"><label class="flbl">Sub-list</label><div class="ftog" id="subTog">'
-      +'<button class="ftog-opt'+(S.sub==='Backpack'?' on':'')+'" type="button" onclick="togSub(this,\'Backpack\')">Backpack</button>'
-      +'<button class="ftog-opt'+(S.sub==='Meds'?' on':'')+'" type="button" onclick="togSub(this,\'Meds\')">Meds</button>'
-      +'<button class="ftog-opt'+(S.sub==='Equip'?' on':'')+'" type="button" onclick="togSub(this,\'Equip\')">Equip</button>'
+      +'<button class="ftog-opt'+(curSub==='Backpack'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Backpack\'">Backpack</button>'
+      +'<button class="ftog-opt'+(curSub==='Meds'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Meds\'">Meds</button>'
+      +'<button class="ftog-opt'+(curSub==='Equip'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Equip\'">Equip</button>'
       +'</div></div>';
+    S._sub=curSub;
   }
   body+='<div class="fsec"><label class="flbl">Item</label><input class="finp" id="addTxt" placeholder="e.g. Sunscreen"/></div>'
-    +'<button class="sbtn '+(isFam?'family':'ryan')+'" type="button" onclick="submitAdd(\''+tab+'\')">Add Item</button>';
+    +'<button class="sbtn family" type="button" onclick="submitAdd(\''+tab+'\')">Add Item</button>';
   openCP('Add Item',body);
   setTimeout(function(){var f=document.getElementById('addTxt');if(f)f.focus();},100);
 }
-function togSub(btn,val){
-  document.querySelectorAll('#subTog .ftog-opt').forEach(function(b){b.classList.remove('on');});
+function togFtog(btn,gid){
+  document.querySelectorAll('#'+gid+' .ftog-opt').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  S._pendingSub=val;
 }
 function submitAdd(tab){
   var text=V('addTxt');if(!text){alert('Enter an item.');return;}
@@ -790,7 +821,7 @@ function submitAdd(tab){
   sdot('saving');
   var rows=[];
   if(tab==='ryan'){
-    var sub=S._pendingSub||S.sub;
+    var sub=S._sub||(S.sel&&S.sel.type==='ryan'?S.sel.sub:'Backpack');
     var cat=S.cats.find(function(c){return c.name===sub;});
     if(!cat){alert('Category not found.');sdot('err');return;}
     rows.push({trip_id:S.trip.id,category_id:cat.id,text:text,created_by:S.user&&S.user.id||null});
@@ -803,12 +834,48 @@ function submitAdd(tab){
   .then(function(r){
     if(r.error){sdot('err');console.error(r.error);return;}
     S.items=S.items.concat(r.data||[]);
-    delete S._pendingSub;
+    delete S._sub;
     sdot('');closeAll();renderPanel();updateProg();
   });
 }
 
-// ── PAX helpers ──
+/* ── MEMBER MANAGEMENT ── */
+function openMemberMgr(){
+  var pk=S.members.filter(function(m){return!m.is_subject;});
+  var listHtml='<ul class="mgrlist">';
+  pk.forEach(function(m,i){
+    var c=col(m,i);
+    listHtml+='<li class="mgritem">'
+      +'<span class="mgrdot" style="background:'+c.ic+'"></span>'
+      +'<span class="mgrname">'+esc(m.name)+'</span>'
+      +'</li>';
+  });
+  listHtml+='</ul>';
+  var body=listHtml
+    +'<div class="fsec" style="margin-top:.5rem"><label class="flbl">Add new member</label>'
+    +'<input class="finp" id="newMemberName" placeholder="Name (e.g. Guest, Grandma)"/></div>'
+    +'<button class="sbtn family" type="button" onclick="addMember()"><i class="ti ti-user-plus"></i> Add Member</button>';
+  openCP('Family Members',body);
+  setTimeout(function(){var f=document.getElementById('newMemberName');if(f)f.focus();},100);
+}
+function addMember(){
+  var name=V('newMemberName');
+  if(!name){alert('Enter a name.');return;}
+  sdot('saving');
+  var nextOrder=S.members.length+1;
+  var colors=COLORS[S.members.filter(function(m){return!m.is_subject;}).length%COLORS.length];
+  var row={family_id:S.fid,name:name,is_subject:false,display_order:nextOrder,
+    bg_color:colors.bg,icon_color:colors.ic,icon:'ti-user'};
+  sb.from('members').insert(row).select()
+  .then(function(r){
+    if(r.error){sdot('err');alert('Could not add member: '+r.error.message);return;}
+    S.members=S.members.concat(r.data||[]);
+    S.allMembers=S.allMembers.concat(r.data||[]);
+    sdot('');closeAll();renderToolbar();renderPanel();
+  });
+}
+
+/* ── PAX TILES ── */
 function paxTiles(selIds){
   var groups={};var order=[];
   (S.allMembers||[]).forEach(function(m){
@@ -822,8 +889,8 @@ function paxTiles(selIds){
     g.mems.forEach(function(m,i){
       var c=col(m,i);var isSel=selIds?selIds.indexOf(m.id)>=0:isCur;
       tiles+='<div class="mtile'+(isSel?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(isSel?c.ic:'#e0d8c8')+'" onclick="this.classList.toggle(\'sel\');this.style.borderColor=this.classList.contains(\'sel\')?\''+c.ic+'\':\'#e0d8c8\'">'
-        +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+c.ic+'"></i>'
-        +'<span style="font-size:.5rem;font-weight:600">'+esc(m.name)+'</span></div>';
+        +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+c.ic+';font-size:1rem"></i>'
+        +'<span style="font-size:.52rem;font-weight:600">'+esc(m.name)+'</span></div>';
     });
     html+='<div class="fam-group"><span class="fam-group-lbl">'+g.name+(isCur?' (you)':'')+'</span><div class="mtiles">'+tiles+'</div></div>';
   });
@@ -832,55 +899,37 @@ function paxTiles(selIds){
 function seatRows(members,pax){
   return(members||[]).map(function(m){
     var s=pax?pax.find(function(p){return p.member_id===m.id;}):null;
-    return '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.32rem">'
+    return'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.32rem">'
       +'<span style="font-size:.68rem;width:4rem;flex-shrink:0">'+esc(m.name)+'</span>'
       +'<input class="finp" data-seat="'+m.id+'" value="'+(s&&s.seat?esc(s.seat):'')+'" placeholder="Seat" style="flex:1"/></div>';
   }).join('');
 }
-function getSelPax(container){
-  return[].slice.call(document.querySelectorAll(container+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});
+function getSelPax(sel){
+  return[].slice.call(document.querySelectorAll(sel+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});
 }
 
-// ── FLIGHT ──
+/* ── FLIGHT FORMS ── */
 function openAddFlight(){S.companions=[];doOpenFlight(null);}
 function doOpenFlight(f){
   var selIds=f?(f.flight_passengers||[]).filter(function(p){return!p.is_companion;}).map(function(p){return p.member_id;}):S.members.map(function(m){return m.id;});
   var depL=f&&f.departure_dt?new Date(f.departure_dt).toISOString().slice(0,16):'';
   var arrL=f&&f.arrival_dt?new Date(f.arrival_dt).toISOString().slice(0,16):'';
   S.companions=f?(f.flight_passengers||[]).filter(function(p){return p.is_companion;}).map(function(p){return{name:p.companion_name,seat:p.seat||''};}):[]; 
-  var compHtml=S.companions.map(function(c,i){
-    return '<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span>'
-      +'<button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';
-  }).join('');
-  var insured=f&&f.is_insured;
+  var compHtml=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');
+  var ins=f&&f.is_insured;
   openCP(f?'Edit Flight':'Add Flight',
     '<div class="fsec"><label class="flbl">Passengers</label><div id="fpaxTiles">'+paxTiles(selIds)+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Companions</label><div class="comp-row">'
-    +'<input class="finp" id="cName" placeholder="Name" style="flex:2"/>'
-    +'<input class="finp" id="cSeat" placeholder="Seat" style="flex:1"/>'
-    +'<button class="comp-add" type="button" onclick="addComp()"><i class="ti ti-plus"></i></button></div>'
-    +'<div class="comp-list" id="compList">'+compHtml+'</div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">From</label><input class="finp" id="fFrom" value="'+esc(f?f.origin_city||'':'')+'" placeholder="LAX"/></div>'
-    +'<div class="fsec"><label class="flbl">To</label><input class="finp" id="fTo" value="'+esc(f?f.dest_city||'':'')+'" placeholder="MIA"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Departure</label><input class="finp" type="datetime-local" id="fDep" value="'+depL+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Arrival</label><input class="finp" type="datetime-local" id="fArr" value="'+arrL+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Airline</label><input class="finp" id="fAl" value="'+esc(f?f.airline||'':'')+'" placeholder="American"/></div>'
-    +'<div class="fsec"><label class="flbl">Flight #</label><input class="finp" id="fNum" value="'+esc(f?f.flight_number||'':'')+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Gate</label><input class="finp" id="fGate" value="'+esc(f?f.gate||'':'')+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="fConf" value="'+esc(f?f.confirmation_no||'':'')+'"/></div></div>'
-    +'<div class="fsec"><label class="flbl">Insurance</label><div class="ftog" id="insTog">'
-    +'<button class="ftog-opt'+(insured?'':' on')+'" type="button" onclick="togFtog(this,\'insTog\')">No</button>'
-    +'<button class="ftog-opt'+(insured?' on':'')+'" type="button" onclick="togFtog(this,\'insTog\');document.getElementById(\'insWrap\').style.display=\'block\'">Yes</button></div></div>'
-    +'<div id="insWrap" style="display:'+(insured?'block':'none')+'"><div class="fsec"><label class="flbl">Policy #</label><input class="finp" id="fPol" value="'+esc(f?f.insurance_policy_no||'':'')+'"/></div></div>'
+    +'<div class="fsec"><label class="flbl">Companions</label><div class="comp-row"><input class="finp" id="cName" placeholder="Name" style="flex:2"/><input class="finp" id="cSeat" placeholder="Seat" style="flex:1"/><button class="comp-add" type="button" onclick="addComp()"><i class="ti ti-plus"></i></button></div><div class="comp-list" id="compList">'+compHtml+'</div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">From</label><input class="finp" id="fFrom" value="'+esc(f?f.origin_city||'':'')+'" placeholder="LAX"/></div><div class="fsec"><label class="flbl">To</label><input class="finp" id="fTo" value="'+esc(f?f.dest_city||'':'')+'" placeholder="MIA"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Departure</label><input class="finp" type="datetime-local" id="fDep" value="'+depL+'"/></div><div class="fsec"><label class="flbl">Arrival</label><input class="finp" type="datetime-local" id="fArr" value="'+arrL+'"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Airline</label><input class="finp" id="fAl" value="'+esc(f?f.airline||'':'')+'" placeholder="American"/></div><div class="fsec"><label class="flbl">Flight #</label><input class="finp" id="fNum" value="'+esc(f?f.flight_number||'':'')+'"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Gate</label><input class="finp" id="fGate" value="'+esc(f?f.gate||'':'')+'"/></div><div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="fConf" value="'+esc(f?f.confirmation_no||'':'')+'"/></div></div>'
+    +'<div class="fsec"><label class="flbl">Insurance</label><div class="ftog" id="insTog"><button class="ftog-opt'+(ins?'':' on')+'" type="button" onclick="togFtog(this,\'insTog\')">No</button><button class="ftog-opt'+(ins?' on':'')+'" type="button" onclick="togFtog(this,\'insTog\');document.getElementById(\'insWrap\').style.display=\'block\'">Yes</button></div></div>'
+    +'<div id="insWrap" style="display:'+(ins?'block':'none')+'"><div class="fsec"><label class="flbl">Policy #</label><input class="finp" id="fPol" value="'+esc(f?f.insurance_policy_no||'':'')+'"/></div></div>'
     +'<div class="fsec"><label class="flbl">Seats</label><div id="seatWrap">'+seatRows(S.allMembers,f?f.flight_passengers:null)+'</div></div>'
     +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="fNotes">'+esc(f?f.notes||'':'')+'</textarea></div>'
     +'<button class="sbtn flight" type="button" onclick="submitFlight(\''+(f?f.id:'null')+'\')"><i class="ti ti-check"></i> '+(f?'Save':'Add Flight')+'</button>'
-    +(f?'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>':'')
-  );
-}
-function togFtog(btn,gid){
-  document.querySelectorAll('#'+gid+' .ftog-opt').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
+    +(f?'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>':''));
 }
 function addComp(){var n=V('cName');if(!n)return;S.companions.push({name:n,seat:V('cSeat')});document.getElementById('cName').value='';document.getElementById('cSeat').value='';renderCompList();}
 function removeComp(i){S.companions.splice(i,1);renderCompList();}
@@ -926,11 +975,11 @@ function flightDetail(id){
     +DR('Airline',f.airline)+DR('Flight #',f.flight_number)+DR('Gate',f.gate)+DR('Confirmation',f.confirmation_no)
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+esc(pax)+'</span></div>'
     +DR('Insurance',f.is_insured?'Yes '+(f.insurance_policy_no||''):'No')+DR('Notes',f.notes)
-    +'<button class="sbtn flight" type="button" onclick="doOpenFlight(S.flights.find(function(x){return x.id===\''+f.id+'\';}))">Edit</button>'
+    +'<button class="sbtn flight" type="button" style="margin-top:.5rem" onclick="doOpenFlight(S.flights.find(function(x){return x.id===\''+f.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>');
 }
 
-// ── HOTEL ──
+/* ── HOTEL FORMS ── */
 function openAddHotel(h){
   h=h||{};
   var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):'';
@@ -941,10 +990,8 @@ function openAddHotel(h){
     '<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="acType">'+typeBtns+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="hName" value="'+esc(h.name||'')+'" placeholder="Hotel name"/></div>'
     +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="hLoc" value="'+esc(h.location||'')+'"/></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Check-in</label><input class="finp" type="datetime-local" id="hIn" value="'+inL+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Check-out</label><input class="finp" type="datetime-local" id="hOut" value="'+outL+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="hConf" value="'+esc(h.confirmation_no||'')+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Room #</label><input class="finp" id="hRoom" value="'+esc(h.room_number||'')+'"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Check-in</label><input class="finp" type="datetime-local" id="hIn" value="'+inL+'"/></div><div class="fsec"><label class="flbl">Check-out</label><input class="finp" type="datetime-local" id="hOut" value="'+outL+'"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="hConf" value="'+esc(h.confirmation_no||'')+'"/></div><div class="fsec"><label class="flbl">Room #</label><input class="finp" id="hRoom" value="'+esc(h.room_number||'')+'"/></div></div>'
     +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="hNotes">'+esc(h.notes||'')+'</textarea></div>'
     +'<button class="sbtn hotel" type="button" onclick="submitHotel(\''+(h.id||'null')+'\')"><i class="ti ti-check"></i> '+(h.id?'Save':'Add')+'</button>'
     +(h.id?'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>':''));
@@ -969,11 +1016,11 @@ function hotelDetail(id){
   openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)
     +DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))
     +DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)
-    +'<button class="sbtn hotel" type="button" onclick="openAddHotel(S.hotels.find(function(x){return x.id===\''+h.id+'\';}))">Edit</button>'
+    +'<button class="sbtn hotel" type="button" style="margin-top:.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===\''+h.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>');
 }
 
-// ── RESERVATION ──
+/* ── RESERVATION FORMS ── */
 function openAddReservation(r){
   r=r||{};
   var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):'';
@@ -982,8 +1029,7 @@ function openAddReservation(r){
   openCP(r.id?'Edit Reservation':'Add Reservation',
     '<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="resType">'+typeBtns+'</div></div>'
     +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="rName" value="'+esc(r.name||'')+'"/></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Date &amp; Time</label><input class="finp" type="datetime-local" id="rDT" value="'+dtL+'"/></div>'
-    +'<div class="fsec"><label class="flbl"># People</label><input class="finp" type="number" id="rPpl" value="'+(r.num_people||'')+'" min="1"/></div></div>'
+    +'<div class="frow"><div class="fsec"><label class="flbl">Date &amp; Time</label><input class="finp" type="datetime-local" id="rDT" value="'+dtL+'"/></div><div class="fsec"><label class="flbl"># People</label><input class="finp" type="number" id="rPpl" value="'+(r.num_people||'')+'" min="1"/></div></div>'
     +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="rLoc" value="'+esc(r.location||'')+'"/></div>'
     +'<div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="rConf" value="'+esc(r.confirmation_no||'')+'"/></div>'
     +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="rNotes">'+esc(r.notes||'')+'</textarea></div>'
@@ -1010,11 +1056,11 @@ function reserveDetail(id){
   var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
   openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))
     +DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)
-    +'<button class="sbtn reserve" type="button" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
+    +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }
 
-// ── DELETE ──
+/* ── DELETE ── */
 function delRec(type,id){
   if(!confirm('Delete this '+type+'?'))return;sdot('saving');
   var tbl={flight:'flights',hotel:'accommodations',reserve:'reservations'};
@@ -1025,11 +1071,10 @@ function delRec(type,id){
   });
 }
 
-// ── NEW TRIP ──
+/* ── TRIP MANAGEMENT ── */
 function openNewTrip(){
   openConfirm('New Trip?','Checklist items stay but are unchecked. Flights, hotels and reservations are cleared.',function(){
-    var n=V('newTripName')||'My Trip';
-    sdot('saving');
+    var n=V('newTripName')||'My Trip';sdot('saving');
     sb.rpc('start_new_trip',{p_family_id:S.fid,p_trip_name:n}).then(function(r){
       if(r.error){sdot('err');console.error(r.error);return;}
       S.trip=null;closeCon();sdot('');loadAll();
@@ -1049,11 +1094,18 @@ function saveRename(){
   });
 }
 function saveAS(){
-  sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,active_sub:S.sub,
-    active_member:S.member&&S.member.id||null,updated_at:new Date().toISOString()},{onConflict:'family_id'});
+  var selType=S.sel?S.sel.type:'';
+  var selSub=S.sel&&S.sel.type==='ryan'?S.sel.sub:'';
+  var selMem=S.sel&&S.sel.type==='member'&&S.sel.member?S.sel.member.id:null;
+  sb.from('app_state').upsert({
+    family_id:S.fid,active_tab:S.tab,
+    active_sub:selSub||null,
+    active_member:selMem,
+    updated_at:new Date().toISOString()
+  },{onConflict:'family_id'});
 }
 
-// ── UI HELPERS ──
+/* ── UI HELPERS ── */
 function openCP(title,body){
   document.getElementById('cpTitle').textContent=title;
   document.getElementById('cpBody').innerHTML=body;
@@ -1078,7 +1130,7 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 
-// ── BOOT ──
+/* ── BOOT ── */
 (function(){
   var saved=localStorage.getItem('fkey');
   if(saved&&FIDS[saved])pickFamily(saved);

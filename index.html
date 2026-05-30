@@ -43,129 +43,148 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .pb{background:#FFD700;border-radius:99px;height:.4rem;transition:width .4s}
 .pl{font-size:.55rem;color:#002B5C;font-weight:600;margin-top:.2rem}
 .newtrip-btn{display:flex;align-items:center;gap:.2rem;padding:.28rem .55rem;border-radius:.5rem;border:1.5px solid rgba(0,43,92,.35);background:rgba(255,255,255,.45);font-size:.58rem;color:#002B5C;cursor:pointer;flex-shrink:0;font-weight:600}
-.sdot{width:.45rem;height:.45rem;border-radius:50%;background:rgba(0,43,92,.28);display:inline-block;margin-left:.3rem;transition:background .3s;flex-shrink:0}
+.sdot{width:.45rem;height:.45rem;border-radius:50%;background:rgba(0,43,92,.28);display:inline-block;transition:background .3s;flex-shrink:0}
 .sdot.saving{background:#FFD700}.sdot.err{background:#E53935}
 .hero-beach{position:absolute;bottom:.6rem;left:0;right:0;width:100%;height:2.8rem;pointer-events:none}
-.toolbar{background:white;padding:.35rem .7rem;border-bottom:1px solid #e4e0d8;display:flex;align-items:center;gap:.3rem;overflow-x:auto;min-height:2.4rem}
-.ulbl{font-size:.55rem;color:#999;white-space:nowrap;flex-shrink:0}
-.ubtn{display:flex;align-items:center;gap:.22rem;padding:.28rem .5rem;border-radius:99px;border:1.5px solid transparent;font-size:.6rem;cursor:pointer;background:transparent;flex-shrink:0;white-space:nowrap}
-.ubtn.active{font-weight:600}
-.udot{width:.38rem;height:.38rem;border-radius:50%;flex-shrink:0}
-.mgrbtn{background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:.2rem .3rem;margin-left:auto;flex-shrink:0}
-.tripname{font-size:.55rem;color:#aaa;white-space:nowrap;margin-left:.2rem}
+.toolbar{background:white;padding:.3rem .7rem;border-bottom:1px solid #e4e0d8;display:flex;align-items:center;gap:.4rem;min-height:2.6rem;overflow:hidden}
+.tb-packer{display:flex;align-items:center;gap:.3rem;cursor:pointer;padding:.2rem .3rem;border-radius:.5rem;flex-shrink:0;border:none;background:none}
+.tb-packer:active{background:#f0ede6}
+.tb-packer-ico{font-size:1.05rem;color:#555}
+.tb-chevrons{display:flex;gap:0;color:#888;font-size:.7rem;line-height:1}
+.tb-packer-name{font-size:.62rem;font-weight:700;padding:.15rem .4rem;border-radius:99px}
+.tb-spacer{flex:1}
+.tb-pencil{background:none;border:none;cursor:pointer;font-size:1rem;color:#aaa;padding:.2rem .25rem;flex-shrink:0}
 .nav{display:flex;border-bottom:1.5px solid #ddd8cc;background:#f2f0eb}
-.ntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.08rem;padding:.38rem .15rem .42rem;border:none;cursor:pointer;background:transparent;border-top:3px solid transparent;border-right:1px solid #e0d8c8}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.06rem;padding:.35rem .1rem .4rem;border:none;cursor:pointer;background:transparent;border-top:3px solid transparent;border-right:1px solid #e0d8c8}
 .ntab:last-child{border-right:none}
 .ntab.active{background:white}
-.ntab.active.t-family{border-top-color:#1D9E75}
+.ntab.active.t-pack{border-top-color:#1D9E75}
 .ntab.active.t-flight{border-top-color:#378ADD}
 .ntab.active.t-hotel{border-top-color:#D85A30}
 .ntab.active.t-reserve{border-top-color:#9B59B6}
-.ntab-ico{font-size:.95rem;line-height:1}
-.ntab-lbl{font-size:.45rem;font-weight:600;color:#777;white-space:nowrap}
+.ntab-ico{font-size:.9rem;line-height:1}
+.ntab-lbl{font-size:.44rem;font-weight:600;color:#777;white-space:nowrap}
 .ntab.active .ntab-lbl{color:#222}
-.ntab-cnt{font-size:.42rem;padding:.03rem .25rem;border-radius:99px;background:#e0d8c8;color:#555}
-.ntab.active.t-family .ntab-cnt{background:#9FE1CB;color:#085041}
+.ntab-cnt{font-size:.4rem;padding:.03rem .22rem;border-radius:99px;background:#e0d8c8;color:#555}
+.ntab.active.t-pack .ntab-cnt{background:#9FE1CB;color:#085041}
 .ntab.active.t-flight .ntab-cnt{background:#B5D4F4;color:#0C447C}
 .ntab.active.t-hotel .ntab-cnt{background:#F5C4B3;color:#712B13}
 .ntab.active.t-reserve .ntab-cnt{background:#E8C8F8;color:#6B2F9E}
 .ddwrap{position:relative;width:100%}
-.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.8rem .85rem;font-size:.9rem;font-weight:700;color:#111;display:flex;align-items:center;gap:.55rem;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none;min-height:3.2rem}
-.ddsel:active{background:#f5f5f5}
+.ddsel{width:100%;background:white;border:none;border-bottom:2px solid #e0d8c8;padding:.75rem .85rem;font-size:.88rem;font-weight:700;color:#111;display:flex;align-items:center;gap:.5rem;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none;min-height:3rem}
+.ddsel:active{filter:brightness(.97)}
 .ddsel-lbl{flex:1;text-align:left}
-.ddsel-cnt{font-size:.62rem;padding:.1rem .45rem;border-radius:99px;color:white;font-weight:700}
-.ddarrow{font-size:.8rem;color:#aaa;transition:transform .18s;pointer-events:none;flex-shrink:0}
+.ddsel-cnt{font-size:.6rem;padding:.1rem .42rem;border-radius:99px;color:white;font-weight:700;flex-shrink:0}
+.ddarrow{font-size:.78rem;color:#aaa;transition:transform .18s;pointer-events:none;flex-shrink:0}
 .ddarrow.open{transform:rotate(180deg)}
-.ddmenu{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #e0d8c8;border-top:none;border-radius:0 0 .6rem .6rem;z-index:400;box-shadow:0 6px 20px rgba(0,0,0,.15);display:none;overflow:hidden}
+.ddmenu{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #e0d8c8;border-top:none;border-radius:0 0 .7rem .7rem;z-index:400;box-shadow:0 8px 24px rgba(0,0,0,.14);display:none;overflow:hidden}
 .ddmenu.open{display:block}
-.dditem{display:flex;align-items:center;gap:.55rem;padding:.75rem .85rem;cursor:pointer;font-size:.82rem;color:#111;border-bottom:.5px solid rgba(0,0,0,.06);border-left:5px solid transparent}
+.dditem{display:flex;align-items:center;gap:.55rem;padding:.72rem .85rem;cursor:pointer;font-size:.8rem;color:#111;border-bottom:.5px solid rgba(0,0,0,.05);border-left:5px solid transparent}
 .dditem:last-child{border-bottom:none}
-.dditem:active{filter:brightness(.95)}
-.dditem.sel{font-weight:700;outline:2px solid rgba(0,0,0,.15);outline-offset:-2px}
-.dditem-ico{font-size:1.05rem;flex-shrink:0}
-.dditem-cnt{margin-left:auto;font-size:.58rem;padding:.07rem .38rem;border-radius:99px;color:white;font-weight:600;flex-shrink:0}
-.dddivider{height:2px;background:#e8e0d0;margin:.25rem 0}
-.addbar{display:flex;align-items:center;padding:.5rem .85rem;border-bottom:1px solid rgba(0,0,0,.08)}
-.ph-add{display:flex;align-items:center;gap:.2rem;padding:.32rem .65rem;border-radius:.5rem;border:none;font-size:.65rem;font-weight:600;cursor:pointer;color:white;margin-left:auto}
+.dditem:active{filter:brightness(.96)}
+.dditem.sel{font-weight:700}
+.dditem-ico{font-size:1rem;flex-shrink:0}
+.dditem-cnt{margin-left:auto;font-size:.56rem;padding:.06rem .36rem;border-radius:99px;color:white;font-weight:600;flex-shrink:0}
+.dddivider{height:2px;background:#ece8e0;margin:.2rem 0}
+.addbar{display:flex;align-items:center;padding:.45rem .85rem;border-bottom:1px solid rgba(0,0,0,.07)}
+.ph-add{display:flex;align-items:center;gap:.2rem;padding:.3rem .62rem;border-radius:.5rem;border:none;font-size:.62rem;font-weight:600;cursor:pointer;color:white;margin-left:auto;flex-shrink:0}
 .ilist{list-style:none}
-.irow{display:flex;align-items:center;gap:.38rem;padding:.7rem .85rem;border-bottom:.5px solid rgba(0,0,0,.06);min-height:2.8rem;background:rgba(255,255,255,.78)}
+.irow{display:flex;align-items:center;gap:.35rem;padding:.65rem .7rem;border-bottom:.5px solid rgba(0,0,0,.055);min-height:2.7rem;background:rgba(255,255,255,.78);width:100%}
 .irow:last-child{border-bottom:none}
 .irow.done{opacity:.48}
 .irow.skip{background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(0,0,0,.02) 8px,rgba(0,0,0,.02) 9px)}
-.ichk{width:1.4rem;height:1.4rem;border-radius:50%;border:1.5px solid #b0c8b0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:transparent}
+.ichk{width:1.35rem;height:1.35rem;border-radius:50%;border:1.5px solid #b0c8b0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;color:transparent}
 .ichk.on{background:#1D9E75;border-color:#1D9E75;color:white}
-.itxt{flex:1;font-size:.78rem;color:#111;min-width:0;line-height:1.35}
+.itxt{flex:1;font-size:.76rem;color:#111;min-width:0;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .itxt.struck{text-decoration:line-through;color:#bbb}
 .itxt.skp{font-style:italic;color:#b0a070}
-.iundo{font-size:.56rem;color:#1D9E75;cursor:pointer;text-decoration:underline;margin-top:.1rem;display:block;border:none;background:none;padding:0}
-.istamp{font-size:.5rem;padding:.08rem .38rem;border-radius:99px;font-weight:600;flex-shrink:0}
-.iskip{font-size:.48rem;padding:.08rem .35rem;border-radius:.25rem;background:rgba(0,0,0,.07);color:#8a7040;font-style:italic;border:1px dashed #c0a868;flex-shrink:0}
-.idot{background:none;border:none;cursor:pointer;font-size:.9rem;color:#c0a878;padding:.1rem .15rem;flex-shrink:0;min-width:1.8rem;min-height:1.8rem;display:flex;align-items:center;justify-content:center}
-.empty{padding:2rem 1.5rem;text-align:center;color:#aaa;font-size:.78rem;background:rgba(255,255,255,.6)}
+.iundo{font-size:.54rem;color:#1D9E75;cursor:pointer;text-decoration:underline;display:block;border:none;background:none;padding:0;margin-top:.1rem}
+.istamp{font-size:.48rem;padding:.07rem .35rem;border-radius:99px;font-weight:600;flex-shrink:0;white-space:nowrap}
+.iskip{font-size:.46rem;padding:.07rem .32rem;border-radius:.25rem;background:rgba(0,0,0,.07);color:#8a7040;font-style:italic;border:1px dashed #c0a868;flex-shrink:0}
+.idot{background:none;border:none;cursor:pointer;font-size:.88rem;color:#c0a878;flex-shrink:0;width:1.8rem;height:1.8rem;display:flex;align-items:center;justify-content:center}
+.empty{padding:2rem 1.5rem;text-align:center;color:#aaa;font-size:.76rem;background:rgba(255,255,255,.6)}
 .cards{display:flex;flex-direction:column}
-.card{background:white;border-bottom:1px solid #ece8e0;padding:.85rem;cursor:pointer;position:relative}
+.card{background:white;border-bottom:1px solid #ece8e0;padding:.8rem .85rem;cursor:pointer;display:flex;flex-direction:column;gap:.2rem}
 .card:active{background:#faf8f4}.card.past{opacity:.5}
-.card-title{font-size:.84rem;font-weight:600;color:#111;margin-bottom:.2rem}
-.card-sub{font-size:.64rem;color:#666;line-height:1.4}
-.card-chev{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;color:#ccc}
-.pill{display:inline-block;font-size:.52rem;font-weight:600;padding:.08rem .38rem;border-radius:99px;margin-right:.2rem}
+.card-title{font-size:.82rem;font-weight:600;color:#111}
+.card-sub{font-size:.62rem;color:#666;line-height:1.4}
+.card-row{display:flex;align-items:center;gap:.4rem}
+.card-chev{margin-left:auto;font-size:.78rem;color:#ccc;flex-shrink:0}
+.pill{display:inline-block;font-size:.5rem;font-weight:600;padding:.07rem .35rem;border-radius:99px;margin-right:.2rem}
 .pill.fl{background:#B5D4F4;color:#0C447C}.pill.ht{background:#F5C4B3;color:#712B13}
-.pill.rs{background:#E8C8F8;color:#6B2F9E}.pill.pt{background:#f0e8d0;color:#8a6020}
-.secsep{padding:.35rem .85rem;background:#f2f0eb;font-size:.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.pill.rs{background:#E8C8F8;color:#6B2F9E}
+.secsep{padding:.3rem .85rem;background:#f2f0eb;font-size:.5rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.05em}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
 .cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
 .cpanel.open{display:block}
-.cp-head{display:flex;align-items:center;gap:.5rem;padding:.9rem 1rem .7rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
-.cp-title{font-size:.9rem;font-weight:700;flex:1;color:#111}
-.cp-close{background:none;border:none;font-size:1.2rem;color:#aaa;cursor:pointer}
-.cp-body{padding:.8rem 1rem 1.2rem}
-.fsec{margin-bottom:.9rem}
-.flbl{font-size:.58rem;font-weight:700;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.28rem;display:block}
-.finp{width:100%;border:1.5px solid #e0d8c8;border-radius:.5rem;padding:.52rem .65rem;font-size:.84rem;background:#faf9f6;-webkit-appearance:none;outline:none;font-family:inherit;color:#111}
+.cp-head{display:flex;align-items:center;gap:.5rem;padding:.85rem 1rem .65rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
+.cp-title{font-size:.88rem;font-weight:700;flex:1;color:#111}
+.cp-close{background:none;border:none;font-size:1.15rem;color:#aaa;cursor:pointer;padding:.1rem}
+.cp-body{padding:.75rem 1rem 1.2rem}
+.fsec{margin-bottom:.85rem}
+.flbl{font-size:.56rem;font-weight:700;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.25rem;display:block}
+.finp{width:100%;border:1.5px solid #e0d8c8;border-radius:.5rem;padding:.5rem .62rem;font-size:.82rem;background:#faf9f6;-webkit-appearance:none;outline:none;font-family:inherit;color:#111}
 .finp:focus{border-color:#378ADD;background:white}
 .fta{resize:none;min-height:3rem;line-height:1.4}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.42rem}
 .ftog{display:flex;border:1.5px solid #e0d8c8;border-radius:.5rem;overflow:hidden}
-.ftog-opt{flex:1;padding:.45rem .25rem;border:none;font-size:.7rem;font-weight:500;cursor:pointer;background:white;color:#666;text-align:center}
+.ftog-opt{flex:1;padding:.42rem .2rem;border:none;font-size:.68rem;font-weight:500;cursor:pointer;background:white;color:#666;text-align:center}
 .ftog-opt.on{background:#378ADD;color:white;font-weight:600}
-.mtiles{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}
-.mtile{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .5rem;border-radius:.55rem;border:1.5px solid #e0d8c8;background:white;cursor:pointer;min-width:2.8rem}
+.mtiles{display:flex;flex-wrap:wrap;gap:.32rem;margin-top:.15rem}
+.mtile{display:flex;flex-direction:column;align-items:center;gap:.12rem;padding:.38rem .45rem;border-radius:.5rem;border:1.5px solid #e0d8c8;background:white;cursor:pointer;min-width:2.6rem}
 .mtile.sel{border-color:#1D9E75;background:#E1F5EE}
-.fam-group{margin-bottom:.65rem}
-.fam-group-lbl{font-size:.55rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;padding:.18rem .45rem;background:#f2f0eb;border-radius:.3rem;display:block;margin-bottom:.3rem}
-.comp-row{display:flex;gap:.35rem;align-items:center;margin-bottom:.35rem}
-.comp-add{background:#E6F1FB;border:none;border-radius:.5rem;padding:.45rem .55rem;font-size:.8rem;cursor:pointer;color:#0C447C;flex-shrink:0}
-.comp-list{margin-top:.25rem}
-.comp-item{display:flex;align-items:center;gap:.35rem;padding:.28rem 0;font-size:.7rem;color:#333;border-bottom:.5px solid #f0ede6}
-.comp-del{background:none;border:none;font-size:.8rem;color:#E53935;cursor:pointer}
-.sbtn{width:100%;padding:.72rem;border:none;border-radius:.6rem;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:.7rem;color:white}
-.sbtn.family{background:#1D9E75}.sbtn.flight{background:#378ADD}
+.fam-group{margin-bottom:.6rem}
+.fam-group-lbl{font-size:.52rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .42rem;background:#f2f0eb;border-radius:.3rem;display:block;margin-bottom:.28rem}
+.comp-row{display:flex;gap:.32rem;align-items:center;margin-bottom:.32rem}
+.comp-add{background:#E6F1FB;border:none;border-radius:.5rem;padding:.42rem .52rem;font-size:.78rem;cursor:pointer;color:#0C447C;flex-shrink:0}
+.comp-list{margin-top:.22rem}
+.comp-item{display:flex;align-items:center;gap:.32rem;padding:.25rem 0;font-size:.68rem;color:#333;border-bottom:.5px solid #f0ede6}
+.comp-del{background:none;border:none;font-size:.78rem;color:#E53935;cursor:pointer}
+.sbtn{width:100%;padding:.7rem;border:none;border-radius:.6rem;font-size:.88rem;font-weight:600;cursor:pointer;margin-top:.65rem;color:white}
+.sbtn.pack{background:#1D9E75}.sbtn.flight{background:#378ADD}
 .sbtn.hotel{background:#D85A30}.sbtn.reserve{background:#9B59B6}
-.dbtn{width:100%;padding:.6rem;border:1.5px solid #E53935;border-radius:.6rem;font-size:.78rem;cursor:pointer;margin-top:.45rem;background:white;color:#E53935}
-.drow{display:flex;gap:.45rem;padding:.5rem 0;border-bottom:.5px solid #f0ede6;align-items:flex-start}
+.dbtn{width:100%;padding:.58rem;border:1.5px solid #E53935;border-radius:.6rem;font-size:.75rem;cursor:pointer;margin-top:.42rem;background:white;color:#E53935}
+.drow{display:flex;gap:.42rem;padding:.48rem 0;border-bottom:.5px solid #f0ede6;align-items:flex-start}
 .drow:last-child{border-bottom:none}
-.dlbl{font-size:.56rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;width:5rem;flex-shrink:0;padding-top:.05rem}
-.dval{font-size:.77rem;color:#111;flex:1;line-height:1.4}
-.ctx{display:none;position:fixed;background:white;border:1px solid #e0d0b0;border-radius:.6rem;z-index:700;min-width:10rem;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.13)}
+.dlbl{font-size:.54rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;width:5rem;flex-shrink:0;padding-top:.05rem}
+.dval{font-size:.75rem;color:#111;flex:1;line-height:1.4}
+.ctx{display:none;position:fixed;background:white;border:1px solid #e0d0b0;border-radius:.6rem;z-index:700;min-width:9.5rem;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.13)}
 .ctx.open{display:block}
-.cxi{padding:.7rem .85rem;font-size:.74rem;cursor:pointer;display:flex;align-items:center;gap:.45rem;color:#111;border:none;background:none;width:100%;text-align:left}
+.cxi{padding:.68rem .82rem;font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:.42rem;color:#111;border:none;background:none;width:100%;text-align:left}
 .cxi:active{background:#f5f0e8}.cxi.red{color:#E53935}
 .cxd{height:.5px;background:#ece8e0}
-.covr{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:750}
+.covr{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:750}
 .covr.open{display:block}
-.cmod{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(88vw,22rem);padding:1.3rem 1.1rem;z-index:760;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
+.cmod{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(88vw,22rem);padding:1.25rem 1.1rem;z-index:760;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}
 .cmod.open{display:block}
-.cmod-t{font-size:.9rem;font-weight:700;color:#111;margin-bottom:.45rem}
-.cmod-m{font-size:.72rem;color:#666;line-height:1.55;margin-bottom:.9rem}
-.cmod-btns{display:flex;gap:.45rem}
-.cmod-cancel{flex:1;padding:.65rem;border:1.5px solid #e0d0b0;border-radius:.6rem;background:none;font-size:.78rem;cursor:pointer;color:#666}
-.cmod-ok{flex:1;padding:.65rem;border:none;border-radius:.6rem;background:#E53935;color:white;font-size:.78rem;font-weight:600;cursor:pointer}
-.mgrlist{list-style:none;margin-bottom:.8rem}
-.mgritem{display:flex;align-items:center;gap:.6rem;padding:.6rem .2rem;border-bottom:.5px solid #f0ede6}
+.cmod-t{font-size:.88rem;font-weight:700;color:#111;margin-bottom:.42rem}
+.cmod-m{font-size:.7rem;color:#666;line-height:1.55;margin-bottom:.88rem}
+.cmod-btns{display:flex;gap:.42rem}
+.cmod-cancel{flex:1;padding:.62rem;border:1.5px solid #e0d0b0;border-radius:.6rem;background:none;font-size:.76rem;cursor:pointer;color:#666}
+.cmod-ok{flex:1;padding:.62rem;border:none;border-radius:.6rem;background:#E53935;color:white;font-size:.76rem;font-weight:600;cursor:pointer}
+.bsovr{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800}
+.bsovr.open{display:block}
+.bsheet{position:fixed;bottom:0;left:0;right:0;background:white;border-radius:1rem 1rem 0 0;z-index:810;padding:.6rem 1rem 2rem;display:none;box-shadow:0 -4px 24px rgba(0,0,0,.14)}
+.bsheet.open{display:block}
+.bsheet-handle{width:2.2rem;height:.22rem;background:#ddd;border-radius:99px;margin:.1rem auto .75rem}
+.bsheet-title{font-size:.62rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}
+.pkrow{display:flex;align-items:center;gap:.65rem;padding:.7rem .5rem;border-radius:.6rem;cursor:pointer;margin-bottom:.1rem}
+.pkrow:active{background:#f5f0e8}
+.pkrow.active{background:#f0fdf8}
+.pkdot{width:.85rem;height:.85rem;border-radius:50%;flex-shrink:0}
+.pkname{flex:1;font-size:.88rem;font-weight:500;color:#111}
+.pkrow.active .pkname{font-weight:700}
+.pkcheck{font-size:.9rem;color:#1D9E75}
+.mgrlist{list-style:none;margin-bottom:.7rem}
+.mgritem{display:flex;align-items:center;gap:.55rem;padding:.58rem .2rem;border-bottom:.5px solid #f0ede6}
 .mgritem:last-child{border-bottom:none}
-.mgrdot{width:1rem;height:1rem;border-radius:50%;flex-shrink:0}
+.mgrdot{width:.9rem;height:.9rem;border-radius:50%;flex-shrink:0}
 .mgrname{flex:1;font-size:.82rem;color:#111;font-weight:500}
+.mgr-edit-inp{flex:1;border:1.5px solid #378ADD;border-radius:.4rem;padding:.22rem .45rem;font-size:.78rem;background:white;font-family:inherit;color:#111;outline:none}
+.mgrbtn-edit{background:none;border:none;color:#555;font-size:1rem;cursor:pointer;padding:.15rem .3rem}
+.mgrbtn-del{background:none;border:none;color:#E53935;font-size:1rem;cursor:pointer;padding:.15rem .3rem}
+.mgrbtn-save{background:#1D9E75;border:none;color:white;font-size:.72rem;font-weight:600;cursor:pointer;padding:.22rem .5rem;border-radius:.35rem}
 
 </style>
 </head>
@@ -176,76 +195,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
   <div class="fscreen-title">Family Travel</div>
   <div class="fscreen-sub">Select your family to continue</div>
   <div class="fscreen-grid">
-    <div class="ftile" onclick="pickFamily('jmcr')">
-      <span class="ftile-ico">&#x1F3D6;&#xFE0F;</span>
-      <span class="ftile-name">JMCR</span>
-      <span class="ftile-sub">Jon &middot; Mary &middot; Cordy &middot; Mav<br>+ Ryan</span>
-    </div>
-    <div class="ftile" onclick="pickFamily('matthews')">
-      <span class="ftile-ico">&#x1F6A2;</span>
-      <span class="ftile-name">Matthews</span>
-      <span class="ftile-sub">Nick &middot; Christine &middot; Reagan<br>Lincoln &middot; Nixon</span>
-    </div>
-    <div class="ftile" onclick="pickFamily('silvermans')">
-      <span class="ftile-ico">&#x2B50;</span>
-      <span class="ftile-name">Silvermans</span>
-      <span class="ftile-sub">Josh &middot; Lori<br>Mikayla &middot; Zach</span>
-    </div>
+    <div class="ftile" onclick="pickFamily('jmcr')"><span class="ftile-ico">&#x1F3D6;&#xFE0F;</span><span class="ftile-name">JMCR</span><span class="ftile-sub">Jon &middot; Mary &middot; Cordy &middot; Mav<br>+ Ryan</span></div>
+    <div class="ftile" onclick="pickFamily('matthews')"><span class="ftile-ico">&#x1F6A2;</span><span class="ftile-name">Matthews</span><span class="ftile-sub">Nick &middot; Christine &middot; Reagan<br>Lincoln &middot; Nixon</span></div>
+    <div class="ftile" onclick="pickFamily('silvermans')"><span class="ftile-ico">&#x2B50;</span><span class="ftile-name">Silvermans</span><span class="ftile-sub">Josh &middot; Lori<br>Mikayla &middot; Zach</span></div>
   </div>
 </div>
 
-<div class="lscreen hide" id="lscreen">
-  <div class="lscreen-ico">&#x2708;&#xFE0F;</div>
-  <div class="lscreen-txt">Loading your trip...</div>
-</div>
+<div class="lscreen hide" id="lscreen"><div class="lscreen-ico">&#x2708;&#xFE0F;</div><div class="lscreen-txt">Loading your trip...</div></div>
 
 <div id="app">
   <div class="hero">
     <div class="hero-sun"></div>
-    <button class="hero-badge" onclick="switchFam()" type="button"><i class="ti ti-refresh"></i><span id="hBadge">Family</span></button>
+    <button class="hero-badge" onclick="switchFam()" type="button"><i class="ti ti-refresh" style="font-size:.6rem"></i><span id="hBadge">Family</span></button>
     <div class="hero-row">
       <span class="hero-emoji">&#x2708;&#xFE0F;</span>
       <div class="hero-txt">
-        <div class="hero-title">Family Vacation Checklist &#x1F30A;</div>
+        <div class="hero-title">Family Vacation &#x1F30A;</div>
         <div class="hero-sub">Pack smart &mdash; adventure awaits!</div>
       </div>
-      <span class="sdot" id="sdot"></span>
+      <span class="sdot" id="sdotHero" style="display:none"></span>
     </div>
     <div class="prog-row">
-      <div style="flex:1">
-        <div class="pw"><div class="pb" id="pb" style="width:0%"></div></div>
-        <div class="pl" id="pl"></div>
-      </div>
+      <div style="flex:1"><div class="pw"><div class="pb" id="pb" style="width:0%"></div></div><div class="pl" id="pl"></div></div>
       <button class="newtrip-btn" onclick="openNewTrip()" type="button">&#x21BA; New trip</button>
     </div>
     <svg class="hero-beach" viewBox="0 0 400 45" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="45" fill="#87CEEB"/><rect x="0" y="22" width="400" height="23" fill="#1565C0"/><path d="M0 22 Q20 18 40 22 Q60 26 80 22 Q100 18 120 22 Q140 26 160 22 Q180 18 200 22 Q220 26 240 22 Q260 18 280 22 Q300 26 320 22 Q340 18 360 22 Q380 26 400 22 L400 45 L0 45Z" fill="#42A5F5"/><path d="M0 33 Q50 30 100 33 Q150 36 200 33 Q250 30 300 33 Q350 36 400 33 L400 45 L0 45Z" fill="#EDD9A3"/></svg>
   </div>
-  <div class="toolbar" id="toolbar">
-    <span class="ulbl" id="ulbl">As:</span>
-    <button class="mgrbtn" onclick="openMemberMgr()" type="button" title="Manage members"><i class="ti ti-users"></i></button>
-    <span class="tripname" id="tripName"></span>
-  </div>
+  <div class="toolbar" id="toolbar"></div>
   <div class="nav" id="nav"></div>
   <div id="panel"></div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
 <div class="cpanel" id="cpanel">
-  <div class="cp-head">
-    <span class="cp-title" id="cpTitle"></span>
-    <button class="cp-close" onclick="closeAll()" type="button"><i class="ti ti-x"></i></button>
-  </div>
+  <div class="cp-head"><span class="cp-title" id="cpTitle"></span><button class="cp-close" onclick="closeAll()" type="button"><i class="ti ti-x"></i></button></div>
   <div class="cp-body" id="cpBody"></div>
 </div>
+<div id="_mgrTmp" style="display:none"></div>
+<div class="bsovr" id="bsovr" onclick="closeBS()"></div>
+<div class="bsheet" id="bsheet"><div class="bsheet-handle"></div><div id="bsBody"></div></div>
 <div class="ctx" id="ctx"></div>
 <div class="covr" id="covr" onclick="closeCon()"></div>
 <div class="cmod" id="cmod">
   <div class="cmod-t" id="cmod-t"></div>
   <div class="cmod-m" id="cmod-m"></div>
-  <div class="cmod-btns">
-    <button class="cmod-cancel" onclick="closeCon()" type="button">Cancel</button>
-    <button class="cmod-ok" id="cmod-ok" type="button">Confirm</button>
-  </div>
+  <div class="cmod-btns"><button class="cmod-cancel" onclick="closeCon()" type="button">Cancel</button><button class="cmod-ok" id="cmod-ok" type="button">Confirm</button></div>
 </div>
 
 <script>
@@ -262,7 +256,7 @@ var COLORS=[
   {bg:'#E8F5E9',ic:'#1B5E20'},{bg:'#E3F2FD',ic:'#0D47A1'},
   {bg:'#FCE4EC',ic:'#880E4F'},{bg:'#FFF3E0',ic:'#E65100'},
   {bg:'#F3E5F5',ic:'#4A148C'},{bg:'#E0F7FA',ic:'#006064'},
-  {bg:'#FFF9C4',ic:'#F57F17'},{bg:'#FCE4EC',ic:'#AD1457'}
+  {bg:'#FFF9C4',ic:'#F57F17'},{bg:'#EFEBE9',ic:'#4E342E'}
 ];
 var RYAN_COLORS={
   Backpack:{bg:'#EEEDFE',ic:'#5048BE'},
@@ -271,12 +265,9 @@ var RYAN_COLORS={
 };
 var S={
   fkey:null,fid:null,fname:null,isJMCR:false,
-  user:null,sel:null,
-  tab:'family',
-  trip:null,
-  members:[],allMembers:[],cats:[],items:[],
-  flights:[],hotels:[],reserves:[],
-  rsubs:[],companions:[]
+  user:null,sel:null,tab:'pack',
+  trip:null,members:[],allMembers:[],cats:[],items:[],
+  flights:[],hotels:[],reserves:[],rsubs:[],companions:[]
 };
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -288,47 +279,28 @@ function col(m,i){return{bg:m.bg_color||COLORS[i%COLORS.length].bg,ic:m.icon_col
 function V(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 function DR(l,v){return'<div class="drow"><span class="dlbl">'+l+'</span><span class="dval">'+esc(String(v||'-'))+'</span></div>';}
 
-/* ── SCREENS ── */
-function showLoad(){
-  document.getElementById('fscreen').classList.add('hide');
-  document.getElementById('lscreen').classList.remove('hide');
-  document.getElementById('app').style.display='none';
-}
-function showApp(){
-  document.getElementById('fscreen').classList.add('hide');
-  document.getElementById('lscreen').classList.add('hide');
-  document.getElementById('app').style.display='block';
-}
-function showFamScreen(){
-  document.getElementById('fscreen').classList.remove('hide');
-  document.getElementById('lscreen').classList.add('hide');
-  document.getElementById('app').style.display='none';
-}
+function showLoad(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.remove('hide');document.getElementById('app').style.display='none';}
+function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
+function showFamScreen(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 
-/* ── PICK FAMILY ── */
 function pickFamily(key){
-  S.fkey=key;S.fid=FIDS[key];
-  S.isJMCR=(key==='jmcr');
+  S.fkey=key;S.fid=FIDS[key];S.isJMCR=(key==='jmcr');
   S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
-  S.tab='family';S.user=null;S.sel=null;
+  S.tab='pack';S.user=null;S.sel=null;
   S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});S.rsubs=[];
-  localStorage.setItem('fkey',key);
-  showLoad();
-  loadAll();
+  localStorage.setItem('fkey',key);showLoad();loadAll();
 }
 function switchFam(){
   S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});S.rsubs=[];
   localStorage.removeItem('fkey');showFamScreen();
 }
 
-/* ── LOAD ALL ── */
 function loadAll(){
   sb.from('members').select('*').eq('family_id',S.fid).order('display_order')
   .then(function(r){
     S.members=r.data||[];
     var pk=S.members.filter(function(m){return!m.is_subject;});
     S.user=pk[0]||null;
-    // default selection: first Ryan sublist for JMCR, first member for others
     S.sel=S.isJMCR?{type:'ryan',sub:'Backpack'}:{type:'member',member:pk[0]||null};
     sb.from('members').select('*,families(name)').order('family_id').order('display_order')
     .then(function(r2){
@@ -355,22 +327,15 @@ function loadAll(){
                   .then(function(r9){
                     var as=r9.data&&r9.data[0];
                     if(as){
+                      S.tab=as.active_tab||'pack';
+                      if(S.tab==='ryan'||S.tab==='family')S.tab='pack';
                       var pk2=S.members.filter(function(m){return!m.is_subject;});
-                      if(S.isJMCR){
-                        if(as.active_tab==='ryan'||as.active_tab==='family'){
-                          if(as.active_sub&&RYAN_COLORS[as.active_sub])
-                            S.sel={type:'ryan',sub:as.active_sub};
-                          else{
-                            var sm=pk2.find(function(m){return m.id===as.active_member;});
-                            if(sm)S.sel={type:'member',member:sm};
-                          }
-                        }
+                      if(S.isJMCR&&as.active_sub&&RYAN_COLORS[as.active_sub]){
+                        S.sel={type:'ryan',sub:as.active_sub};
                       }else{
-                        var sm2=pk2.find(function(m){return m.id===as.active_member;});
-                        if(sm2)S.sel={type:'member',member:sm2};
+                        var sm=pk2.find(function(m){return m.id===as.active_member;});
+                        if(sm)S.sel={type:'member',member:sm};
                       }
-                      S.tab=as.active_tab||'family';
-                      if(S.tab==='ryan')S.tab='family';
                     }
                     var iv=setInterval(function(){
                       if(!S.trip)return;
@@ -390,62 +355,82 @@ function loadAll(){
   });
 }
 
-/* ── RENDER ── */
 function render(){
   document.getElementById('hBadge').textContent=S.fname;
-  document.getElementById('tripName').textContent=S.trip?S.trip.name:'';
   renderToolbar();renderNav();renderPanel();updateProg();
 }
 
 function renderToolbar(){
   var tb=document.getElementById('toolbar');
-  document.querySelectorAll('.ubtn').forEach(function(b){b.remove();});
-  var mgr=tb.querySelector('.mgrbtn');
+  tb.innerHTML='';
   if(S.isJMCR){
-    // show packer selector pills
     var pk=S.members.filter(function(m){return!m.is_subject;});
-    pk.forEach(function(m,i){
-      var c=col(m,i);
-      var b=document.createElement('button');
-      b.className='ubtn'+(S.user&&S.user.id===m.id?' active':'');
-      b.style.borderColor=c.ic;b.style.color=c.ic;b.style.background=c.bg;
-      if(S.user&&S.user.id===m.id){b.style.background=c.ic;b.style.color='white';b.style.fontWeight='700';}
-      b.innerHTML='<span class="udot" style="background:'+(S.user&&S.user.id===m.id?'white':c.ic)+'"></span>'+esc(m.name);
-      b.onclick=function(){S.user=m;renderToolbar();};
-      mgr.before(b);
-    });
-    document.getElementById('ulbl').style.display='';
-  }else{
-    document.getElementById('ulbl').style.display='none';
+    var cur=S.user||pk[0];
+    var ci=cur?pk.indexOf(cur):0;
+    var cc=cur?col(cur,ci<0?0:ci):{bg:'#eee',ic:'#888'};
+    var btn=document.createElement('button');
+    btn.className='tb-packer';
+    btn.setAttribute('aria-label','Switch packer');
+    btn.innerHTML='<i class="ti ti-users tb-packer-ico" aria-hidden="true"></i>'
+      +'<i class="ti ti-chevron-left tb-chevrons" aria-hidden="true"></i>'
+      +'<i class="ti ti-chevron-right tb-chevrons" aria-hidden="true"></i>'
+      +(cur?'<span class="tb-packer-name" style="background:'+cc.bg+';color:'+cc.ic+'">'+esc(cur.name)+'</span>':'');
+    btn.onclick=function(){openPackerSheet();};
+    tb.appendChild(btn);
   }
+  var spacer=document.createElement('div');spacer.className='tb-spacer';tb.appendChild(spacer);
+  var sdotEl=document.createElement('span');sdotEl.id='sdot';sdotEl.className='sdot';tb.appendChild(sdotEl);
+  var pencil=document.createElement('button');
+  pencil.className='tb-pencil';pencil.setAttribute('aria-label','Manage members');
+  pencil.innerHTML='<i class="ti ti-pencil" aria-hidden="true"></i>';
+  pencil.onclick=function(){openMemberMgr();};
+  tb.appendChild(pencil);
+}
+
+function openPackerSheet(){
+  var pk=S.members.filter(function(m){return!m.is_subject;});
+  var rows='';
+  pk.forEach(function(m,i){
+    var c=col(m,i);var isAct=S.user&&S.user.id===m.id;
+    rows+='<div class="pkrow'+(isAct?' active':'')+'" data-pkid="'+m.id+'">'
+      +'<div class="pkdot" style="background:'+c.ic+'"></div>'
+      +'<span class="pkname">'+esc(m.name)+'</span>'
+      +(isAct?'<i class="ti ti-check pkcheck" aria-hidden="true"></i>':'')
+      +'</div>';
+  });
+  document.getElementById('bsBody').innerHTML=
+    '<div class="bsheet-title">Packing as</div>'+rows;
+  document.getElementById('bsovr').classList.add('open');
+  document.getElementById('bsheet').classList.add('open');
+}
+function closeBS(){
+  document.getElementById('bsovr').classList.remove('open');
+  document.getElementById('bsheet').classList.remove('open');
 }
 
 function renderNav(){
   var nav=document.getElementById('nav');nav.innerHTML='';
   var tabs=[
-    {id:'family',lbl:'Family',ico:'ti-users',cls:'t-family'},
+    {id:'pack',lbl:'Pack List',ico:'ti-briefcase',cls:'t-pack'},
     {id:'flight',lbl:'Flight',ico:'ti-plane',cls:'t-flight'},
     {id:'hotel',lbl:'Hotel',ico:'ti-building',cls:'t-hotel'},
     {id:'reservations',lbl:'Reserve',ico:'ti-calendar-event',cls:'t-reserve'}
   ];
   tabs.forEach(function(t){
-    var btn=document.createElement('button');
-    btn.className='ntab '+t.cls+(S.tab===t.id?' active':'');
-    btn.innerHTML='<i class="ti '+t.ico+' ntab-ico"></i><span class="ntab-lbl">'+t.lbl+'</span><span class="ntab-cnt">'+tabCnt(t.id)+'</span>';
-    btn.onclick=function(){S.tab=t.id;saveAS();renderNav();renderPanel();};
-    nav.appendChild(btn);
+    var b=document.createElement('button');
+    b.className='ntab '+t.cls+(S.tab===t.id?' active':'');
+    b.innerHTML='<i class="ti '+t.ico+' ntab-ico" aria-hidden="true"></i><span class="ntab-lbl">'+t.lbl+'</span><span class="ntab-cnt">'+tabCnt(t.id)+'</span>';
+    b.onclick=function(){S.tab=t.id;saveAS();renderNav();renderPanel();};
+    nav.appendChild(b);
   });
 }
 
 function tabCnt(tab){
-  if(tab==='family'){
+  if(tab==='pack'){
     if(S.isJMCR){
-      // count all ryan items + all member items
       var n=0;
       S.cats.forEach(function(c){n+=S.items.filter(function(i){return i.category_id===c.id&&!i.is_skipped;}).length;});
-      S.members.filter(function(m){return!m.is_subject;}).forEach(function(m){
-        n+=S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length;
-      });
+      S.members.filter(function(m){return!m.is_subject;}).forEach(function(m){n+=S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length;});
       return n;
     }
     return S.items.filter(function(i){return i.member_id&&!i.is_skipped;}).length;
@@ -458,145 +443,120 @@ function tabCnt(tab){
 
 function renderPanel(){
   var el=document.getElementById('panel');
-  if(S.tab==='family')el.innerHTML=famPanel();
+  if(S.tab==='pack')el.innerHTML=packPanel();
   else if(S.tab==='flight')el.innerHTML=flightPanel();
   else if(S.tab==='hotel')el.innerHTML=hotelPanel();
   else el.innerHTML=reservePanel();
   document.querySelectorAll('.ichk').forEach(function(b){b.onclick=function(){toggleCheck(b.dataset.id);};});
   document.querySelectorAll('.iundo').forEach(function(b){b.onclick=function(){undoCheck(b.dataset.id);};});
-  document.querySelectorAll('.idot').forEach(function(b){b.onclick=function(e){itemCtx(e,b.dataset.id,b.dataset.tab);};});
+  document.querySelectorAll('.idot').forEach(function(b){b.onclick=function(e){itemCtx(e,b.dataset.id);};});
 }
 
-/* ── FAMILY PANEL ── */
-function famPanel(){
+function sortedItems(arr){
+  var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;});
+  var s=arr.filter(function(i){return i.is_skipped;});
+  var d=arr.filter(function(i){return i.is_done;});
+  return a.concat(s,d);
+}
+
+function irow(item,showStamp){
+  var st=showStamp?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
+  var stamp=st?'<span class="istamp" style="background:'+(st.icon_color||'#ccc')+'22;color:'+(st.icon_color||'#888')+'">'+esc(st.name)+'</span>':'';
+  var skip=item.is_skipped?'<span class="iskip">skip</span>':'';
+  var undo=item.is_done?'<button class="iundo" data-id="'+item.id+'">Undo</button>':'';
+  return '<li class="irow'+(item.is_done?' done':'')+(item.is_skipped?' skip':'')+'">'
+    +'<button class="ichk'+(item.is_done?' on':'')+'" data-id="'+item.id+'">'+(item.is_done?'<i class="ti ti-check" aria-hidden="true"></i>':'')+'</button>'
+    +'<div style="flex:1;min-width:0"><div class="itxt'+(item.is_done?' struck':'')+(item.is_skipped?' skp':'')+'">'+esc(item.text)+'</div>'+undo+'</div>'
+    +stamp+skip
+    +'<button class="idot" data-id="'+item.id+'"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>'
+    +'</li>';
+}
+
+function packPanel(){
   var pk=S.members.filter(function(m){return!m.is_subject;});
-  var ryan=S.members.find(function(m){return m.is_subject;});
-
-  // Build dropdown items
   var dropHtml='';
-
   if(S.isJMCR){
-    // Ryan sublists
     ['Backpack','Meds','Equip'].forEach(function(sub){
       var rc=RYAN_COLORS[sub];
       var cat=S.cats.find(function(c){return c.name===sub;});
       var dn=cat?S.items.filter(function(i){return i.category_id===cat.id&&i.is_done;}).length:0;
       var tot=cat?S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;}).length:0;
       var sel=S.sel&&S.sel.type==='ryan'&&S.sel.sub===sub;
-      dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-rysub="'+sub+'"'
-        +' style="background:'+rc.bg+';border-left-color:'+rc.ic+'">'
-        +'<i class="ti ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope')+' dditem-ico" style="color:'+rc.ic+'"></i>'
-        +'<span style="color:'+rc.ic+';font-weight:'+(sel?'700':'600')+'">Ryan &mdash; '+sub+'</span>'
+      dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-rysub="'+sub+'" style="background:'+rc.bg+';border-left-color:'+rc.ic+'">'
+        +'<i class="ti ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope')+' dditem-ico" style="color:'+rc.ic+'" aria-hidden="true"></i>'
+        +'<span style="color:'+rc.ic+';font-weight:'+(sel?'700':'600')+'">Ryan \u2014 '+sub+'</span>'
         +'<span class="dditem-cnt" style="background:'+rc.ic+'">'+dn+'/'+tot+'</span>'
         +'</div>';
     });
     dropHtml+='<div class="dddivider"></div>';
   }
-
-  // Family members
   pk.forEach(function(p,i){
     var c=col(p,i);
     var dn=S.items.filter(function(x){return x.member_id===p.id&&x.is_done;}).length;
     var tot=S.items.filter(function(x){return x.member_id===p.id&&!x.is_skipped;}).length;
     var sel=S.sel&&S.sel.type==='member'&&S.sel.member&&S.sel.member.id===p.id;
-    dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-mid="'+p.id+'"'
-      +' style="background:'+c.bg+';border-left-color:'+c.ic+'">'
-      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+c.ic+'"></i>'
+    dropHtml+='<div class="dditem'+(sel?' sel':'')+'" data-mid="'+p.id+'" style="background:'+c.bg+';border-left-color:'+c.ic+'">'
+      +'<i class="ti '+(p.icon||'ti-user')+' dditem-ico" style="color:'+c.ic+'" aria-hidden="true"></i>'
       +'<span style="color:'+c.ic+';font-weight:'+(sel?'700':'600')+'">'+esc(p.name)+'</span>'
       +'<span class="dditem-cnt" style="background:'+c.ic+'">'+dn+'/'+tot+'</span>'
       +'</div>';
   });
 
-  // Compute header colors and label
-  var hbg,hic,hlbl,hico,hdn,htot;
+  var hbg,hic,hico,hlbl,hdn,htot;
   if(S.sel&&S.sel.type==='ryan'){
-    var sub=S.sel.sub;
-    var rc=RYAN_COLORS[sub];
+    var sub=S.sel.sub;var rc=RYAN_COLORS[sub];
     hbg=rc.bg;hic=rc.ic;
     hico='ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope');
-    hlbl='Ryan &mdash; '+sub;
+    hlbl='Ryan \u2014 '+sub;
     var cat=S.cats.find(function(c){return c.name===sub;});
     hdn=cat?S.items.filter(function(i){return i.category_id===cat.id&&i.is_done;}).length:0;
     htot=cat?S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;}).length:0;
   }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
-    var m=S.sel.member;
-    var mi=pk.indexOf(m);
-    var mc=col(m,mi<0?0:mi);
-    hbg=mc.bg;hic=mc.ic;
-    hico=m.icon||'ti-user';
+    var m=S.sel.member;var mi=pk.indexOf(m);var mc=col(m,mi<0?0:mi);
+    hbg=mc.bg;hic=mc.ic;hico=m.icon||'ti-user';
     hlbl=esc(m.name)+"'s List";
     hdn=S.items.filter(function(i){return i.member_id===m.id&&i.is_done;}).length;
     htot=S.items.filter(function(i){return i.member_id===m.id&&!i.is_skipped;}).length;
   }else{
-    hbg='#f2f0eb';hic='#888';hico='ti-users';hlbl='Tap to select';hdn=0;htot=0;
+    hbg='#f5f3ee';hic='#888';hico='ti-users';hlbl='Tap to select list';hdn=0;htot=0;
   }
 
   var html='<div class="ddwrap">'
-    +'<button class="ddsel" id="famSelBtn" type="button"'
-    +' style="background:'+hbg+';border-bottom-color:'+hic+';border-left:6px solid '+hic+'">'
-    +'<i class="ti ti-chevrons-left-right" style="color:'+hic+';font-size:.9rem;opacity:.7;flex-shrink:0"></i>'
-    +'<i class="ti '+hico+' ddsel-ico" style="color:'+hic+'"></i>'
+    +'<button class="ddsel" id="packSelBtn" type="button" style="background:'+hbg+';border-bottom-color:'+hic+';border-left:6px solid '+hic+'">'
+    +'<i class="ti ti-chevrons-left-right" style="color:'+hic+';font-size:.85rem;opacity:.7;flex-shrink:0" aria-hidden="true"></i>'
+    +'<i class="ti '+hico+' ddsel-ico" style="color:'+hic+'" aria-hidden="true"></i>'
     +'<span class="ddsel-lbl" style="font-weight:700;color:'+hic+'">'+hlbl+'</span>'
     +(S.sel&&(S.sel.type==='ryan'||S.sel.member)?'<span class="ddsel-cnt" style="background:'+hic+'">'+hdn+'/'+htot+'</span>':'')
-    +'<i class="ti ti-chevron-down ddarrow" id="famDDArr"></i>'
+    +'<i class="ti ti-chevron-down ddarrow" id="packDDArr" aria-hidden="true"></i>'
     +'</button>'
-    +'<div class="ddmenu" id="famDD">'+dropHtml+'</div>'
+    +'<div class="ddmenu" id="packDD">'+dropHtml+'</div>'
     +'</div>';
 
-  // Item list
-  var rows='';
-  var showStamp=S.isJMCR;
-
+  var rows='';var showStamp=S.isJMCR;
   if(S.sel&&S.sel.type==='ryan'){
-    var sub2=S.sel.sub;
-    var cat2=S.cats.find(function(c){return c.name===sub2;});
+    var sub2=S.sel.sub;var cat2=S.cats.find(function(c){return c.name===sub2;});
     var items2=cat2?sortedItems(S.items.filter(function(i){return i.category_id===cat2.id;})):[];
-    items2.forEach(function(i){rows+=irow(i,'family',showStamp);});
+    items2.forEach(function(i){rows+=irow(i,showStamp);});
     html+='<div class="addbar" style="background:'+hbg+';border-bottom:2px solid '+hic+'">'
-      +'<button class="ph-add" style="background:'+hic+'" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+      +'<button class="ph-add" style="background:'+hic+'" id="addPackBtn" type="button"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>'
       +'</div>'
       +'<ul class="ilist" style="background:'+hbg+'66">'+rows+'</ul>'
-      +(items2.length?'':'<div class="empty">No items yet &mdash; tap Add</div>');
+      +(items2.length?'':'<div class="empty">No items yet</div>');
   }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
-    var m2=S.sel.member;
-    var mi2=pk.indexOf(m2);
-    var mc2=col(m2,mi2<0?0:mi2);
+    var m2=S.sel.member;var mi2=pk.indexOf(m2);var mc2=col(m2,mi2<0?0:mi2);
     var items3=sortedItems(S.items.filter(function(i){return i.member_id===m2.id;}));
-    items3.forEach(function(i){rows+=irow(i,'family',showStamp);});
+    items3.forEach(function(i){rows+=irow(i,showStamp);});
     html+='<div class="addbar" style="background:'+mc2.bg+';border-bottom:2px solid '+mc2.ic+'">'
-      +'<button class="ph-add" style="background:'+mc2.ic+'" id="addFamBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+      +'<button class="ph-add" style="background:'+mc2.ic+'" id="addPackBtn" type="button"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>'
       +'</div>'
       +'<ul class="ilist" style="background:'+mc2.bg+'55">'+rows+'</ul>'
-      +(items3.length?'':'<div class="empty">No items yet &mdash; tap Add</div>');
+      +(items3.length?'':'<div class="empty">No items yet</div>');
   }else{
     html+='<div class="empty" style="margin:.5rem;border-radius:.5rem">Tap the bar above to choose a list</div>';
   }
-
   return html;
 }
 
-/* ── ITEM HELPERS ── */
-function sortedItems(arr){
-  var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;}).sort(function(a,b){return a.text.localeCompare(b.text);});
-  var s=arr.filter(function(i){return i.is_skipped;}).sort(function(a,b){return a.text.localeCompare(b.text);});
-  var d=arr.filter(function(i){return i.is_done;}).sort(function(a,b){return a.text.localeCompare(b.text);});
-  return a.concat(s,d);
-}
-
-function irow(item,tab,showStamp){
-  var st=showStamp?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
-  var stamp=st?'<span class="istamp" style="background:'+(st.icon_color||'#ccc')+'22;color:'+(st.icon_color||'#888')+'">'+esc(st.name)+'</span>':'';
-  var skip=item.is_skipped?'<span class="iskip">skip</span>':'';
-  var undo=item.is_done?'<button class="iundo" data-id="'+item.id+'">Undo</button>':'';
-  return '<li class="irow'+(item.is_done?' done':'')+(item.is_skipped?' skip':'')+'">'
-    +'<button class="ichk'+(item.is_done?' on':'')+'" data-id="'+item.id+'">'+(item.is_done?'<i class="ti ti-check"></i>':'')+'</button>'
-    +'<div style="flex:1;min-width:0"><div class="itxt'+(item.is_done?' struck':'')+(item.is_skipped?' skp':'')+'">'+esc(item.text)+'</div>'+undo+'</div>'
-    +stamp+skip
-    +'<button class="idot" data-id="'+item.id+'" data-tab="'+tab+'"><i class="ti ti-dots-vertical"></i></button>'
-    +'</li>';
-}
-
-/* ── PROGRESS ── */
 function updateProg(){
   if(!S.isJMCR){document.getElementById('pl').textContent='';document.getElementById('pb').style.width='0%';return;}
   var tot=0,dn=0;
@@ -606,10 +566,9 @@ function updateProg(){
   });
   var pct=tot?Math.round(dn/tot*100):0;
   document.getElementById('pb').style.width=pct+'%';
-  document.getElementById('pl').textContent="Ryan: "+dn+"/"+tot+" ("+pct+"%)";
+  document.getElementById('pl').textContent='Ryan: '+dn+'/'+tot+' ('+pct+'%)';
 }
 
-/* ── FLIGHT PANEL ── */
 function flightPanel(){
   var srt=S.flights.slice().sort(function(a,b){return new Date(a.departure_dt)-new Date(b.departure_dt);});
   var up=srt.filter(function(f){return!past(f.departure_dt);});
@@ -617,158 +576,129 @@ function flightPanel(){
   function fc(f){
     var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name)||p.companion_name;}).filter(Boolean).join(', ');
     return'<div class="card'+(past(f.departure_dt)?' past':'')+'" data-fid="'+f.id+'">'
-      +'<div class="card-title">'+esc(f.origin_city)+' &rarr; '+esc(f.dest_city)+'</div>'
+      +'<div class="card-row"><div class="card-title">'+esc(f.origin_city)+' &rarr; '+esc(f.dest_city)+'</div><i class="ti ti-chevron-right card-chev" aria-hidden="true"></i></div>'
       +'<div class="card-sub"><span class="pill fl">'+esc(f.airline||'-')+'</span>'+fmtDT(f.departure_dt)+(f.gate?' &middot; Gate '+esc(f.gate):'')+'</div>'
-      +(pax?'<div class="card-sub" style="margin-top:.15rem">'+esc(pax)+'</div>':'')
-      +'<i class="ti ti-chevron-right card-chev"></i></div>';
+      +(pax?'<div class="card-sub">'+esc(pax)+'</div>':'')
+      +'</div>';
   }
   var cards=up.map(fc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(fc).join('');
   return'<div class="addbar" style="background:#E6F1FB;border-bottom:2px solid #378ADD">'
-    +'<span style="font-size:.82rem;font-weight:700;color:#0C447C">Flights</span>'
-    +'<button class="ph-add" style="background:#378ADD" id="addFlightBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'<span style="font-size:.8rem;font-weight:700;color:#0C447C">Flights</span>'
+    +'<button class="ph-add" style="background:#378ADD" id="addFlightBtn" type="button"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No flights yet</div>');
 }
 
-/* ── HOTEL PANEL ── */
 function hotelPanel(){
   var srt=S.hotels.slice().sort(function(a,b){return new Date(a.check_in_dt)-new Date(b.check_in_dt);});
   var up=srt.filter(function(h){return!past(h.check_out_dt);});
   var old=srt.filter(function(h){return past(h.check_out_dt);});
   function hc(h){
     return'<div class="card'+(past(h.check_out_dt)?' past':'')+'" data-hid="'+h.id+'">'
-      +'<div class="card-title">'+esc(h.name)+'</div>'
+      +'<div class="card-row"><div class="card-title">'+esc(h.name)+'</div><i class="ti ti-chevron-right card-chev" aria-hidden="true"></i></div>'
       +'<div class="card-sub"><span class="pill ht">'+esc(h.accom_type||'Hotel')+'</span>'+esc(h.location||'-')+' &middot; '+fmtD(h.check_in_dt)+' &rarr; '+fmtD(h.check_out_dt)+'</div>'
-      +(h.room_number?'<div class="card-sub" style="margin-top:.12rem">Room '+esc(h.room_number)+'</div>':'')
-      +'<i class="ti ti-chevron-right card-chev"></i></div>';
+      +(h.room_number?'<div class="card-sub">Room '+esc(h.room_number)+'</div>':'')
+      +'</div>';
   }
   var cards=up.map(hc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(hc).join('');
   return'<div class="addbar" style="background:#FAECE7;border-bottom:2px solid #D85A30">'
-    +'<span style="font-size:.82rem;font-weight:700;color:#712B13">Hotels &amp; Stays</span>'
-    +'<button class="ph-add" style="background:#D85A30" id="addHotelBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'<span style="font-size:.8rem;font-weight:700;color:#712B13">Hotels &amp; Stays</span>'
+    +'<button class="ph-add" style="background:#D85A30" id="addHotelBtn" type="button"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No accommodations yet</div>');
 }
 
-/* ── RESERVE PANEL ── */
 function reservePanel(){
   var srt=S.reserves.slice().sort(function(a,b){return new Date(a.reservation_dt)-new Date(b.reservation_dt);});
   var up=srt.filter(function(r){return!past(r.reservation_dt);});
   var old=srt.filter(function(r){return past(r.reservation_dt);});
   function rc(r){
     return'<div class="card'+(past(r.reservation_dt)?' past':'')+'" data-rid="'+r.id+'">'
-      +'<div class="card-title">'+esc(r.name)+'</div>'
+      +'<div class="card-row"><div class="card-title">'+esc(r.name)+'</div><i class="ti ti-chevron-right card-chev" aria-hidden="true"></i></div>'
       +'<div class="card-sub"><span class="pill rs">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' &middot; '+esc(r.location):'')+'</div>'
-      +'<i class="ti ti-chevron-right card-chev"></i></div>';
+      +'</div>';
   }
   var cards=up.map(rc).join('');
   if(old.length)cards+='<div class="secsep">Past</div>'+old.map(rc).join('');
   return'<div class="addbar" style="background:#F3E8FD;border-bottom:2px solid #9B59B6">'
-    +'<span style="font-size:.82rem;font-weight:700;color:#6B2F9E">Reservations</span>'
-    +'<button class="ph-add" style="background:#9B59B6" id="addReserveBtn" type="button"><i class="ti ti-plus"></i> Add</button>'
+    +'<span style="font-size:.8rem;font-weight:700;color:#6B2F9E">Reservations</span>'
+    +'<button class="ph-add" style="background:#9B59B6" id="addReserveBtn" type="button"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
 }
 
-/* ── CLICK DELEGATION ── */
 document.addEventListener('click',function(e){
-  // close ctx
   if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))
     document.getElementById('ctx').classList.remove('open');
-
-  // close dropdown when clicking outside
   if(!e.target.closest('.ddwrap')){
     document.querySelectorAll('.ddmenu.open').forEach(function(m){m.classList.remove('open');});
     document.querySelectorAll('.ddarrow.open').forEach(function(a){a.classList.remove('open');});
   }
-
-  // family selector toggle
-  var fsBtn=e.target.closest('#famSelBtn');
-  if(fsBtn){
-    var dd=document.getElementById('famDD');
-    var arr=document.getElementById('famDDArr');
+  var psBtn=e.target.closest('#packSelBtn');
+  if(psBtn){
+    var dd=document.getElementById('packDD');var arr=document.getElementById('packDDArr');
     if(dd){var wo=dd.classList.contains('open');dd.classList.toggle('open');if(arr)arr.classList.toggle('open',!wo);}
     return;
   }
-
-  // ryan sublist selection
   var rItem=e.target.closest('[data-rysub]');
   if(rItem){
     S.sel={type:'ryan',sub:rItem.dataset.rysub};
-    document.getElementById('famDD').classList.remove('open');
-    var a=document.getElementById('famDDArr');if(a)a.classList.remove('open');
+    document.getElementById('packDD').classList.remove('open');
+    var a=document.getElementById('packDDArr');if(a)a.classList.remove('open');
     saveAS();renderPanel();return;
   }
-
-  // family member selection
-  var mItem=e.target.closest('#famDD [data-mid]');
+  var mItem=e.target.closest('#packDD [data-mid]');
   if(mItem){
     var m=S.members.find(function(x){return x.id===mItem.dataset.mid;})||null;
     S.sel={type:'member',member:m};
-    document.getElementById('famDD').classList.remove('open');
-    var a2=document.getElementById('famDDArr');if(a2)a2.classList.remove('open');
+    document.getElementById('packDD').classList.remove('open');
+    var a2=document.getElementById('packDDArr');if(a2)a2.classList.remove('open');
     saveAS();renderPanel();return;
   }
-
-  // add buttons
-  if(e.target.closest('#addFamBtn')){
+  var pkRow=e.target.closest('.pkrow[data-pkid]');
+  if(pkRow){
+    var pk=S.members.filter(function(m){return!m.is_subject;});
+    S.user=pk.find(function(m){return m.id===pkRow.dataset.pkid;})||S.user;
+    closeBS();renderToolbar();return;
+  }
+  if(e.target.closest('#addPackBtn')){
     if(S.sel&&S.sel.type==='ryan')openAddItem('ryan');
-    else openAddItem('family');
-    return;
+    else openAddItem('family');return;
   }
   if(e.target.closest('#addFlightBtn')){openAddFlight();return;}
   if(e.target.closest('#addHotelBtn')){openAddHotel(null);return;}
   if(e.target.closest('#addReserveBtn')){openAddReservation(null);return;}
-
-  // cards
   var fc=e.target.closest('[data-fid]');if(fc){flightDetail(fc.dataset.fid);return;}
   var hc=e.target.closest('[data-hid]');if(hc){hotelDetail(hc.dataset.hid);return;}
   var rc=e.target.closest('[data-rid]');if(rc){reserveDetail(rc.dataset.rid);return;}
+  if(e.target.closest('#bsovr')&&!e.target.closest('#bsheet'))closeBS();
 });
 
-/* ── CHECKLIST OPS ── */
 function toggleCheck(id){
   sdot('saving');
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var nd=!item.is_done;
   var uid=S.isJMCR?(S.user&&S.user.id||null):null;
   sb.from('checklist_items').update({is_done:nd,done_by:nd?uid:null,done_at:nd?new Date().toISOString():null,is_skipped:false}).eq('id',id)
-  .then(function(r){
-    if(r.error){sdot('err');return;}
-    item.is_done=nd;item.done_by=nd?uid:null;item.is_skipped=false;
-    sdot('');renderPanel();updateProg();
-  });
+  .then(function(r){if(r.error){sdot('err');return;}item.is_done=nd;item.done_by=nd?uid:null;item.is_skipped=false;sdot('');renderPanel();updateProg();});
 }
 function undoCheck(id){
   sdot('saving');
   sb.from('checklist_items').update({is_done:false,done_by:null,done_at:null}).eq('id',id)
-  .then(function(r){
-    if(r.error){sdot('err');return;}
-    var item=S.items.find(function(i){return i.id===id;});
-    if(item){item.is_done=false;item.done_by=null;}
-    sdot('');renderPanel();updateProg();
-  });
+  .then(function(r){if(r.error){sdot('err');return;}var item=S.items.find(function(i){return i.id===id;});if(item){item.is_done=false;item.done_by=null;}sdot('');renderPanel();updateProg();});
 }
 function skipItem(id){
   sdot('saving');
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var ns=!item.is_skipped;
   sb.from('checklist_items').update({is_skipped:ns,is_done:false,done_by:null,done_at:null}).eq('id',id)
-  .then(function(r){
-    if(r.error){sdot('err');return;}
-    item.is_skipped=ns;item.is_done=false;
-    sdot('');closeCtx();renderPanel();updateProg();
-  });
+  .then(function(r){if(r.error){sdot('err');return;}item.is_skipped=ns;item.is_done=false;sdot('');closeCtx();renderPanel();updateProg();});
 }
 function deleteItem(id){
   sdot('saving');
   sb.from('checklist_items').delete().eq('id',id)
-  .then(function(r){
-    if(r.error){sdot('err');return;}
-    S.items=S.items.filter(function(i){return i.id!==id;});
-    sdot('');closeCtx();renderPanel();updateProg();
-  });
+  .then(function(r){if(r.error){sdot('err');return;}S.items=S.items.filter(function(i){return i.id!==id;});sdot('');closeCtx();renderPanel();updateProg();});
 }
-function itemCtx(e,id,tab){
+function itemCtx(e,id){
   e.stopPropagation();
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var ctx=document.getElementById('ctx');
@@ -777,48 +707,42 @@ function itemCtx(e,id,tab){
     +'<div class="cxd"></div>'
     +'<button class="cxi red" onclick="deleteItem(\''+id+'\')">Delete</button>';
   ctx.style.top=Math.min(e.clientY+4,window.innerHeight-130)+'px';
-  ctx.style.left=Math.min(e.clientX,window.innerWidth-160)+'px';
+  ctx.style.right='8px';
+  ctx.style.left='auto';
   ctx.classList.add('open');
 }
 function closeCtx(){document.getElementById('ctx').classList.remove('open');}
 
-/* ── ADD ITEM ── */
 function openAddItem(tab){
   var isFam=tab==='family';
   var pk=S.members.filter(function(m){return!m.is_subject;});
   var body='';
   if(isFam){
-    var tiles='';
-    var selMem=S.sel&&S.sel.type==='member'?S.sel.member:null;
+    var tiles='';var selMem=S.sel&&S.sel.type==='member'?S.sel.member:null;
     pk.forEach(function(p,i){
       var c=col(p,i);var sel=selMem&&selMem.id===p.id;
       tiles+='<div class="mtile'+(sel?' sel':'')+'" data-mid="'+p.id+'" style="border-color:'+(sel?c.ic:'#e0d8c8')+'" onclick="this.classList.toggle(\'sel\');this.style.borderColor=this.classList.contains(\'sel\')?\''+c.ic+'\':\'#e0d8c8\'">'
-        +'<i class="ti '+(p.icon||'ti-user')+'" style="color:'+c.ic+';font-size:1rem"></i>'
-        +'<span style="font-size:.52rem;font-weight:600;color:#333">'+esc(p.name)+'</span></div>';
+        +'<i class="ti '+(p.icon||'ti-user')+'" style="color:'+c.ic+';font-size:.95rem" aria-hidden="true"></i>'
+        +'<span style="font-size:.5rem;font-weight:600;color:#333">'+esc(p.name)+'</span></div>';
     });
     body='<div class="fsec"><label class="flbl">Add to</label><div class="mtiles">'+tiles+'</div></div>';
   }else{
-    var curSub=S.sel&&S.sel.type==='ryan'?S.sel.sub:'Backpack';
+    var curSub=S.sel&&S.sel.type==='ryan'?S.sel.sub:'Backpack';S._sub=curSub;
     body='<div class="fsec"><label class="flbl">Sub-list</label><div class="ftog" id="subTog">'
       +'<button class="ftog-opt'+(curSub==='Backpack'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Backpack\'">Backpack</button>'
       +'<button class="ftog-opt'+(curSub==='Meds'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Meds\'">Meds</button>'
       +'<button class="ftog-opt'+(curSub==='Equip'?' on':'')+'" type="button" onclick="togFtog(this,\'subTog\');S._sub=\'Equip\'">Equip</button>'
       +'</div></div>';
-    S._sub=curSub;
   }
   body+='<div class="fsec"><label class="flbl">Item</label><input class="finp" id="addTxt" placeholder="e.g. Sunscreen"/></div>'
-    +'<button class="sbtn family" type="button" onclick="submitAdd(\''+tab+'\')">Add Item</button>';
+    +'<button class="sbtn pack" type="button" onclick="submitAdd(\''+tab+'\')">Add Item</button>';
   openCP('Add Item',body);
   setTimeout(function(){var f=document.getElementById('addTxt');if(f)f.focus();},100);
 }
-function togFtog(btn,gid){
-  document.querySelectorAll('#'+gid+' .ftog-opt').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-}
+function togFtog(btn,gid){document.querySelectorAll('#'+gid+' .ftog-opt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');}
 function submitAdd(tab){
   var text=V('addTxt');if(!text){alert('Enter an item.');return;}
-  if(!S.trip){alert('No active trip.');return;}
-  sdot('saving');
+  if(!S.trip){alert('No active trip.');return;}sdot('saving');
   var rows=[];
   if(tab==='ryan'){
     var sub=S._sub||(S.sel&&S.sel.type==='ryan'?S.sel.sub:'Backpack');
@@ -831,51 +755,93 @@ function submitAdd(tab){
     sels.forEach(function(el){rows.push({trip_id:S.trip.id,member_id:el.dataset.mid,text:text,created_by:S.user&&S.user.id||null});});
   }
   sb.from('checklist_items').insert(rows).select()
-  .then(function(r){
-    if(r.error){sdot('err');console.error(r.error);return;}
-    S.items=S.items.concat(r.data||[]);
-    delete S._sub;
-    sdot('');closeAll();renderPanel();updateProg();
-  });
+  .then(function(r){if(r.error){sdot('err');console.error(r.error);return;}S.items=S.items.concat(r.data||[]);delete S._sub;sdot('');closeAll();renderPanel();updateProg();});
 }
 
-/* ── MEMBER MANAGEMENT ── */
 function openMemberMgr(){
-  var pk=S.members.filter(function(m){return!m.is_subject;});
-  var listHtml='<ul class="mgrlist">';
-  pk.forEach(function(m,i){
-    var c=col(m,i);
-    listHtml+='<li class="mgritem">'
-      +'<span class="mgrdot" style="background:'+c.ic+'"></span>'
-      +'<span class="mgrname">'+esc(m.name)+'</span>'
+  renderMgrPanel();
+  var tmp=document.getElementById('_mgrTmp');
+  var html=tmp.innerHTML;
+  tmp.innerHTML='';
+  openCP('Family Members',html);
+}
+function renderMgrPanel(){
+  var tmp=document.getElementById('_mgrTmp');
+  var html='<ul class="mgrlist">';
+  S.members.forEach(function(m,i){
+    var c=m.is_subject?{bg:'#EEEDFE',ic:'#5048BE'}:col(m,i);
+    html+='<li class="mgritem" id="mgrli_'+m.id+'">'
+      +'<div class="mgrdot" style="background:'+c.ic+'"></div>'
+      +'<span class="mgrname" id="mgrn_'+m.id+'">'+esc(m.name)+'</span>'
+      +'<button class="mgrbtn-edit" onclick="startEditMember(\''+m.id+'\')" aria-label="Edit"><i class="ti ti-pencil"></i></button>'
+      +'<button class="mgrbtn-del" onclick="deleteMember(\''+m.id+'\')" aria-label="Remove"><i class="ti ti-x"></i></button>'
       +'</li>';
   });
-  listHtml+='</ul>';
-  var body=listHtml
-    +'<div class="fsec" style="margin-top:.5rem"><label class="flbl">Add new member</label>'
-    +'<input class="finp" id="newMemberName" placeholder="Name (e.g. Guest, Grandma)"/></div>'
-    +'<button class="sbtn family" type="button" onclick="addMember()"><i class="ti ti-user-plus"></i> Add Member</button>';
-  openCP('Family Members',body);
-  setTimeout(function(){var f=document.getElementById('newMemberName');if(f)f.focus();},100);
+  html+='</ul>'
+    +'<div class="fsec" style="margin-top:.3rem"><label class="flbl">Add new member</label>'
+    +'<div style="display:flex;gap:.4rem">'
+    +'<input class="finp" id="newMemberName" placeholder="Name (e.g. Guest, Grandma)" style="flex:1"/>'
+    +'<button onclick="addMember()" type="button" style="background:#1D9E75;color:white;border:none;border-radius:.5rem;padding:.5rem .75rem;font-size:.78rem;font-weight:600;cursor:pointer;flex-shrink:0">Add</button>'
+    +'</div></div>';
+  tmp.innerHTML=html;
+}
+function startEditMember(id){
+  var li=document.getElementById('mgrli_'+id);if(!li)return;
+  var nameEl=document.getElementById('mgrn_'+id);if(!nameEl)return;
+  var cur=nameEl.textContent;
+  nameEl.outerHTML='<input class="mgr-edit-inp" id="mgrei_'+id+'" value="'+esc(cur)+'" />';
+  var editBtn=li.querySelector('.mgrbtn-edit');
+  if(editBtn){editBtn.innerHTML='<i class="ti ti-check"></i>';editBtn.setAttribute('onclick','saveMemberEdit(\''+id+'\')');}
+  var inp=document.getElementById('mgrei_'+id);
+  if(inp){inp.focus();inp.select();inp.addEventListener('keydown',function(e){if(e.key==='Enter')saveMemberEdit(id);});}
+}
+function saveMemberEdit(id){
+  var inp=document.getElementById('mgrei_'+id);if(!inp)return;
+  var val=inp.value.trim();if(!val){alert('Name cannot be empty.');return;}
+  sdot('saving');
+  sb.from('members').update({name:val}).eq('id',id)
+  .then(function(r){
+    if(r.error){sdot('err');alert('Could not save: '+r.error.message);return;}
+    var m=S.members.find(function(x){return x.id===id;});if(m)m.name=val;
+    var am=S.allMembers.find(function(x){return x.id===id;});if(am)am.name=val;
+    sdot('');
+    openMemberMgr();
+    renderToolbar();renderPanel();
+  });
+}
+function deleteMember(id){
+  var m=S.members.find(function(x){return x.id===id;});
+  if(!m){return;}
+  if(!confirm('Remove '+m.name+' from the trip?'))return;
+  sdot('saving');
+  sb.from('members').delete().eq('id',id)
+  .then(function(r){
+    if(r.error){sdot('err');alert('Could not remove: '+r.error.message);return;}
+    S.members=S.members.filter(function(x){return x.id!==id;});
+    S.allMembers=S.allMembers.filter(function(x){return x.id!==id;});
+    if(S.sel&&S.sel.type==='member'&&S.sel.member&&S.sel.member.id===id){
+      var pk=S.members.filter(function(m){return!m.is_subject;});
+      S.sel=pk.length?{type:'member',member:pk[0]}:(S.isJMCR?{type:'ryan',sub:'Backpack'}:null);
+    }
+    if(S.user&&S.user.id===id){
+      var pk2=S.members.filter(function(m){return!m.is_subject;});S.user=pk2[0]||null;
+    }
+    sdot('');openMemberMgr();renderToolbar();renderPanel();
+  });
 }
 function addMember(){
-  var name=V('newMemberName');
-  if(!name){alert('Enter a name.');return;}
-  sdot('saving');
-  var nextOrder=S.members.length+1;
-  var colors=COLORS[S.members.filter(function(m){return!m.is_subject;}).length%COLORS.length];
-  var row={family_id:S.fid,name:name,is_subject:false,display_order:nextOrder,
-    bg_color:colors.bg,icon_color:colors.ic,icon:'ti-user'};
+  var name=V('newMemberName');if(!name){alert('Enter a name.');return;}sdot('saving');
+  var pk=S.members.filter(function(m){return!m.is_subject;});
+  var colors=COLORS[pk.length%COLORS.length];
+  var row={family_id:S.fid,name:name,is_subject:false,display_order:S.members.length+1,bg_color:colors.bg,icon_color:colors.ic,icon:'ti-user'};
   sb.from('members').insert(row).select()
   .then(function(r){
-    if(r.error){sdot('err');alert('Could not add member: '+r.error.message);return;}
-    S.members=S.members.concat(r.data||[]);
-    S.allMembers=S.allMembers.concat(r.data||[]);
-    sdot('');closeAll();renderToolbar();renderPanel();
+    if(r.error){sdot('err');alert('Could not add: '+r.error.message);return;}
+    S.members=S.members.concat(r.data||[]);S.allMembers=S.allMembers.concat(r.data||[]);
+    sdot('');openMemberMgr();renderToolbar();renderPanel();
   });
 }
 
-/* ── PAX TILES ── */
 function paxTiles(selIds){
   var groups={};var order=[];
   (S.allMembers||[]).forEach(function(m){
@@ -889,8 +855,8 @@ function paxTiles(selIds){
     g.mems.forEach(function(m,i){
       var c=col(m,i);var isSel=selIds?selIds.indexOf(m.id)>=0:isCur;
       tiles+='<div class="mtile'+(isSel?' sel':'')+'" data-mid="'+m.id+'" style="border-color:'+(isSel?c.ic:'#e0d8c8')+'" onclick="this.classList.toggle(\'sel\');this.style.borderColor=this.classList.contains(\'sel\')?\''+c.ic+'\':\'#e0d8c8\'">'
-        +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+c.ic+';font-size:1rem"></i>'
-        +'<span style="font-size:.52rem;font-weight:600">'+esc(m.name)+'</span></div>';
+        +'<i class="ti '+(m.icon||'ti-user')+'" style="color:'+c.ic+';font-size:.95rem" aria-hidden="true"></i>'
+        +'<span style="font-size:.5rem;font-weight:600">'+esc(m.name)+'</span></div>';
     });
     html+='<div class="fam-group"><span class="fam-group-lbl">'+g.name+(isCur?' (you)':'')+'</span><div class="mtiles">'+tiles+'</div></div>';
   });
@@ -899,16 +865,13 @@ function paxTiles(selIds){
 function seatRows(members,pax){
   return(members||[]).map(function(m){
     var s=pax?pax.find(function(p){return p.member_id===m.id;}):null;
-    return'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.32rem">'
-      +'<span style="font-size:.68rem;width:4rem;flex-shrink:0">'+esc(m.name)+'</span>'
+    return'<div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.3rem">'
+      +'<span style="font-size:.66rem;width:3.8rem;flex-shrink:0;color:#555">'+esc(m.name)+'</span>'
       +'<input class="finp" data-seat="'+m.id+'" value="'+(s&&s.seat?esc(s.seat):'')+'" placeholder="Seat" style="flex:1"/></div>';
   }).join('');
 }
-function getSelPax(sel){
-  return[].slice.call(document.querySelectorAll(sel+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});
-}
+function getSelPax(sel){return[].slice.call(document.querySelectorAll(sel+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});}
 
-/* ── FLIGHT FORMS ── */
 function openAddFlight(){S.companions=[];doOpenFlight(null);}
 function doOpenFlight(f){
   var selIds=f?(f.flight_passengers||[]).filter(function(p){return!p.is_companion;}).map(function(p){return p.member_id;}):S.members.map(function(m){return m.id;});
@@ -936,16 +899,9 @@ function removeComp(i){S.companions.splice(i,1);renderCompList();}
 function renderCompList(){var el=document.getElementById('compList');if(!el)return;el.innerHTML=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
 function submitFlight(editId){
   var from=V('fFrom'),to=V('fTo'),dep=V('fDep');
-  if(!from||!to||!dep){alert('From, To and Departure required.');return;}
-  sdot('saving');
-  var insEl=document.querySelector('#insTog .on');
-  var isIns=insEl&&insEl.textContent.trim()==='Yes';
-  var row={trip_id:S.trip&&S.trip.id||null,origin_city:from,dest_city:to,
-    departure_dt:new Date(dep).toISOString(),arrival_dt:V('fArr')?new Date(V('fArr')).toISOString():null,
-    airline:V('fAl')||null,flight_number:V('fNum')||null,gate:V('fGate')||null,
-    confirmation_no:V('fConf')||null,is_insured:isIns,
-    insurance_policy_no:isIns?(V('fPol')||null):null,
-    notes:V('fNotes')||null,entered_by:S.user&&S.user.id||null};
+  if(!from||!to||!dep){alert('From, To and Departure required.');return;}sdot('saving');
+  var insEl=document.querySelector('#insTog .on');var isIns=insEl&&insEl.textContent.trim()==='Yes';
+  var row={trip_id:S.trip&&S.trip.id||null,origin_city:from,dest_city:to,departure_dt:new Date(dep).toISOString(),arrival_dt:V('fArr')?new Date(V('fArr')).toISOString():null,airline:V('fAl')||null,flight_number:V('fNum')||null,gate:V('fGate')||null,confirmation_no:V('fConf')||null,is_insured:isIns,insurance_policy_no:isIns?(V('fPol')||null):null,notes:V('fNotes')||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('flights').insert(row).select().single():sb.from('flights').update(row).eq('id',editId);
   p.then(function(rd){
@@ -953,24 +909,17 @@ function submitFlight(editId){
     var fid=isNew?rd.data.id:editId;
     sb.from('flight_passengers').delete().eq('flight_id',fid).then(function(){
       var paxRows=[];
-      getSelPax('#fpaxTiles').forEach(function(mid){
-        var se=document.querySelector('[data-seat="'+mid+'"]');
-        paxRows.push({flight_id:fid,member_id:mid,seat:se?se.value.trim()||null:null,is_companion:false});
-      });
+      getSelPax('#fpaxTiles').forEach(function(mid){var se=document.querySelector('[data-seat="'+mid+'"]');paxRows.push({flight_id:fid,member_id:mid,seat:se?se.value.trim()||null:null,is_companion:false});});
       S.companions.forEach(function(c){paxRows.push({flight_id:fid,companion_name:c.name,seat:c.seat||null,is_companion:true});});
       var ip=paxRows.length?sb.from('flight_passengers').insert(paxRows):Promise.resolve({});
-      ip.then(function(){
-        S.companions=[];
-        sb.from('flights').select('*,flight_passengers(*,members(name,icon,icon_color))').order('departure_dt')
-        .then(function(r){S.flights=r.data||[];sdot('');closeAll();renderPanel();});
-      });
+      ip.then(function(){S.companions=[];sb.from('flights').select('*,flight_passengers(*,members(name,icon,icon_color))').order('departure_dt').then(function(r){S.flights=r.data||[];sdot('');closeAll();renderPanel();});});
     });
   });
 }
 function flightDetail(id){
   var f=S.flights.find(function(x){return x.id===id;});if(!f)return;
   var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name||p.companion_name||'?')+(p.seat?' ('+p.seat+')':'');}).join(', ')||'-';
-  openCP(esc(f.origin_city)+' &rarr; '+esc(f.dest_city),
+  openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
     DR('Route',f.origin_city+' \u2192 '+f.dest_city)+DR('Departure',fmtDT(f.departure_dt))+DR('Arrival',fmtDT(f.arrival_dt))
     +DR('Airline',f.airline)+DR('Flight #',f.flight_number)+DR('Gate',f.gate)+DR('Confirmation',f.confirmation_no)
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+esc(pax)+'</span></div>'
@@ -978,8 +927,6 @@ function flightDetail(id){
     +'<button class="sbtn flight" type="button" style="margin-top:.5rem" onclick="doOpenFlight(S.flights.find(function(x){return x.id===\''+f.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>');
 }
-
-/* ── HOTEL FORMS ── */
 function openAddHotel(h){
   h=h||{};
   var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):'';
@@ -999,28 +946,17 @@ function openAddHotel(h){
 function submitHotel(editId){
   var name=V('hName');if(!name){alert('Name required.');return;}sdot('saving');
   var acEl=document.querySelector('#acType .on');
-  var row={accom_type:acEl?acEl.textContent:'Hotel',name:name,location:V('hLoc')||null,
-    check_in_dt:V('hIn')?new Date(V('hIn')).toISOString():null,check_out_dt:V('hOut')?new Date(V('hOut')).toISOString():null,
-    room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,
-    trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
+  var row={accom_type:acEl?acEl.textContent:'Hotel',name:name,location:V('hLoc')||null,check_in_dt:V('hIn')?new Date(V('hIn')).toISOString():null,check_out_dt:V('hOut')?new Date(V('hOut')).toISOString():null,room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('accommodations').insert(row):sb.from('accommodations').update(row).eq('id',editId);
-  p.then(function(r){
-    if(r.error){sdot('err');console.error(r.error);return;}
-    sb.from('accommodations').select('*').order('check_in_dt')
-    .then(function(r2){S.hotels=r2.data||[];sdot('');closeAll();renderPanel();});
-  });
+  p.then(function(r){if(r.error){sdot('err');console.error(r.error);return;}sb.from('accommodations').select('*').order('check_in_dt').then(function(r2){S.hotels=r2.data||[];sdot('');closeAll();renderPanel();});});
 }
 function hotelDetail(id){
   var h=S.hotels.find(function(x){return x.id===id;});if(!h)return;
-  openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)
-    +DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))
-    +DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)
+  openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)+DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))+DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)
     +'<button class="sbtn hotel" type="button" style="margin-top:.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===\''+h.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>');
 }
-
-/* ── RESERVATION FORMS ── */
 function openAddReservation(r){
   r=r||{};
   var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):'';
@@ -1039,28 +975,17 @@ function openAddReservation(r){
 function submitReserve(editId){
   var name=V('rName');if(!name){alert('Name required.');return;}sdot('saving');
   var rtEl=document.querySelector('#resType .on');
-  var row={name:name,res_type:rtEl?rtEl.textContent:'Other',
-    reservation_dt:V('rDT')?new Date(V('rDT')).toISOString():null,
-    num_people:parseInt(V('rPpl'))||null,location:V('rLoc')||null,
-    confirmation_no:V('rConf')||null,notes:V('rNotes')||null,
-    trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
+  var row={name:name,res_type:rtEl?rtEl.textContent:'Other',reservation_dt:V('rDT')?new Date(V('rDT')).toISOString():null,num_people:parseInt(V('rPpl'))||null,location:V('rLoc')||null,confirmation_no:V('rConf')||null,notes:V('rNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('reservations').insert(row):sb.from('reservations').update(row).eq('id',editId);
-  p.then(function(r){
-    if(r.error){sdot('err');console.error(r.error);return;}
-    sb.from('reservations').select('*').order('reservation_dt')
-    .then(function(r2){S.reserves=r2.data||[];sdot('');closeAll();renderPanel();});
-  });
+  p.then(function(r){if(r.error){sdot('err');console.error(r.error);return;}sb.from('reservations').select('*').order('reservation_dt').then(function(r2){S.reserves=r2.data||[];sdot('');closeAll();renderPanel();});});
 }
 function reserveDetail(id){
   var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
-  openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))
-    +DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)
+  openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)
     +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }
-
-/* ── DELETE ── */
 function delRec(type,id){
   if(!confirm('Delete this '+type+'?'))return;sdot('saving');
   var tbl={flight:'flights',hotel:'accommodations',reserve:'reservations'};
@@ -1070,42 +995,18 @@ function delRec(type,id){
     else sb.from('reservations').select('*').order('reservation_dt').then(function(r){S.reserves=r.data||[];sdot('');closeAll();renderPanel();});
   });
 }
-
-/* ── TRIP MANAGEMENT ── */
 function openNewTrip(){
   openConfirm('New Trip?','Checklist items stay but are unchecked. Flights, hotels and reservations are cleared.',function(){
     var n=V('newTripName')||'My Trip';sdot('saving');
-    sb.rpc('start_new_trip',{p_family_id:S.fid,p_trip_name:n}).then(function(r){
-      if(r.error){sdot('err');console.error(r.error);return;}
-      S.trip=null;closeCon();sdot('');loadAll();
-    });
+    sb.rpc('start_new_trip',{p_family_id:S.fid,p_trip_name:n}).then(function(r){if(r.error){sdot('err');console.error(r.error);return;}S.trip=null;closeCon();sdot('');loadAll();});
   },'<input class="finp" id="newTripName" placeholder="e.g. Cruise 2027" style="margin-top:.5rem;width:100%"/>');
 }
-function openRenameTrip(){
-  if(!S.trip)return;
-  openCP('Rename Trip','<div class="fsec"><label class="flbl">Name</label><input class="finp" id="tripRenIn" value="'+esc(S.trip.name)+'"/></div><button class="sbtn flight" type="button" onclick="saveRename()">Save</button>');
-}
-function saveRename(){
-  var v=V('tripRenIn');if(!v)return;sdot('saving');
-  sb.rpc('rename_trip',{p_family_id:S.fid,p_new_name:v}).then(function(){
-    if(S.trip)S.trip.name=v;
-    document.getElementById('tripName').textContent=v;
-    sdot('');closeAll();
-  });
-}
 function saveAS(){
-  var selType=S.sel?S.sel.type:'';
-  var selSub=S.sel&&S.sel.type==='ryan'?S.sel.sub:'';
-  var selMem=S.sel&&S.sel.type==='member'&&S.sel.member?S.sel.member.id:null;
-  sb.from('app_state').upsert({
-    family_id:S.fid,active_tab:S.tab,
-    active_sub:selSub||null,
-    active_member:selMem,
-    updated_at:new Date().toISOString()
-  },{onConflict:'family_id'});
+  sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,
+    active_sub:S.sel&&S.sel.type==='ryan'?S.sel.sub:null,
+    active_member:S.sel&&S.sel.type==='member'&&S.sel.member?S.sel.member.id:null,
+    updated_at:new Date().toISOString()},{onConflict:'family_id'});
 }
-
-/* ── UI HELPERS ── */
 function openCP(title,body){
   document.getElementById('cpTitle').textContent=title;
   document.getElementById('cpBody').innerHTML=body;
@@ -1120,21 +1021,13 @@ function openConfirm(title,msg,onOk,extra){
   document.getElementById('cmod').classList.add('open');
   document.getElementById('covr').classList.add('open');
 }
-function closeCon(){
-  document.getElementById('cmod').classList.remove('open');
-  document.getElementById('covr').classList.remove('open');
-}
+function closeCon(){document.getElementById('cmod').classList.remove('open');document.getElementById('covr').classList.remove('open');}
 function closeAll(){
   document.getElementById('cpanel').classList.remove('open');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('ctx').classList.remove('open');
 }
-
-/* ── BOOT ── */
-(function(){
-  var saved=localStorage.getItem('fkey');
-  if(saved&&FIDS[saved])pickFamily(saved);
-}());
+(function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
 
 </script>
 </body>

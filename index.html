@@ -371,7 +371,7 @@ function renderToolbar(){
   btn.className='tb-packer';
   btn.setAttribute('aria-label','Switch packer');
   var nameSpan='';
-  if(S.isJMCR&&S.user){
+  if(S.user){
     var pk=S.members.filter(function(m){return!m.is_subject;});
     var ci=pk.indexOf(S.user);var cc=col(S.user,ci<0?0:ci);
     nameSpan='<span class="tb-packer-name" style="background:'+cc.bg+';color:'+cc.ic+'">'+esc(S.user.name)+'</span>';
@@ -379,8 +379,7 @@ function renderToolbar(){
   btn.innerHTML='<i class="ti ti-users tb-packer-ico" aria-hidden="true"></i>'
     +'<div class="tb-vchev"><i class="ti ti-chevron-up" aria-hidden="true"></i><i class="ti ti-chevron-down" aria-hidden="true"></i></div>'
     +nameSpan;
-  if(S.isJMCR){btn.onclick=function(){openPackerSheet();};}
-  else{btn.style.cursor='default';btn.style.opacity='.5';}
+  btn.onclick=function(){openPackerSheet();};
   tb.appendChild(btn);
   var sp=document.createElement('div');sp.className='tb-spacer';tb.appendChild(sp);
   var sdotEl=document.createElement('span');sdotEl.id='sdot';sdotEl.className='sdot tb-sdot';tb.appendChild(sdotEl);
@@ -536,13 +535,13 @@ function packPanel(){
   if(S.sel&&S.sel.type==='ryan'){
     var sub2=S.sel.sub;var cat2=S.cats.find(function(c){return c.name===sub2;});
     var items2=cat2?sortedItems(S.items.filter(function(i){return i.category_id===cat2.id;})):[];
-    items2.forEach(function(i){rows+=irow(i,showStamp);});
+    items2.forEach(function(i){rows+=irow(i,true);});
     html+='<ul class="ilist" style="background:'+hbg+'66">'+rows+'</ul>'
       +(items2.length?'':'<div class="empty">No items yet \u2014 tap + Add</div>');
   }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
     var m2=S.sel.member;var mi2=pk.indexOf(m2);var mc2=col(m2,mi2<0?0:mi2);
     var items3=sortedItems(S.items.filter(function(i){return i.member_id===m2.id;}));
-    items3.forEach(function(i){rows+=irow(i,showStamp);});
+    items3.forEach(function(i){rows+=irow(i,true);});
     html+='<ul class="ilist" style="background:'+mc2.bg+'55">'+rows+'</ul>'
       +(items3.length?'':'<div class="empty">No items yet \u2014 tap + Add</div>');
   }else{
@@ -619,7 +618,7 @@ function reservePanel(){
       +'<span class="fcard-title">'+esc(r.name)+'</span>'
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +'<div class="fcard-sub"><span class="fcard-pill" style="background:#6B2F9E;color:white">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
+      +(function(){var t=(r.res_type||'Other').toLowerCase();var bg=t==='restaurant'?'#FFCCBC':t==='tour'?'#C8E6C9':t==='activity'?'#B3E5FC':t==='transport'?'#FFF9C4':t==='docking'?'#D1C4E9':'#E8C8F8';var fg=t==='restaurant'?'#BF360C':t==='tour'?'#1B5E20':t==='activity'?'#01579B':t==='transport'?'#F57F17':t==='docking'?'#4527A0':'#6B2F9E';return '<div class="fcard-sub"><span class="fcard-pill" style="background:'+bg+';color:'+fg+'">'+esc(r.res_type||'Other')+'</span>';}())+fmtDT(r.reservation_dt)+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
       +(r.num_people?'<div class="fcard-pax">'+r.num_people+' people</div>':'')
       +(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' · ');return g?'<div class="fcard-pax">'+esc(g)+'</div>':'';}())
       +'</div>';
@@ -681,7 +680,7 @@ function toggleCheck(id){
   sdot('saving');
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
   var nd=!item.is_done;
-  var uid=S.isJMCR?(S.user&&S.user.id||null):null;
+  var uid=S.user&&S.user.id||null;
   sb.from('checklist_items').update({is_done:nd,done_by:nd?uid:null,done_at:nd?new Date().toISOString():null,is_skipped:false}).eq('id',id)
   .then(function(r){if(r.error){sdot('err');return;}item.is_done=nd;item.done_by=nd?uid:null;item.is_skipped=false;sdot('');renderPanel();updateProg();});
 }
@@ -995,7 +994,7 @@ function submitReserve(editId){
 }
 function reserveDetail(id){
   var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
-  document.getElementById('cpanel').classList.add('reserve-detail');openCP(esc(r.name),DR('Type',r.res_type)+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)+(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
+  document.getElementById('cpanel').classList.add('reserve-detail');openCP(esc(r.name),(function(){var t=(r.res_type||'Other').toLowerCase();var cls=t==='restaurant'?'rs-restaurant':t==='tour'?'rs-tour':t==='activity'?'rs-activity':t==='transport'?'rs-transport':t==='docking'?'rs-docking':'rs';return '<div class="drow"><span class="dlbl">Type</span><span class="dval"><span class="pill '+cls+'">'+esc(r.res_type||'Other')+'</span></span></div>';}())+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)+(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
     +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }

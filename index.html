@@ -321,6 +321,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 
 <script>
 
+
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 
@@ -427,7 +428,7 @@ function loadAll(){
                     var iv=setInterval(function(){
                       if(!S.trip)return;
                       sb.from('checklist_items').select('*').eq('trip_id',S.trip.id)
-                      .then(function(rp){S.items=rp.data||[];renderPanel();updateProg();});
+                      .then(function(rp){S.items=rp.data||[];var kps=document.getElementById('kpSheet');if(!kps||!kps.classList.contains('open'))renderPanel();updateProg();});
                     },10000);
                     S.rsubs.push({_iv:iv});
                     fetch('https://api.frankfurter.app/latest?from=EUR&to=USD').then(function(r){return r.json();}).then(function(d){S.exRate=(d&&d.rates&&d.rates.USD)||1.09;}).catch(function(){S.exRate=1.09;});
@@ -517,7 +518,7 @@ function renderPanel(){
   if(S.tab==='pack')el.innerHTML=packPanel();
   else if(S.tab==='flight')el.innerHTML=flightPanel();
   else if(S.tab==='hotel')el.innerHTML=hotelPanel();
-  else if(S.tab==='split'){el.innerHTML=splitPanel();bindKP();document.addEventListener('click',handleKPClick,true);return;}
+  else if(S.tab==='split'){el.innerHTML=splitPanel();bindKP();if(!window._kpListenerAdded){document.addEventListener('click',handleKPClick,true);window._kpListenerAdded=true;}return;}
   else el.innerHTML=reservePanel();
   document.querySelectorAll('.ichk').forEach(function(b){b.onclick=function(){toggleCheck(b.dataset.id);};});
   document.querySelectorAll('.iundo').forEach(function(b){b.onclick=function(){undoCheck(b.dataset.id);};});
@@ -1173,6 +1174,7 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 
 

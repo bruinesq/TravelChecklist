@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;overscroll-behavior:none}
@@ -265,6 +266,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 .kp-cfm{margin:5px 12px 2px;height:50px;border-radius:12px;border:none;background:#e8c84a;color:#0d2b1f;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px)}
 .split-empty{padding:2rem 1.5rem;text-align:center;color:rgba(255,255,255,.28);font-size:13px}
 
+
 </style>
 </head>
 <body>
@@ -322,6 +324,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f0eb;
 <script>
 
 
+
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 
@@ -347,7 +350,7 @@ var S={
   user:null,sel:null,tab:'pack',
   trip:null,members:[],allMembers:[],cats:[],items:[],
   flights:[],hotels:[],reserves:[],rsubs:[],companions:[],
-  expenses:[],exRate:1.09,splitView:'expenses',
+  expenses:[],exRate:1.09,splitView:'expenses',sortBy:'date',
   kp:{open:false,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:0,mattN:0,silvN:0,currDigits:''}
 };
 
@@ -1105,18 +1108,135 @@ function famColor(fk){return fk==='jmcr'?'#534AB7':fk==='matthews'?'#993C1D':'#8
 function famName(fk){return fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';}
 function catPillSplit(cat){var m={Food:'#FFCCBC:#8B1A00',Activity:'#BBDEFB:#003070',Transport:'#FFF59D:#7A4F00',Lodging:'#B2EBF2:#006064'};var p=m[cat]||'#E1D5F5:#4527A0';var cols=p.split(':');return'<span class="er-pill" style="background:'+cols[0]+';color:'+cols[1]+'">'+esc(cat)+'</span>';}
 function calcSplits(){var total=parseFloat(S.kp.amount)||0;if(S.kp.currency==='EUR')total=total*(S.exRate||1.09);var jn=S.kp.jmcrN||0,mn=S.kp.mattN||0,sn=S.kp.silvN||0;var tot=jn+mn+sn;var pp=tot>0?total/tot:0;return{jmcr:jn,matt:mn,silv:sn,total:tot,pp:pp,jAmt:pp*jn,mAmt:pp*mn,sAmt:pp*sn,usdTotal:total};}
-function splitPanel(){var exps=(S.expenses||[]).slice().sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});var uf=function(n){return'$'+n.toFixed(2);};var tot=0;exps.forEach(function(e){tot+=parseFloat(e.amount_usd||e.amount||0);});var bal={jmcr:0,matthews:0,silvermans:0};exps.forEach(function(e){var spl=e.expense_splits||[];var tp=spl.reduce(function(s,x){return s+(x.people_count||0);},0);if(!tp)return;var au=parseFloat(e.amount_usd||e.amount||0);var pp=au/tp;spl.forEach(function(x){if(x.family_key===e.paid_by_family)return;if(bal[x.family_key]!==undefined)bal[x.family_key]-=pp*(x.people_count||0);if(bal[e.paid_by_family]!==undefined)bal[e.paid_by_family]+=pp*(x.people_count||0);});});var eOn=S.splitView==='expenses'?' on':'';var sOn=S.splitView==='settle'?' on':'';var html='<div class="split-screen"><div class="split-hdr"><span class="split-htitle"><i class="ti ti-receipt" aria-hidden="true" style="font-size:13px;margin-right:5px"></i>Split</span><button class="split-add" id="splitAddBtn">+ Add</button></div><div class="split-stats"><div class="sstat"><div class="sstat-lbl">Total spent</div><div class="sstat-val">'+uf(tot)+'</div></div><div class="sstat"><div class="sstat-lbl">Expenses</div><div class="sstat-val">'+exps.length+'</div></div></div><div class="split-tog"><button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button><button class="stog-btn'+sOn+'" data-sv="settle">Settlement</button></div>';if(S.splitView==='expenses'){html+='<div class="exp-list">';if(!exps.length)html+='<div class="split-empty">No expenses yet. Tap + Add to get started.</div>';exps.forEach(function(e){var spl=e.expense_splits||[];var tp=spl.reduce(function(s,x){return s+(x.people_count||0);},0);var au=parseFloat(e.amount_usd||e.amount||0);var pp=tp>0?au/tp:0;var dots=spl.map(function(x){var fc=famColor(x.family_key);return'<span class="er-sfam"><span class="er-sdot" style="background:'+fc+'"></span>'+esc(famName(x.family_key))+'&nbsp;<span class="er-sshare">('+x.people_count+'p&nbsp;&middot;&nbsp;'+uf(pp*x.people_count)+')</span></span>';}).join('');html+='<div class="exp-row"><div class="er-top"><span class="er-desc">'+esc(e.description||e.category||'Expense')+'</span><span class="er-amt">'+uf(au)+'</span></div><div class="er-meta">'+catPillSplit(e.category||'Other')+' Paid by <span style="color:'+famColor(e.paid_by_family)+';font-weight:600">'+famName(e.paid_by_family)+'</span></div>'+(dots?'<div class="er-splits">'+dots+'</div>':'')+'<div style="display:flex;gap:8px;margin-top:6px"><button data-expdel="'+e.id+'" style="font-size:10px;color:rgba(255,255,255,.35);background:none;border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:2px 8px;cursor:pointer">Delete</button></div>'+'</div>';});html+='</div>';}else{html+='<div class="settle-list">';var fks=['jmcr','matthews','silvermans'];var any=false;fks.forEach(function(fr){if(bal[fr]>=0)return;var owed=-bal[fr];fks.forEach(function(to){if(to===fr||bal[to]<=0)return;var pay=Math.min(owed,bal[to]);if(pay<0.01)return;any=true;html+='<div class="settle-row"><div class="settle-fams"><span class="settle-from"><span class="settle-fdot" style="background:'+famColor(fr)+'"></span>'+famName(fr)+'</span><i class="ti ti-arrow-right settle-arrow" aria-hidden="true"></i><span class="settle-to"><span class="settle-fdot" style="background:'+famColor(to)+'"></span>'+famName(to)+'</span><span class="settle-total">'+uf(pay)+'</span></div></div>';});});if(!any)html+='<div class="split-empty">All square! No payments needed.</div>';html+='</div>';}html+='</div><div class="kp-overlay" id="kpOverlay"></div><div class="kp-sheet" id="kpSheet"></div>';return html;}
+function splitPanel(){
+  var exps=(S.expenses||[]).slice().sort(function(a,b){
+    if(S.sortBy==='paidby')return(a.paid_by_family||'').localeCompare(b.paid_by_family||'');
+    return new Date(b.created_at)-new Date(a.created_at);
+  });
+  var uf=function(n){return'$'+n.toFixed(2);};
+  var tot=0;exps.forEach(function(e){tot+=parseFloat(e.amount_usd||e.amount||0);});
+  var bal={jmcr:0,matthews:0,silvermans:0};
+  var paid={jmcr:0,matthews:0,silvermans:0};
+  exps.forEach(function(e){
+    var au=parseFloat(e.amount_usd||e.amount||0);
+    if(paid[e.paid_by_family]!==undefined)paid[e.paid_by_family]+=au;
+    var spl=e.expense_splits||[];
+    var tp=spl.reduce(function(s,x){return s+(x.people_count||0);},0);
+    if(!tp)return;
+    var pp=au/tp;
+    spl.forEach(function(x){
+      if(x.family_key===e.paid_by_family)return;
+      if(bal[x.family_key]!==undefined)bal[x.family_key]-=pp*(x.people_count||0);
+      if(bal[e.paid_by_family]!==undefined)bal[e.paid_by_family]+=pp*(x.people_count||0);
+    });
+  });
+  var sortLabel=S.sortBy==='paidby'?'Paid By':'Date';
+  var eOn=S.splitView==='expenses'?' on':'';var sOn=S.splitView==='settle'?' on':'';
+  var html='<div class="split-screen">'
+    +'<div class="split-hdr"><span class="split-htitle"><i class="ti ti-receipt" aria-hidden="true" style="font-size:13px;margin-right:5px"></i>Split</span>'
+    +'<button class="split-add" id="splitAddBtn">+ Add</button></div>'
+    +'<div class="split-stats">'
+    +'<div class="sstat"><div class="sstat-lbl">Total spent</div><div class="sstat-val">'+uf(tot)+'</div></div>'
+    +'<div class="sstat"><div class="sstat-lbl">Expenses</div><div class="sstat-val">'+exps.length+'</div></div>'
+    +'<div class="ssort" id="sortPill">'
+      +'<div class="ssort-lbl">Sort by</div>'
+      +'<div class="ssort-val">'+sortLabel+' <i class="ti ti-chevron-down" aria-hidden="true" style="font-size:11px"></i></div>'
+      +'<div class="ssort-menu" id="sortMenu">'
+        +'<div class="ssort-opt'+(S.sortBy!=='paidby'?' sel':'')+'" data-sort="date">Date</div>'
+        +'<div class="ssort-opt'+(S.sortBy==='paidby'?' sel':'')+'" data-sort="paidby">Paid By</div>'
+      +'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="split-tog">'
+    +'<button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button>'
+    +'<button class="stog-btn'+sOn+'" data-sv="settle">Reimbursement</button>'
+    +'</div>';
+  if(S.splitView==='expenses'){
+    html+='<div class="exp-list">';
+    if(!exps.length)html+='<div class="split-empty">No expenses yet. Tap + Add to get started.</div>';
+    exps.forEach(function(e){
+      var spl=e.expense_splits||[];
+      var tp=spl.reduce(function(s,x){return s+(x.people_count||0);},0);
+      var au=parseFloat(e.amount_usd||e.amount||0);
+      var pp=tp>0?au/tp:0;
+      var catMap={Food:'#FFCCBC:#8B1A00',Activity:'#BBDEFB:#003070',Transport:'#FFF59D:#7A4F00',Lodging:'#B2EBF2:#006064'};
+      var cp=catMap[e.category]||'#ede7d9:#5a4a38';var cc=cp.split(':');
+      var pill='<span class="er-pill" style="background:'+cc[0]+';color:'+cc[1]+'">'+esc(e.category||'')+'</span>';
+      var dots=spl.map(function(x){
+        return'<span style="color:'+famColor(x.family_key)+';font-weight:600">'+famName(x.family_key)+'</span>'
+          +' ('+x.people_count+'p&nbsp;&middot;&nbsp;'+uf(pp*x.people_count)+')';
+      }).join('&nbsp;&nbsp;');
+      var dateStr=e.created_at?new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+      html+='<div class="exp-row">'
+        +'<div class="er-top"><span class="er-desc">'+esc(e.description||e.category||'Expense')+'</span>'
+        +'<span class="er-amt">'+uf(au)+'</span></div>'
+        +'<div class="er-meta">'+pill
+        +'Paid by <span style="color:'+famColor(e.paid_by_family)+';font-weight:700">'+famName(e.paid_by_family)+'</span>'
+        +(dateStr?'&nbsp;&middot;&nbsp;<span style="color:#8a7a60">'+dateStr+'</span>':'')
+        +'</div>'
+        +(dots?'<div class="er-splits">'+dots+'</div>':'')
+        +'<button class="er-del" data-expdel="'+e.id+'">Delete</button>'
+        +'</div>';
+    });
+    html+='</div>';
+  }else{
+    var fks=['jmcr','matthews','silvermans'];
+    html+='<div class="net-banner">';
+    fks.forEach(function(fk){
+      var b=bal[fk]||0;
+      var cls=b>0.01?'pos':b<-0.01?'neg':'zer';
+      var sign=b>0.01?'+':'';
+      html+='<div class="net-card '+cls+'">'
+        +'<div class="net-name">'+famName(fk)+'</div>'
+        +'<div class="net-amt">'+sign+uf(Math.abs(b))+'</div>'
+        +'<div class="net-sub">'+(b>0.01?'is owed':b<-0.01?'owes':'settled')+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+    html+='<div class="paid-banner"><div class="paid-row">';
+    fks.forEach(function(fk){
+      if(!paid[fk])return;
+      html+='<span class="paid-item"><span class="paid-dot" style="background:'+famColor(fk)+'"></span>'
+        +'<span class="paid-lbl">'+famName(fk)+'</span>&nbsp;paid&nbsp;'+uf(paid[fk])+'</span>';
+    });
+    html+='</div></div>';
+    html+='<div class="settle-hdr">Reimbursement</div>';
+    html+='<div class="settle-list">';
+    var any=false;
+    var balCopy={jmcr:bal.jmcr,matthews:bal.matthews,silvermans:bal.silvermans};
+    fks.forEach(function(fr){
+      fks.forEach(function(to){
+        if(fr===to)return;
+        if((balCopy[fr]||0)>=-0.01||(balCopy[to]||0)<=0.01)return;
+        var pay=Math.min(-(balCopy[fr]||0),balCopy[to]||0);
+        if(pay<0.01)return;
+        any=true;
+        balCopy[fr]+=pay;balCopy[to]-=pay;
+        html+='<div class="settle-row">'
+          +'<span class="settle-from"><span class="settle-fdot" style="background:'+famColor(fr)+'"></span>'+famName(fr)+'</span>'
+          +'<i class="ti ti-arrow-right settle-arrow" aria-hidden="true"></i>'
+          +'<span class="settle-to"><span class="settle-fdot" style="background:'+famColor(to)+'"></span>'+famName(to)+'</span>'
+          +'<span class="settle-total">'+uf(pay)+'</span>'
+          +'</div>';
+      });
+    });
+    if(!any)html+='<div class="split-empty">All square! No reimbursements needed.</div>';
+    html+='</div>';
+  }
+  html+='</div><div class="kp-overlay" id="kpOverlay"></div><div class="kp-sheet" id="kpSheet"></div>';
+  return html;
+}
 function kpSheetHTML(){var sp=calcSplits();var uf=function(n){return n>0?'$'+n.toFixed(2):'--';};var sym=S.kp.currency==='EUR'?'\u20ac':'$';var d=S.kp.currDigits||'0';var jCls='kp-sbox'+(S.kp.jmcrN===0?' kp-soff':'')+(S.kp.focus==='jmcr'?' active':'');var mCls='kp-sbox'+(S.kp.mattN===0?' kp-soff':'')+(S.kp.focus==='matthews'?' active':'');var sCls='kp-sbox'+(S.kp.silvN===0?' kp-soff':'')+(S.kp.focus==='silvermans'?' active':'');var amtD=S.kp.focus==='amount'?d:(S.kp.amount||'0');var jD=S.kp.focus==='jmcr'?d:String(S.kp.jmcrN);var mD=S.kp.focus==='matthews'?d:String(S.kp.mattN);var sD=S.kp.focus==='silvermans'?d:String(S.kp.silvN);var note=S.kp.currency==='EUR'?' \u2192 $'+sp.usdTotal.toFixed(2):'';var cats=['Food','Activity','Transport','Lodging'];var catBtns=cats.map(function(ct){return'<button class="kp-cat'+(S.kp.cat===ct?' on':'')+'" data-cat="'+ct+'">'+ct+'</button>';}).join('');var pBtns='<button class="kp-pb'+(S.kp.paidBy==='jmcr'?' on-j':'')+'" data-pb="jmcr">JMCR</button><button class="kp-pb'+(S.kp.paidBy==='matthews'?' on-m':'')+'" data-pb="matthews">Matthews</button><button class="kp-pb'+(S.kp.paidBy==='silvermans'?' on-s':'')+'" data-pb="silvermans">Silvermans</button>';var kBtns=['1','2','3','4','5','6','7','8','9','.','0','DEL'].map(function(k){if(k==='DEL')return'<button class="kp-key del" data-key="DEL" aria-label="delete"><i class="ti ti-backspace" aria-hidden="true" style="font-size:20px"></i></button>';if(k==='.')return'<button class="kp-key dot" data-key=".">.</button>';return'<button class="kp-key" data-key="'+k+'">'+k+'</button>';}).join('');return'<div class="kp-handle"></div><div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px 2px"><span style="font-size:12px;font-weight:700;color:#e8c84a;letter-spacing:.06em;text-transform:uppercase">Add Expense</span><button data-kpclose="1" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:20px;color:rgba(255,255,255,.5);font-size:12px;padding:3px 10px;cursor:pointer">Cancel</button></div><div class="kp-fields"><div class="kp-top-row"><div class="kp-box'+(S.kp.focus==='amount'?' active':'')+'" data-kpf="amount"><div class="kp-lbl">Amount</div><div class="kp-amt-inner"><div class="kp-amt-disp"><span class="kp-sym">'+sym+'</span><span class="kp-num">'+esc(amtD)+'</span></div><div class="kp-curr"><button class="kp-cb'+(S.kp.currency==='USD'?' on':'')+'" data-cur="USD">USD</button><button class="kp-cb'+(S.kp.currency==='EUR'?' on':'')+'" data-cur="EUR">EUR</button></div></div></div><div class="kp-box"><div class="kp-lbl">Date</div><div class="kp-date-val" id="kpDateVal"></div><div class="kp-date-time" id="kpTimeVal"></div></div></div><div class="kp-box"><div class="kp-lbl">Category</div><div class="kp-cats">'+catBtns+'</div><input class="kp-desc" placeholder="Description (optional)" id="kpDesc" value="'+esc(S.kp.desc||'')+'"></div><div class="kp-box"><div class="kp-lbl">Paid by</div><div class="kp-paidby">'+pBtns+'</div></div><div class="kp-box"><div class="kp-lbl">Split among &mdash; tap family to set count</div><div class="kp-splitgrid"><div class="'+jCls+'" data-kpf="jmcr"><div class="kp-sname">JMCR</div><div class="kp-sppl">'+jD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.jmcrN>0?'$'+sp.jAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='jmcr'?'editing':'tap to set')+'</div></div><div class="'+mCls+'" data-kpf="matthews"><div class="kp-sname">Matthews</div><div class="kp-sppl">'+mD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.mattN>0?'$'+sp.mAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='matthews'?'editing':'tap to set')+'</div></div><div class="'+sCls+'" data-kpf="silvermans"><div class="kp-sname">Silvermans</div><div class="kp-sppl">'+sD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.silvN>0?'$'+sp.sAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='silvermans'?'editing':'tap to set')+'</div></div></div></div></div><div class="kp-hint">'+sp.total+' people &nbsp;&middot;&nbsp; $'+sp.pp.toFixed(2)+'/person</div><div class="kp-keys">'+kBtns+'</div><button class="kp-cfm" id="kpCfmBtn"><i class="ti ti-check" aria-hidden="true"></i> Save &nbsp;&middot;&nbsp; '+sym+esc(S.kp.amount||'0')+note+'</button>';}
 function bindKP(){var addBtn=document.getElementById('splitAddBtn');if(addBtn)addBtn.onclick=function(){openKP();};var ovr=document.getElementById('kpOverlay');if(ovr)ovr.onclick=function(e){if(e.target===ovr)closeKP();};}
-function setKPDateTime(){var dv=document.getElementById('kpDateVal');var tv=document.getElementById('kpTimeVal');if(!dv)return;var now=new Date();dv.textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric'});tv.textContent=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
-function openKP(){var j=famMemCount('jmcr');var m=famMemCount('matthews');var sv=famMemCount('silvermans');S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:''};var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();setKPDateTime();}if(ovr)ovr.classList.add('open');}
+function setKPDateTime(){var dv=document.getElementById('kpDateVal');var tv=document.getElementById('kpTimeVal');if(!dv)return;var now=S.kp.dateVal?new Date(S.kp.dateVal):new Date();dv.textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric'});tv.textContent=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});var inp=document.getElementById('kpDateInp');if(inp&&!S.kp.dateVal){var pad=function(n){return String(n).padStart(2,'0');};inp.value=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());}}
+function openKP(){var j=famMemCount('jmcr');var m=famMemCount('matthews');var sv=famMemCount('silvermans');S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:'',dateVal:''};var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();setKPDateTime();}if(ovr)ovr.classList.add('open');}
 function closeKP(){var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');if(sheet)sheet.classList.remove('open');if(ovr)ovr.classList.remove('open');}
 function kpFocus(field){if(S.kp.focus!==field){var prev=S.kp.focus;var d=S.kp.currDigits||'0';if(prev==='amount')S.kp.amount=d;else if(prev==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(prev==='matthews')S.kp.mattN=parseInt(d)||0;else if(prev==='silvermans')S.kp.silvN=parseInt(d)||0;}S.kp.focus=field;var isFam=field==='jmcr'||field==='matthews'||field==='silvermans';S.kp.currDigits=field==='amount'?S.kp.amount:(isFam?'':'0');refreshKP();}
 function kpKey(k){var d=S.kp.currDigits||'';var isAmt=S.kp.focus==='amount';if(k==='.'&&!isAmt)return;if(k==='.'&&d.indexOf('.')>=0)return;if(!isAmt&&d!==''&&d.length>=2)return;if(d==='0'&&k!=='.')d='';d+=k;S.kp.currDigits=d;if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
 function kpDel(){var d=S.kp.currDigits||'';d=d.length>1?d.slice(0,-1):'0';S.kp.currDigits=d;var isAmt=S.kp.focus==='amount';if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
 function refreshKP(){var di=document.getElementById('kpDesc');if(di)S.kp.desc=di.value;var sheet=document.getElementById('kpSheet');if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=kpSheetHTML();setKPDateTime();var di2=document.getElementById('kpDesc');if(di2)di2.value=S.kp.desc||'';}}
-function handleKPClick(e){var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');renderPanel();});});});}return;}}
-function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');closeKP();renderPanel();});});});}
+function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;var sm=document.getElementById('sortMenu');if(sm)sm.classList.remove('open');renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){var sm2=document.getElementById('sortMenu');if(sm2)sm2.classList.toggle('open');return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');renderPanel();});});});}return;}}
+function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');closeKP();renderPanel();});});});}
 
 function saveAS(){
   sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,
@@ -1174,6 +1294,7 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 
 

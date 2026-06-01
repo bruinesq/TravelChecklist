@@ -14,6 +14,7 @@
 
 
 
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;overscroll-behavior:none}
@@ -255,6 +256,54 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .er-ppl{font-size:11px;color:#5a4a38;margin-top:5px;line-height:1.5}
 
 
+
+.kp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;display:none}
+.kp-overlay.open{display:block}
+.kp-sheet{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(96vw,420px);background:#0d2b1f;border-radius:16px;z-index:910;display:none;padding:0 0 16px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.55)}
+.kp-sheet.open{display:block}
+.kp-handle{width:32px;height:3px;background:rgba(255,255,255,.2);border-radius:99px;margin:10px auto 0}
+.kp-fields{padding:8px 12px 4px;display:flex;flex-direction:column;gap:6px}
+.kp-top-row{display:grid;grid-template-columns:1fr 90px;gap:6px}
+.kp-box{background:#1a3d2b;border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 11px;cursor:pointer}
+.kp-box.active{border-color:#e8c84a}
+.kp-lbl{font-size:9px;color:rgba(255,255,255,.38);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.kp-amt-inner{display:flex;align-items:baseline;justify-content:space-between}
+.kp-amt-disp{display:flex;align-items:baseline;gap:3px}
+.kp-sym{font-size:13px;color:#e8c84a;font-weight:700;line-height:2}
+.kp-num{font-size:28px;font-weight:700;color:#fff;line-height:1}
+.kp-curr{display:flex;border:1px solid rgba(255,255,255,.15);border-radius:5px;overflow:hidden;align-self:flex-start}
+.kp-cb{padding:4px 7px;font-size:10px;font-weight:700;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.35)}
+.kp-cb.on{background:#e8c84a;color:#0d2b1f}
+.kp-date-val{font-size:15px;font-weight:600;color:rgba(255,255,255,.8);line-height:1.2}
+.kp-date-time{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.kp-cats{display:flex;gap:5px;margin-top:3px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.kp-cat{padding:4px 10px;border-radius:99px;font-size:12px;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.45);background:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.kp-cat.on{background:#e8c84a;color:#0d2b1f;border-color:#e8c84a;font-weight:600}
+.kp-desc{background:none;border:none;outline:none;color:rgba(255,255,255,.6);font-size:12px;width:100%;font-family:inherit;margin-top:5px;border-top:1px solid rgba(255,255,255,.08);padding-top:5px}
+.kp-desc::placeholder{color:rgba(255,255,255,.2)}
+.kp-paidby{display:flex;gap:5px;margin-top:3px}
+.kp-pb{padding:4px 10px;border-radius:99px;font-size:12px;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.45);background:none;cursor:pointer;white-space:nowrap}
+.kp-pb.on-j{background:#534AB7;border-color:#534AB7;color:#fff;font-weight:600}
+.kp-pb.on-m{background:#993C1D;border-color:#993C1D;color:#fff;font-weight:600}
+.kp-pb.on-s{background:#854F0B;border-color:#854F0B;color:#fff;font-weight:600}
+.kp-splitgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:4px}
+.kp-sbox{background:#243f30;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 5px;text-align:center;cursor:pointer}
+.kp-sbox.active{border-color:#e8c84a;background:#1a3d2b}
+.kp-sbox.kp-soff{opacity:.38}
+.kp-sname{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.35);margin-bottom:3px}
+.kp-sppl{font-size:24px;font-weight:700;color:#fff;line-height:1}
+.kp-sbox.active .kp-sppl{color:#e8c84a}
+.kp-splbl{font-size:9px;color:rgba(255,255,255,.25);margin-top:1px}
+.kp-samt{font-size:11px;color:#e8c84a;margin-top:4px;font-weight:700;min-height:13px}
+.kp-sbox.kp-soff .kp-samt{color:rgba(255,255,255,.15)}
+.kp-shint{font-size:8px;color:rgba(255,255,255,.18);margin-top:2px}
+.kp-sbox.active .kp-shint{color:#e8c84a;opacity:.6}
+.kp-hint{font-size:10px;color:rgba(255,255,255,.28);text-align:center;padding:3px 0 1px}
+.kp-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:6px 14px}
+.kp-key{height:54px;border-radius:10px;border:none;font-size:26px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#ffffff;background:#4a6b58}
+.kp-key.del{background:#c0392b}
+.kp-key.dot{font-size:22px;color:#ffffff;font-weight:700}
+.kp-cfm{margin:5px 12px 2px;height:50px;border-radius:12px;border:none;background:#e8c84a;color:#0d2b1f;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px)}
 </style>
 </head>
 <body>
@@ -310,6 +359,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 </div>
 
 <script>
+
 
 
 
@@ -1176,11 +1226,12 @@ function splitPanel(){
     fks.forEach(function(fk){
       var b=bal[fk]||0;
       var cls=b>0.01?'pos':b<-0.01?'neg':'zer';
-      var sign=b>0.01?'+':'';
+      var paidAmt=paid[fk]||0;
+      var netLbl=b>0.01?'(owed +'+uf(b)+')':b<-0.01?'(owes '+uf(-b)+')':'(settled)';
       html+='<div class="net-card '+cls+'">'
         +'<div class="net-name">'+famName(fk)+'</div>'
-        +'<div class="net-amt">'+sign+uf(Math.abs(b))+'</div>'
-        +'<div class="net-sub">'+(b>0.01?'is owed':b<-0.01?'owes':'settled')+'</div>'
+        +'<div class="net-amt">'+uf(paidAmt)+'</div>'
+        +'<div class="net-sub">'+netLbl+'</div>'
         +'</div>';
     });
     html+='</div>';
@@ -1302,6 +1353,7 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 
 

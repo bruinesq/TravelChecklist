@@ -19,6 +19,7 @@
 
 
 
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;overscroll-behavior:none}
@@ -313,6 +314,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 
 
 
+
 </style>
 </head>
 <body>
@@ -368,6 +370,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 </div>
 
 <script>
+
 
 
 
@@ -488,7 +491,7 @@ function loadAll(){
                     },10000);
                     S.rsubs.push({_iv:iv});
                     fetch('https://api.frankfurter.app/latest?from=EUR&to=USD').then(function(r){return r.json();}).then(function(d){S.exRate=(d&&d.rates&&d.rates.USD)||1.09;}).catch(function(){S.exRate=1.09;});
-                    if(S.trip){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];showApp();render();});}else{showApp();render();}
+                    if(S.trip){loadExpenses(function(exps){S.expenses=exps;showApp();render();});}else{showApp();render();}
                   });
                 });
               });
@@ -1162,6 +1165,29 @@ function famColor(fk){return fk==='jmcr'?'#534AB7':fk==='matthews'?'#993C1D':'#8
 function famName(fk){return fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';}
 function catPillSplit(cat){var m={Food:'#FFCCBC:#8B1A00',Activity:'#BBDEFB:#003070',Transport:'#FFF59D:#7A4F00',Lodging:'#B2EBF2:#006064'};var p=m[cat]||'#E1D5F5:#4527A0';var cols=p.split(':');return'<span class="er-pill" style="background:'+cols[0]+';color:'+cols[1]+'">'+esc(cat)+'</span>';}
 function calcSplits(){var total=parseFloat(S.kp.amount)||0;if(S.kp.currency==='EUR')total=total*(S.exRate||1.09);var jn=S.kp.jmcrN||0,mn=S.kp.mattN||0,sn=S.kp.silvN||0;var tot=jn+mn+sn;var pp=tot>0?total/tot:0;return{jmcr:jn,matt:mn,silv:sn,total:tot,pp:pp,jAmt:pp*jn,mAmt:pp*mn,sAmt:pp*sn,usdTotal:total};}
+
+function loadExpenses(cb){
+  if(!S.trip){cb([]);return;}
+  sb.from('expenses').select('*').eq('trip_id',S.trip.id)
+  .order('created_at',{ascending:false})
+  .then(function(re){
+    var exps=re.data||[];
+    if(!exps.length){cb([]);return;}
+    var ids=exps.map(function(e){return e.id;});
+    sb.from('expense_splits').select('*').in('expense_id',ids)
+    .then(function(rs){
+      var splits=rs.data||[];
+      exps.forEach(function(e){
+        e.expense_splits=splits.filter(function(s){return s.expense_id===e.id;});
+      });
+      cb(exps);
+    }).catch(function(){
+      // fallback: try join
+      exps.forEach(function(e){e.expense_splits=[];});
+      cb(exps);
+    });
+  });
+}
 function splitPanel(){
   var exps=(S.expenses||[]).slice().sort(function(a,b){
     if(S.sortBy==='paidby')return(a.paid_by_family||'').localeCompare(b.paid_by_family||'');
@@ -1309,8 +1335,8 @@ function kpFocus(field){if(S.kp.focus!==field){var prev=S.kp.focus;var d=S.kp.cu
 function kpKey(k){var d=S.kp.currDigits||'';var isAmt=S.kp.focus==='amount';if(k==='.'&&!isAmt)return;if(k==='.'&&d.indexOf('.')>=0)return;if(!isAmt&&d!==''&&d.length>=2)return;if(d==='0'&&k!=='.')d='';d+=k;S.kp.currDigits=d;if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
 function kpDel(){var d=S.kp.currDigits||'';d=d.length>1?d.slice(0,-1):'0';S.kp.currDigits=d;var isAmt=S.kp.focus==='amount';if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
 function refreshKP(){var di=document.getElementById('kpDesc');if(di)S.kp.desc=di.value;var sheet=document.getElementById('kpSheet');if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=kpSheetHTML();setKPDateTime();var di2=document.getElementById('kpDesc');if(di2)di2.value=S.kp.desc||'';}}
-function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){S.sortBy=S.sortBy==='date'?'paidby':'date';renderPanel();return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expedit=e.target.closest('[data-expedit]');if(expedit){openEditExpense(expedit.dataset.expedit);return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');renderPanel();});});});}return;}}
-function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){sb.from('expenses').select('*,expense_splits(*)').eq('trip_id',S.trip.id).order('created_at',{ascending:false}).then(function(re){S.expenses=re.data||[];sdot('');closeKP();renderPanel();});});});}
+function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){S.sortBy=S.sortBy==='date'?'paidby':'date';renderPanel();return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expedit=e.target.closest('[data-expedit]');if(expedit){openEditExpense(expedit.dataset.expedit);return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');renderPanel();});});});}return;}}
+function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});}
 
 function saveAS(){
   sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,
@@ -1368,6 +1394,7 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
 
 
 

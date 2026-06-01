@@ -24,6 +24,8 @@
 
 
 
+
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;overscroll-behavior:none}
@@ -230,18 +232,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .net-card.pos{background:#d4edda;border-color:#a8d5b5}
 .net-card.neg{background:#fde8e8;border-color:#f5b8b8}
 .net-card.zer{background:#ede7d9;border-color:#cdc7bb}
-.net-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
-.net-card.pos .net-name{color:#1B5E20}
-.net-card.neg .net-name{color:#8B1A00}
-.net-card.zer .net-name{color:#7a6a58}
-.net-amt{font-size:15px;font-weight:700}
-.net-card.pos .net-amt{color:#1B5E20}
-.net-card.neg .net-amt{color:#c0392b}
-.net-card.zer .net-amt{color:#7a6a58}
-.net-sub{font-size:9px;margin-top:1px}
-.net-card.pos .net-sub{color:#2E7D32}
-.net-card.neg .net-sub{color:#a93226}
-.net-card.zer .net-sub{color:#8a7a60}
+.net-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.net-card.pos .net-name{color:#145214}
+.net-card.neg .net-name{color:#7a0000}
+.net-card.zer .net-name{color:#4a3c2c}
+.net-amt{font-size:20px;font-weight:700}
+.net-card.pos .net-amt{color:#145214}
+.net-card.neg .net-amt{color:#a93226}
+.net-card.zer .net-amt{color:#4a3c2c}
+.net-sub{font-size:12px;margin-top:3px;font-weight:600}
+.net-card.pos .net-sub{color:#1B5E20}
+.net-card.neg .net-sub{color:#922b21}
+.net-card.zer .net-sub{color:#5a4a38}
 .paid-banner{padding:8px 12px;border-top:0.5px solid #cdc7bb;border-bottom:0.5px solid #cdc7bb;background:#f5f0e8}
 .paid-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
 .paid-item{font-size:11px;color:#5a4a38;display:flex;align-items:center;gap:4px}
@@ -323,6 +325,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 
 
 
+
+
 </style>
 </head>
 <body>
@@ -378,6 +382,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 </div>
 
 <script>
+
+
 
 
 
@@ -1237,7 +1243,7 @@ function splitPanel(){
     +'</div>'
     +'<div class="split-tog">'
     +'<button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button>'
-    +'<button class="stog-btn'+sOn+'" data-sv="settle">Reimbursement</button>'
+    +'<button class="stog-btn'+sOn+'" data-sv="settle">Summary</button>'
     +'</div>';
   if(S.splitView==='expenses'){
     html+='<div class="exp-list">';
@@ -1288,14 +1294,7 @@ function splitPanel(){
         +'</div>';
     });
     html+='</div>';
-    html+='<div class="paid-banner"><div class="paid-row">';
-    fks.forEach(function(fk){
-      if(!paid[fk])return;
-      html+='<span class="paid-item"><span class="paid-dot" style="background:'+famColor(fk)+'"></span>'
-        +'<span class="paid-lbl">'+famName(fk)+'</span>&nbsp;paid&nbsp;'+uf(paid[fk])+'</span>';
-    });
-    html+='</div></div>';
-    html+='<div class="settle-hdr">Reimbursement</div>';
+    html+='<div class="settle-hdr">Summary</div>';
     html+='<div class="settle-list">';
     var any=false;
     var balCopy={jmcr:bal.jmcr,matthews:bal.matthews,silvermans:bal.silvermans};
@@ -1315,7 +1314,7 @@ function splitPanel(){
           +'</div>';
       });
     });
-    if(!any)html+='<div class="split-empty">All square! No reimbursements needed.</div>';
+    if(!any)html+='<div class="split-empty">All square! No payments needed.</div>';
     html+='</div>';
   }
   html+='</div><div class="kp-overlay" id="kpOverlay"></div><div class="kp-sheet" id="kpSheet"></div>';
@@ -1388,6 +1387,8 @@ function closeAll(){
 
 
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
+
+
 
 
 

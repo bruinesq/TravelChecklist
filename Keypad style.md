@@ -2,6 +2,18 @@
 
 Preferred style, color theme, and design for any keypad/numeric input needed in this project.
 
+## ⚠️ CRITICAL USER PREFERENCE: EXTREMELY HIGH CONTRAST
+
+**This user requires maximum contrast on all keypad elements. This is non-negotiable and must be applied without being asked every time.**
+
+- All labels must be `rgba(255,255,255,.75)` or brighter — never below `.5` opacity
+- All body text and values must be pure `#ffffff` or bright gold `#f0e080`
+- Key backgrounds must be clearly lighter than the sheet background — minimum 3:1 contrast ratio
+- Unselected chips must be clearly visible: `rgba(255,255,255,.85)` text, `rgba(255,255,255,.5)` border
+- Placeholder text minimum `rgba(255,255,255,.5)`
+- Hint/sublabel text minimum `rgba(255,255,255,.65)`
+- Never use `rgba(255,255,255,.28)` or lower for any visible text
+
 ## Reference
 Based on Ryan's CareConnect app keypad (bruinesq.github.io).
 
@@ -16,21 +28,30 @@ Based on Ryan's CareConnect app keypad (bruinesq.github.io).
 - **Max height**: `92vh` with `overflow-y:auto`
 - **Never at the bottom of screen** — always centered to avoid nav bar obstruction
 
-## Color Theme (Dark Green)
+## Color Theme (Dark Green — High Contrast)
 
 | Element | Color |
 |---|---|
 | Sheet background | `#0d2b1f` |
-| Field boxes | `#1a3d2b` |
+| Field boxes | `#1e4a34` (lighter than sheet for contrast) |
+| Field border | `rgba(255,255,255,.25)` |
 | Active field border | `#e8c84a` (gold) |
-| Key background | `#4a6b58` (medium green) |
-| Key text | `#ffffff` pure white |
+| Key background | `#5a8a70` (clearly lighter than sheet) |
+| Key text | `#ffffff` pure white, `font-weight:700` |
 | Delete key | `#c0392b` (bright red) |
 | Confirm button | `#e8c84a` background, `#0d2b1f` text |
-| Labels | `rgba(255,255,255,.38)` uppercase |
-| Hint text | `rgba(255,255,255,.28)` |
-| Active display value | `#e8c84a` gold |
-| Currency/category chip active | `#e8c84a` bg, `#0d2b1f` text |
+| Labels (UPPERCASE) | `rgba(255,255,255,.75)` — **never below .5** |
+| Hint/sub text | `rgba(255,255,255,.7)` — **never below .65** |
+| Amount number | `#f0e080` bright gold |
+| Amount symbol | `#f0e080` bright gold, 16px |
+| Unselected chips | `rgba(255,255,255,.85)` text, `rgba(255,255,255,.5)` border |
+| Selected chip | `#e8c84a` bg, `#0d2b1f` text |
+| Split box background | `#2a5040` |
+| Split family name | `rgba(255,255,255,.85)` uppercase bold |
+| Split people count | `#ffffff` 26px bold |
+| Split amount | `#f0e080` bold |
+| Description text | `#ffffff`, 13px |
+| Description placeholder | `rgba(255,255,255,.5)` |
 
 ## Key Specifications
 
@@ -39,9 +60,9 @@ Based on Ryan's CareConnect app keypad (bruinesq.github.io).
   height: 54px;
   border-radius: 10px;
   font-size: 26px;
-  font-weight: 600;
+  font-weight: 700;
   color: #ffffff;
-  background: #4a6b58;
+  background: #5a8a70;  /* must be clearly lighter than #0d2b1f sheet bg */
 }
 .key-grid {
   display: grid;

@@ -14,18 +14,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;overscroll-behavior:none}
@@ -1091,8 +1079,8 @@ function flightDetail(id){
 }
 function openAddHotel(h){
   h=h||{};
-  var inL=h.check_in_dt?toLocalDT(h.check_in_dt):(function(){
-  var outL=h.check_out_dt?toLocalDT(h.check_out_dt):(function(){
+  var inL=h.check_in_dt?toLocalDT(h.check_in_dt):
+  var outL=h.check_out_dt?toLocalDT(h.check_out_dt):
   var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&t==='Hotel')?' on':'')+'" type="button" onclick="togFtog(this,\'acType\')">'+t+'</button>';}).join('');
   openCP(h.id?'Edit Stay':'Add Accommodation',
@@ -1132,7 +1120,7 @@ function hotelDetail(id){
 }
 function openAddReservation(r){
   r=r||{};
-  var dtL=r.reservation_dt?toLocalDT(r.reservation_dt):(function(){
+  var dtL=r.reservation_dt?toLocalDT(r.reservation_dt):
   var types=['Restaurant','Tour','Activity','Transport','Docking'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&t==='Restaurant')?' on':'')+'" type="button" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('');
   openCP(r.id?'Edit Reservation':'Add Reservation',

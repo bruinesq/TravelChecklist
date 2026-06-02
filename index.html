@@ -448,6 +448,13 @@ function nowLocal(){
   return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
     +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
 }
+function toLocalDT(utcStr){
+  if(!utcStr)return'';
+  var d=new Date(utcStr);
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
+    +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+}
 function pickFamily(key){
   S.fkey=key;S.fid=FIDS[key];S.isJMCR=(key==='jmcr');
   S.fname=key==='jmcr'?'JMCR':key==='matthews'?'Matthews':'Silvermans';
@@ -1030,8 +1037,8 @@ function getSelPax(sel){return[].slice.call(document.querySelectorAll(sel+' .mti
 function openAddFlight(){S.companions=[];doOpenFlight(null);}
 function doOpenFlight(f){
   var selIds=f?(f.flight_passengers||[]).filter(function(p){return!p.is_companion;}).map(function(p){return p.member_id;}):S.members.map(function(m){return m.id;});
-  var depL=f&&f.departure_dt?new Date(f.departure_dt).toISOString().slice(0,16):nowLocal();
-  var arrL=f&&f.arrival_dt?new Date(f.arrival_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(d.getHours()+3);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}());
+  var depL=f&&f.departure_dt?toLocalDT(f.departure_dt):nowLocal();
+  var arrL=f&&f.arrival_dt?toLocalDT(f.arrival_dt):(function(){var d=new Date();d.setHours(d.getHours()+3);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}());
   S.companions=f?(f.flight_passengers||[]).filter(function(p){return p.is_companion;}).map(function(p){return{name:p.companion_name,seat:p.seat||''};}):[]; 
   var compHtml=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');
   var ins=f&&f.is_insured;
@@ -1084,8 +1091,8 @@ function flightDetail(id){
 }
 function openAddHotel(h){
   h=h||{};
-  var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(15,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T15:00';}());
-  var outL=h.check_out_dt?new Date(h.check_out_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setDate(d.getDate()+7);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T11:00';}());
+  var inL=h.check_in_dt?toLocalDT(h.check_in_dt):(function(){
+  var outL=h.check_out_dt?toLocalDT(h.check_out_dt):(function(){
   var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&t==='Hotel')?' on':'')+'" type="button" onclick="togFtog(this,\'acType\')">'+t+'</button>';}).join('');
   openCP(h.id?'Edit Stay':'Add Accommodation',
@@ -1125,7 +1132,7 @@ function hotelDetail(id){
 }
 function openAddReservation(r){
   r=r||{};
-  var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(19,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T19:00';}());
+  var dtL=r.reservation_dt?toLocalDT(r.reservation_dt):(function(){
   var types=['Restaurant','Tour','Activity','Transport','Docking'];
   var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&t==='Restaurant')?' on':'')+'" type="button" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('');
   openCP(r.id?'Edit Reservation':'Add Reservation',
@@ -1384,28 +1391,6 @@ function closeAll(){
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
-
-
-(function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 </body>

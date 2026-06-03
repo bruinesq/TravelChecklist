@@ -1189,6 +1189,7 @@ function bindRvSheet(){
 
 function openRvKp(){
   S.rv.kpDigits=S.rv.amount!==''?S.rv.amount:'0';
+  S.rv.kpReplacing=(S.rv.amount!=='');  // pre-filled value: first key replaces
   var kpSheet=document.getElementById('rvKpSheet');
   var kpOvr=document.getElementById('rvKpOverlay');
   kpSheet.innerHTML=rvKpHTML();
@@ -1201,6 +1202,16 @@ function bindRvKp(){
   document.querySelectorAll('[data-rvkey]').forEach(function(btn){
     btn.onclick=function(){
       var k=btn.dataset.rvkey;
+      // first key after opening with a pre-filled value replaces it entirely
+      if(S.rv.kpReplacing){
+        S.rv.kpReplacing=false;
+        if(k==='DEL'){S.rv.kpDigits='0';}
+        else{S.rv.kpDigits=(k==='.'?'0.':k);}
+        S.rv.kpDigits=S.rv.kpDigits;
+        var kpSheet2=document.getElementById('rvKpSheet');
+        if(kpSheet2&&kpSheet2.classList.contains('open')){kpSheet2.innerHTML=rvKpHTML();bindRvKp();}
+        return;
+      }
       var d=S.rv.kpDigits!=null?S.rv.kpDigits:'0';
       if(k==='DEL'){d=d.length>1?d.slice(0,-1):'0';}
       else if(k==='.'&&d.indexOf('.')>=0){}
@@ -2012,7 +2023,7 @@ function bindKP(){
 }
 function openKP(){
   var j=famMemCount('jmcr');var m=famMemCount('matthews');var sv=famMemCount('silvermans');
-  S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:'',dateVal:''};
+  S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:'',dateVal:'',replacing:false};
   var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');
   if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();}
   if(ovr)ovr.classList.add('open');
@@ -2036,24 +2047,28 @@ function closeKP(){
 }
 function kpFocus(f){
   var cur=S.kp.focus;
-  if(cur===f){return;}
   // commit current digits to the field we're leaving
-  if(cur==='amount'){S.kp.amount=S.kp.currDigits||S.kp.amount||'0';}
-  else if(cur==='jmcr'){S.kp.jmcrN=parseInt(S.kp.currDigits)||0;}
-  else if(cur==='matthews'){S.kp.mattN=parseInt(S.kp.currDigits)||0;}
-  else if(cur==='silvermans'){S.kp.silvN=parseInt(S.kp.currDigits)||0;}
-  // seed currDigits for new focus
+  if(cur!==f){
+    if(cur==='amount'){S.kp.amount=S.kp.currDigits||S.kp.amount||'0';}
+    else if(cur==='jmcr'){S.kp.jmcrN=parseInt(S.kp.currDigits)||0;}
+    else if(cur==='matthews'){S.kp.mattN=parseInt(S.kp.currDigits)||0;}
+    else if(cur==='silvermans'){S.kp.silvN=parseInt(S.kp.currDigits)||0;}
+  }
+  // seed currDigits with existing value for display, mark as "replace on first key"
   if(f==='amount'){S.kp.currDigits=S.kp.amount||'';}
   else if(f==='jmcr'){S.kp.currDigits=S.kp.jmcrN?String(S.kp.jmcrN):'';}
   else if(f==='matthews'){S.kp.currDigits=S.kp.mattN?String(S.kp.mattN):'';}
   else if(f==='silvermans'){S.kp.currDigits=S.kp.silvN?String(S.kp.silvN):'';}
   S.kp.focus=f;
+  S.kp.replacing=true;  // first keypress will replace, not append
   refreshKP();
 }
 function kpKey(k){
-  var d=S.kp.currDigits!=null?S.kp.currDigits:'';
   var isAmt=S.kp.focus==='amount';
   if(k==='.'&&!isAmt)return; // no decimal for people counts
+  // first keypress after focusing replaces the old value entirely
+  if(S.kp.replacing){S.kp.currDigits='';S.kp.replacing=false;}
+  var d=S.kp.currDigits!=null?S.kp.currDigits:'';
   if(k==='.'&&d.indexOf('.')>=0)return;
   if(d==='0'&&k!=='.')d='';
   d+=k;
@@ -2066,10 +2081,18 @@ function kpKey(k){
   refreshKP();
 }
 function kpDel(){
+  var isAmt=S.kp.focus==='amount';
+  // first DEL after focusing clears the whole field
+  if(S.kp.replacing){S.kp.replacing=false;S.kp.currDigits='0';
+    if(isAmt)S.kp.amount='';
+    else if(S.kp.focus==='jmcr')S.kp.jmcrN=0;
+    else if(S.kp.focus==='matthews')S.kp.mattN=0;
+    else if(S.kp.focus==='silvermans')S.kp.silvN=0;
+    refreshKP();return;
+  }
   var d=S.kp.currDigits!=null?S.kp.currDigits:'0';
   d=d.length>1?d.slice(0,-1):'0';
   S.kp.currDigits=d;
-  var isAmt=S.kp.focus==='amount';
   if(isAmt)S.kp.amount=d==='0'?'':d;
   else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;
   else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;
@@ -2089,7 +2112,7 @@ function openEditExpense(eid){
     cat:e.category||'Food',paidBy:e.paid_by_family||'jmcr',
     desc:e.description||'',
     jmcrN:j?j.people_count:0,mattN:m?m.people_count:0,silvN:sv?sv.people_count:0,
-    currDigits:String(e.amount||''),dateVal:'',editId:eid};
+    currDigits:String(e.amount||''),dateVal:'',editId:eid,replacing:true};
   var sheet=document.getElementById('kpSheet');
   var ovr=document.getElementById('kpOverlay');
   if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();}

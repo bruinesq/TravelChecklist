@@ -1851,6 +1851,19 @@ function splitPanel(){
     +'<div class="ssort-val">'+sortLabel+' <i class="ti ti-chevron-down" aria-hidden="true" style="font-size:11px"></i></div>'
     +'</div>'
     +'</div>'
+    +'<div class="net-banner">'
+    +['jmcr','matthews','silvermans'].map(function(fk){
+      var b=bal[fk]||0;
+      var cls=b>0.01?'pos':b<-0.01?'neg':'zer';
+      var paidAmt=paid[fk]||0;
+      var netLbl=b>0.01?'(owed +'+uf(b)+')':b<-0.01?'(owes '+uf(-b)+')':'(settled)';
+      return'<div class="net-card '+cls+'">'
+        +'<div class="net-name">'+famName(fk)+'</div>'
+        +'<div class="net-amt">'+uf(paidAmt)+'</div>'
+        +'<div class="net-sub">'+netLbl+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div>'
     +'<div class="split-tog">'
     +'<button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button>'
     +'<button class="stog-btn'+sOn+'" data-sv="settle">Summary</button>'
@@ -2013,6 +2026,56 @@ function refreshKP(){
     bindKP();
   }
 }
+
+function closeKP(){
+  var sheet=document.getElementById('kpSheet');
+  var ovr=document.getElementById('kpOverlay');
+  if(sheet)sheet.classList.remove('open');
+  if(ovr)ovr.classList.remove('open');
+  S.kp.open=false;
+}
+function kpFocus(f){
+  var cur=S.kp.focus;
+  if(cur===f){return;}
+  // commit current digits to the field we're leaving
+  if(cur==='amount'){S.kp.amount=S.kp.currDigits||S.kp.amount||'0';}
+  else if(cur==='jmcr'){S.kp.jmcrN=parseInt(S.kp.currDigits)||0;}
+  else if(cur==='matthews'){S.kp.mattN=parseInt(S.kp.currDigits)||0;}
+  else if(cur==='silvermans'){S.kp.silvN=parseInt(S.kp.currDigits)||0;}
+  // seed currDigits for new focus
+  if(f==='amount'){S.kp.currDigits=S.kp.amount||'';}
+  else if(f==='jmcr'){S.kp.currDigits=S.kp.jmcrN?String(S.kp.jmcrN):'';}
+  else if(f==='matthews'){S.kp.currDigits=S.kp.mattN?String(S.kp.mattN):'';}
+  else if(f==='silvermans'){S.kp.currDigits=S.kp.silvN?String(S.kp.silvN):'';}
+  S.kp.focus=f;
+  refreshKP();
+}
+function kpKey(k){
+  var d=S.kp.currDigits!=null?S.kp.currDigits:'';
+  var isAmt=S.kp.focus==='amount';
+  if(k==='.'&&!isAmt)return; // no decimal for people counts
+  if(k==='.'&&d.indexOf('.')>=0)return;
+  if(d==='0'&&k!=='.')d='';
+  d+=k;
+  S.kp.currDigits=d;
+  // keep live values in sync for display
+  if(isAmt)S.kp.amount=d;
+  else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;
+  else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;
+  else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;
+  refreshKP();
+}
+function kpDel(){
+  var d=S.kp.currDigits!=null?S.kp.currDigits:'0';
+  d=d.length>1?d.slice(0,-1):'0';
+  S.kp.currDigits=d;
+  var isAmt=S.kp.focus==='amount';
+  if(isAmt)S.kp.amount=d==='0'?'':d;
+  else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;
+  else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;
+  else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;
+  refreshKP();
+}
 function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){S.sortBy=S.sortBy==='date'?'paidby':'date';renderPanel();return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}var kpDate=e.target.closest('[data-kpdate]');if(kpDate){return;}var kpTime=e.target.closest('[data-kptime]');if(kpTime){return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expedit=e.target.closest('[data-expedit]');if(expedit){openEditExpense(expedit.dataset.expedit);return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');renderPanel();});});});}return;}}
 
 function openEditExpense(eid){
@@ -2026,13 +2089,13 @@ function openEditExpense(eid){
     cat:e.category||'Food',paidBy:e.paid_by_family||'jmcr',
     desc:e.description||'',
     jmcrN:j?j.people_count:0,mattN:m?m.people_count:0,silvN:sv?sv.people_count:0,
-    currDigits:'',dateVal:'',editId:eid};
+    currDigits:String(e.amount||''),dateVal:'',editId:eid};
   var sheet=document.getElementById('kpSheet');
   var ovr=document.getElementById('kpOverlay');
   if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();}
   if(ovr)ovr.classList.add('open');
 }
-function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});})}
+function submitExpense(){var _descEl=document.getElementById('kpDesc');if(_descEl)S.kp.desc=_descEl.value;var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});})}
 
 function saveAS(){
   sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,
@@ -2068,6 +2131,14 @@ function closeAll(){
   cp.classList.remove('reserve-detail-docking');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('ctx').classList.remove('open');
+  var _cp=document.getElementById('cpanel');
+  _cp.style.background='';
+  var _cpHead=_cp.querySelector('.cp-head');
+  if(_cpHead){_cpHead.style.background='';_cpHead.style.borderBottomColor='';}
+  var _cpTitle=document.getElementById('cpTitle');
+  if(_cpTitle){_cpTitle.style.color='';_cpTitle.style.textTransform='';_cpTitle.style.fontSize='';_cpTitle.style.letterSpacing='';}
+  var _cpClose=_cp.querySelector('.cp-close');
+  if(_cpClose)_cpClose.style.color='';
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
 </script>

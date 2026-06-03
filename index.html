@@ -10,23 +10,6 @@
 <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;overscroll-behavior:none}
@@ -121,7 +104,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .fcard{background:#f5f0e8;border-bottom:2px solid #cdc7bb;padding:.9rem .95rem;cursor:pointer}
 .fcard:active{background:#faf8f4}.fcard.past{opacity:.55}
 .fcard-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
-.fcard-title{font-size:1.15rem;font-weight:800;color:#1a1a2e;flex:1;line-height:1.2}
+.fcard-title{font-size:1.05rem;font-weight:800;color:#1a1a2e;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcard-addcost{display:inline-flex;align-items:center;gap:2px;font-size:.62rem;font-weight:700;background:#FEF3C7;color:#92600A;border-radius:5px;padding:2px 6px;flex-shrink:0;white-space:nowrap}
 .fcard-chev{font-size:1.1rem;color:#888;flex-shrink:0}
 .fcard-pill{display:inline-block;font-size:.72rem;font-weight:700;padding:.15rem .5rem;border-radius:99px;margin-right:.35rem}
 .fcard-sub{font-size:.88rem;font-weight:600;color:#1a120a;line-height:1.5}
@@ -133,6 +117,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500}
 .overlay.open{display:block}
 .cpanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:1rem;width:min(92vw,26rem);max-height:85vh;overflow-y:auto;z-index:600;display:none;box-shadow:0 8px 40px rgba(0,0,0,.22)}.cpanel.flight-detail{background:#FFF176}.cpanel.flight-detail .cp-head{background:#FFD600;border-bottom:2px solid #F9A825}.cpanel.flight-detail .cp-title{color:#1A237E;font-size:1.1rem;font-weight:800}.cpanel.flight-detail .drow{border-bottom-color:#F9A825}.cpanel.flight-detail .dlbl{color:#1A237E;font-size:.72rem;font-weight:800}.cpanel.flight-detail .dval{color:#0D0D0D;font-size:1rem;font-weight:600}.cpanel.hotel-detail{background:#F0F0F0}.cpanel.hotel-detail .cp-head{background:#DCDCDC;border-bottom:2px solid #BDBDBD}.cpanel.hotel-detail .cp-title{color:#1A1A1A;font-size:1.1rem;font-weight:800}.cpanel.hotel-detail .drow{border-bottom-color:#BDBDBD}.cpanel.hotel-detail .dlbl{color:#333333;font-size:.72rem;font-weight:800}.cpanel.hotel-detail .dval{color:#111111;font-size:1rem;font-weight:600}.cpanel.hotel-detail .sbtn{font-size:1.05rem}.cpanel.hotel-detail .dbtn{font-size:.9rem}.cpanel.reserve-detail{background:#1B5E20}.cpanel.reserve-detail .cp-head{background:#145218;border-bottom:2px solid #0A3D12}.cpanel.reserve-detail .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail .drow{border-bottom-color:#2E7D32}.cpanel.reserve-detail .dlbl{color:#A5D6A7;font-size:.72rem;font-weight:800}.cpanel.reserve-detail .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail .sbtn{font-size:1.05rem}.cpanel.reserve-detail .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
+.cpanel.reserve-detail-restaurant{background:#6D1F0A}.cpanel.reserve-detail-restaurant .cp-head{background:#5A1A08;border-bottom:2px solid #3E1005}.cpanel.reserve-detail-restaurant .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail-restaurant .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail-restaurant .drow{border-bottom-color:#8B3010}.cpanel.reserve-detail-restaurant .dlbl{color:#FFCCBC;font-size:.72rem;font-weight:800}.cpanel.reserve-detail-restaurant .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail-restaurant .sbtn{background:#9B59B6;font-size:1.05rem}.cpanel.reserve-detail-restaurant .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
+.cpanel.reserve-detail-tour{background:#0A3D2E}.cpanel.reserve-detail-tour .cp-head{background:#072E22;border-bottom:2px solid #041F17}.cpanel.reserve-detail-tour .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail-tour .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail-tour .drow{border-bottom-color:#0E6064}.cpanel.reserve-detail-tour .dlbl{color:#B2EBF2;font-size:.72rem;font-weight:800}.cpanel.reserve-detail-tour .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail-tour .sbtn{background:#9B59B6;font-size:1.05rem}.cpanel.reserve-detail-tour .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
+.cpanel.reserve-detail-activity{background:#0A2A50}.cpanel.reserve-detail-activity .cp-head{background:#071E3C;border-bottom:2px solid #041428}.cpanel.reserve-detail-activity .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail-activity .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail-activity .drow{border-bottom-color:#1A4A80}.cpanel.reserve-detail-activity .dlbl{color:#BBDEFB;font-size:.72rem;font-weight:800}.cpanel.reserve-detail-activity .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail-activity .sbtn{background:#9B59B6;font-size:1.05rem}.cpanel.reserve-detail-activity .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
+.cpanel.reserve-detail-transport{background:#4A3800}.cpanel.reserve-detail-transport .cp-head{background:#372900;border-bottom:2px solid #241B00}.cpanel.reserve-detail-transport .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail-transport .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail-transport .drow{border-bottom-color:#7A6000}.cpanel.reserve-detail-transport .dlbl{color:#FFF59D;font-size:.72rem;font-weight:800}.cpanel.reserve-detail-transport .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail-transport .sbtn{background:#9B59B6;font-size:1.05rem}.cpanel.reserve-detail-transport .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
+.cpanel.reserve-detail-docking{background:#3A0050}.cpanel.reserve-detail-docking .cp-head{background:#2B003C;border-bottom:2px solid #1C0028}.cpanel.reserve-detail-docking .cp-title{color:#FFFFFF;font-size:1.1rem;font-weight:800}.cpanel.reserve-detail-docking .cp-close{color:rgba(255,255,255,.7)}.cpanel.reserve-detail-docking .drow{border-bottom-color:#6A0080}.cpanel.reserve-detail-docking .dlbl{color:#FCE4EC;font-size:.72rem;font-weight:800}.cpanel.reserve-detail-docking .dval{color:#FFFFFF;font-size:1rem;font-weight:600}.cpanel.reserve-detail-docking .sbtn{background:#9B59B6;font-size:1.05rem}.cpanel.reserve-detail-docking .dbtn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:white;font-size:.9rem}
 .cpanel.open{display:block}
 .cp-head{display:flex;align-items:center;gap:.5rem;padding:.85rem 1rem .65rem;border-bottom:1px solid #ece8e0;position:sticky;top:0;background:white;z-index:1}
 .cp-title{font-size:.92rem;font-weight:700;flex:1;color:#111}
@@ -200,7 +189,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .mgr-confirm{background:#1D9E75;border:none;color:white;font-size:.72rem;font-weight:700;cursor:pointer;padding:.28rem .55rem;border-radius:.4rem;white-space:nowrap;display:flex;align-items:center;gap:.2rem}
 .mgrbtn-edit{background:none;border:none;color:#888;font-size:1rem;cursor:pointer;padding:.12rem .22rem}
 .mgrbtn-del{background:none;border:none;color:#E53935;font-size:1rem;cursor:pointer;padding:.12rem .22rem}
-
 .t-split.active{border-top-color:#7A4F0B}
 .split-screen{background:#f5f0e8;min-height:100vh;display:flex;flex-direction:column}
 .split-hdr{padding:10px 14px 8px;border-bottom:1px solid #cdc7bb;display:flex;align-items:center;justify-content:space-between;background:#f5f0e8}
@@ -261,15 +249,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .settle-total{font-size:20px;font-weight:700;color:#1B5E20;margin-left:auto}
 .settle-fdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .split-empty{padding:2rem 1.5rem;text-align:center;color:#8a7a60;font-size:13px;background:#f5f0e8}
-
-
-
 .er-edit{background:none;border:none;color:#7A4F0B;font-size:1.2rem;cursor:pointer;padding:.4rem .5rem;flex-shrink:0;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center}
 .er-del{background:none;border:none;color:#c0392b;font-size:1rem;cursor:pointer;padding:.1rem .25rem;flex-shrink:0}
 .er-ppl{font-size:11px;color:#5a4a38;margin-top:5px;line-height:1.5}
-
-
-
 .kp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;display:none}
 .kp-overlay.open{display:block}
 .kp-sheet{position:fixed;top:0;left:0;right:0;bottom:0;width:min(96vw,420px);margin:auto;height:fit-content;max-height:92vh;background:#0d2b1f;border-radius:16px;z-index:910;display:none;padding:0 0 16px;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.55)}
@@ -317,18 +299,141 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 .kp-key.del{background:#c0392b}
 .kp-key.dot{font-size:22px;color:#ffffff;font-weight:700}
 .kp-cfm{margin:5px 12px 2px;height:50px;border-radius:12px;border:none;background:#e8c84a;color:#0d2b1f;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px)}
-
-
-
-
-
-
-
-
-
-
-
-
+/* ---- Add Expense: fix date / category / paidby proportions ---- */
+.kp-top-row{grid-template-columns:1fr 100px}
+.kp-cats{justify-content:stretch}
+.kp-cat{flex:1;text-align:center;padding:5px 4px}
+.kp-paidby{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.kp-pb{text-align:center;padding:5px 4px;border-radius:6px}
+/* ---- Add Reservation navy sheet — HIGH CONTRAST v2 ---- */
+.rv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:none}
+.rv-overlay.open{display:block}
+.rv-sheet{position:fixed;bottom:0;left:0;right:0;width:min(100vw,480px);margin:0 auto;max-height:93vh;background:#0f1e3a;border-radius:20px 20px 0 0;z-index:1110;display:none;overflow-y:auto;box-shadow:0 -6px 40px rgba(0,0,0,.7)}
+.rv-sheet.open{display:block}
+.rv-handle{width:34px;height:4px;background:rgba(255,255,255,.35);border-radius:99px;margin:10px auto 0}
+.rv-head{display:flex;align-items:center;padding:10px 15px 8px;position:sticky;top:0;background:#0f1e3a;z-index:2;border-bottom:1px solid rgba(255,255,255,.12)}
+.rv-title{font-size:12px;font-weight:700;color:#f0c040;letter-spacing:.09em;text-transform:uppercase;flex:1}
+.rv-close{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.rv-close i{color:#fff;font-size:15px}
+.rv-body{padding:10px 14px 24px}
+.rv-card{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 13px;margin-bottom:10px}
+.rv-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+/* type buttons */
+.rv-type-row{display:flex;gap:5px}
+.rv-type-btn{flex:1;min-width:0;padding:9px 2px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);font-size:10px;color:rgba(255,255,255,.7);text-align:center;cursor:pointer;-webkit-appearance:none;line-height:1.3}
+.rv-type-btn i{display:block;font-size:14px;margin-bottom:3px;color:rgba(255,255,255,.6)}
+.rv-type-btn.rv-on{background:rgba(255,255,255,.22);border-color:#f0c040;color:#fff;font-weight:600}
+.rv-type-btn.rv-on i{color:#f0c040}
+/* two-col */
+.rv-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+.rv-field{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:9px 11px;cursor:pointer}
+.rv-field-val{font-size:13px;color:#fff;font-weight:500}
+.rv-field-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.rv-field-ph{font-size:13px;color:rgba(255,255,255,.45)}
+.rv-inp{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 12px;font-size:13px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none}
+.rv-inp:focus{border-color:#f0c040;background:rgba(255,255,255,.14)}
+.rv-inp::placeholder{color:rgba(255,255,255,.4)}
+.rv-inp[type=datetime-local]{color:#fff;font-size:12px;font-weight:500}
+.rv-ta{resize:none;min-height:2.6rem;line-height:1.45}
+/* family buttons */
+.rv-fam-row{display:flex;gap:7px}
+.rv-fam-btn{flex:1;padding:12px 4px;border-radius:11px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);font-size:13px;font-weight:600;color:rgba(255,255,255,.75);text-align:center;cursor:pointer;min-height:46px;display:flex;align-items:center;justify-content:center}
+.rv-fam-btn.rv-fam-all{background:rgba(80,200,110,.28);border-color:rgba(80,200,110,.7);color:#7fffa0}
+.rv-fam-btn.rv-fam-part{background:rgba(240,192,64,.25);border-color:rgba(240,192,64,.6);color:#f0c040}
+/* member dropdown */
+.rv-dd{background:#162440;border:1px solid rgba(255,255,255,.22);border-radius:11px;margin-top:8px;overflow:hidden}
+.rv-dd-all{display:flex;align-items:center;gap:8px;padding:11px 13px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:600;color:#f0c040;cursor:pointer;min-height:46px}
+.rv-dd-item{display:flex;align-items:center;gap:8px;padding:11px 13px;font-size:13px;color:#fff;cursor:pointer;border-bottom:.5px solid rgba(255,255,255,.08);min-height:46px}
+.rv-dd-item:last-child{border-bottom:none}
+.rv-chk{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.rv-chk.rv-chk-on{background:#4caf72;border-color:#4caf72;color:#fff}
+/* optional badge */
+.rv-opt{font-size:10px;background:rgba(240,192,64,.22);color:#f0c040;border:1px solid rgba(240,192,64,.45);border-radius:6px;padding:2px 7px;font-weight:600;flex-shrink:0}
+/* currency toggle */
+.rv-cur{display:flex;border:1px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden}
+.rv-cur-btn{padding:5px 11px;font-size:12px;font-weight:700;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.55)}
+.rv-cur-btn.rv-cur-on{background:#f0c040;color:#0f1e3a}
+/* amount display */
+.rv-amt-big{font-size:30px;font-weight:500;color:#f0c040;letter-spacing:-0.5px;margin:5px 0 3px}
+.rv-amt-hint{font-size:11px;color:rgba(255,255,255,.5)}
+/* paid by */
+.rv-pb-row{display:flex;gap:7px}
+.rv-pb-btn{flex:1;padding:12px 4px;border-radius:11px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);font-size:13px;font-weight:600;color:rgba(255,255,255,.75);text-align:center;cursor:pointer;min-height:46px;display:flex;align-items:center;justify-content:center}
+.rv-pb-btn.rv-pb-on{background:rgba(99,153,255,.3);border-color:rgba(99,153,255,.65);color:#c0d8ff}
+/* skip cost button */
+.rv-skip-btn{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.55);cursor:pointer;margin-top:6px;text-align:center}
+/* note */
+.rv-split-note{font-size:10px;color:rgba(255,255,255,.4);text-align:center;padding:5px 0 7px}
+/* action row */
+.rv-act-row{display:flex;gap:9px;margin-top:12px}
+.rv-act-btn{flex:1;padding:16px 4px;border-radius:13px;font-size:15px;font-weight:600;text-align:center;border:none;cursor:pointer;min-height:52px}
+.rv-act-del{background:rgba(220,60,60,.25);color:#ff9090;border:1px solid rgba(220,60,60,.45)}
+.rv-act-save{background:#f0c040;color:#0f1e3a}
+/* reservation keypad */
+.rv-kp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1200;display:none}
+.rv-kp-overlay.open{display:block}
+.rv-kp-sheet{position:fixed;bottom:0;left:0;right:0;width:min(100vw,480px);margin:0 auto;background:#0f1e3a;border-radius:20px 20px 0 0;z-index:1210;display:none;padding:0 14px 24px;box-shadow:0 -6px 40px rgba(0,0,0,.7)}
+.rv-kp-sheet.open{display:block}
+.rv-kp-handle{width:34px;height:4px;background:rgba(255,255,255,.3);border-radius:99px;margin:10px auto 10px}
+.rv-kp-disp{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:13px;padding:13px 15px;margin-bottom:11px}
+.rv-kp-lbl{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;font-weight:700}
+.rv-kp-num{font-size:34px;font-weight:500;color:#f0c040;letter-spacing:-1px}
+.rv-kp-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.rv-kp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.rv-kp-key{height:58px;border-radius:12px;border:none;font-size:26px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;background:#1e3a6a}
+.rv-kp-key:active{filter:brightness(1.2)}
+.rv-kp-key.rv-kp-del{background:#8b1a1a}
+.rv-kp-save{height:54px;border-radius:13px;border:none;background:#f0c040;color:#0f1e3a;font-size:15px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+/* ---- Flight sheet (dark blue-gray) ---- */
+.fl-sheet-bg{background:#1a2030}
+.fl-card{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 13px;margin-bottom:10px}
+.fl-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:700;display:block}
+.fl-inp{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 12px;font-size:13px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none}
+.fl-inp:focus{border-color:#60a0ff;background:rgba(255,255,255,.14)}
+.fl-inp::placeholder{color:rgba(255,255,255,.4)}
+.fl-ta{resize:none;min-height:2.6rem;line-height:1.45}
+.fl-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+.fl-tog{display:flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden}
+.fl-tog-btn{flex:1;padding:10px 4px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);text-align:center}
+.fl-tog-btn.fl-on{background:#378ADD;color:#fff}
+.fl-pax-tiles{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.fl-fam-grp{margin-bottom:8px}
+.fl-fam-grp-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+.fl-tile{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 8px;border-radius:9px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);cursor:pointer;min-width:3rem}
+.fl-tile.fl-sel{border-color:#60a0ff;background:rgba(60,140,255,.2)}
+.fl-tile i{font-size:1rem;color:rgba(255,255,255,.6)}
+.fl-tile.fl-sel i{color:#60a0ff}
+.fl-tile span{font-size:.5rem;font-weight:600;color:rgba(255,255,255,.7)}
+.fl-ins-wrap{display:none}
+.fl-save{width:100%;padding:15px;border:none;border-radius:13px;background:#378ADD;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;min-height:52px}
+.fl-del{width:100%;padding:11px;border:1px solid rgba(220,60,60,.5);border-radius:13px;background:rgba(220,60,60,.15);color:#ff9090;font-size:13px;cursor:pointer;margin-top:8px}
+/* ---- Accommodation sheet (warm tan/gray neutral) ---- */
+.ac-sheet-bg{background:#24201a}
+.ac-card{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 13px;margin-bottom:10px}
+.ac-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:700;display:block}
+.ac-inp{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 12px;font-size:13px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none}
+.ac-inp:focus{border-color:#D85A30;background:rgba(255,255,255,.14)}
+.ac-inp::placeholder{color:rgba(255,255,255,.4)}
+.ac-ta{resize:none;min-height:2.6rem;line-height:1.45}
+.ac-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+.ac-type-row{display:flex;gap:5px}
+.ac-type-btn{flex:1;min-width:0;padding:9px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.7);text-align:center;cursor:pointer}
+.ac-type-btn i{display:block;font-size:14px;margin-bottom:3px;color:rgba(255,255,255,.6)}
+.ac-type-btn.ac-on{background:rgba(255,255,255,.22);border-color:#D85A30;color:#fff;font-weight:600}
+.ac-type-btn.ac-on i{color:#D85A30}
+.ac-fam-tiles{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ac-fam-grp{margin-bottom:8px}
+.ac-fam-grp-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+.ac-tile{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 8px;border-radius:9px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);cursor:pointer;min-width:3rem}
+.ac-tile.ac-sel{border-color:#D85A30;background:rgba(216,90,48,.2)}
+.ac-tile i{font-size:1rem;color:rgba(255,255,255,.6)}
+.ac-tile.ac-sel i{color:#D85A30}
+.ac-tile span{font-size:.5rem;font-weight:600;color:rgba(255,255,255,.7)}
+.ac-save{width:100%;padding:15px;border:none;border-radius:13px;background:#D85A30;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;min-height:52px}
+.ac-del{width:100%;padding:11px;border:1px solid rgba(220,60,60,.5);border-radius:13px;background:rgba(220,60,60,.15);color:#ff9090;font-size:13px;cursor:pointer;margin-top:8px}
+/* ---- Add Expense date picker fix ---- */
+.kp-date-picker{width:100%;background:transparent;border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;outline:none;font-family:inherit;-webkit-appearance:none;padding:0}
+.kp-date-picker::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer;opacity:.7}
 </style>
 </head>
 <body>
@@ -383,25 +488,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
   <div class="cmod-btns"><button class="cmod-cancel" onclick="closeCon()" type="button">Cancel</button><button class="cmod-ok" id="cmod-ok" type="button">Confirm</button></div>
 </div>
 
+<!-- Add Reservation sheet (navy) -->
+<div class="rv-overlay" id="rvOverlay"></div>
+<div class="rv-sheet" id="rvSheet"></div>
+<!-- Reservation amount keypad -->
+<div class="rv-kp-overlay" id="rvKpOverlay"></div>
+<div class="rv-kp-sheet" id="rvKpSheet"></div>
+
 <script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
 
@@ -428,7 +522,10 @@ var S={
   trip:null,members:[],allMembers:[],cats:[],items:[],
   flights:[],hotels:[],reserves:[],rsubs:[],companions:[],
   expenses:[],exRate:1.09,splitView:'expenses',sortBy:'date',
-  kp:{open:false,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:0,mattN:0,silvN:0,currDigits:''}
+  kp:{open:false,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:0,mattN:0,silvN:0,currDigits:''},
+  rv:{open:false,editId:null,resType:'Restaurant',dt:'',name:'',location:'',notes:'',amount:'',currency:'USD',paidBy:null,
+      famSel:{jmcr:'all',matthews:'none',silvermans:'none'},
+      memSel:{},ddOpen:null,kpOpen:false,kpDigits:'',savedDt:''}
 };
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -444,9 +541,15 @@ function showLoad(){document.getElementById('fscreen').classList.add('hide');doc
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamScreen(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
 
-
 function nowLocal(){
   var d=new Date();
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
+    +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+function toLocalDT(utcStr){
+  if(!utcStr)return'';
+  var d=new Date(utcStr);
   var pad=function(n){return String(n).padStart(2,'0');};
   return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
     +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
@@ -774,20 +877,46 @@ function hotelPanel(){
     +'<button class="addbar-btn" style="color:#712B13" id="addHotelBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No accommodations yet</div>');
 }
-
+/* ---- RESERVE PANEL: sorted latest-first, inline +cost flag ---- */
+function resPillStyle(t){
+  var tl=(t||'').toLowerCase();
+  if(tl==='restaurant')return'background:#FFCCBC;color:#8B1A00';
+  if(tl==='tour')return'background:#B2EBF2;color:#006064';
+  if(tl==='activity')return'background:#BBDEFB;color:#003070';
+  if(tl==='transport')return'background:#FFF59D;color:#7A4F00';
+  if(tl==='docking')return'background:transparent;color:#B0007A;padding-left:0';
+  return'background:#E8C8F8;color:#6B2F9E';
+}
+/* ---- RESERVE PANEL: soonest first, alpha by type secondary, inline +cost, skip ---- */
+function resPillStyle(t){
+  var tl=(t||'').toLowerCase();
+  if(tl==='restaurant')return'background:#FFCCBC;color:#8B1A00';
+  if(tl==='tour')return'background:#B2EBF2;color:#006064';
+  if(tl==='activity')return'background:#BBDEFB;color:#003070';
+  if(tl==='transport')return'background:#FFF59D;color:#7A4F00';
+  if(tl==='docking')return'background:transparent;color:#B0007A;padding-left:0';
+  return'background:#E8C8F8;color:#6B2F9E';
+}
 function reservePanel(){
-  var srt=S.reserves.slice().sort(function(a,b){return new Date(a.reservation_dt)-new Date(b.reservation_dt);});
+  var srt=S.reserves.slice().sort(function(a,b){
+    var da=new Date(a.reservation_dt||0),db=new Date(b.reservation_dt||0);
+    if(da-db!==0)return da-db;
+    return(a.res_type||'').localeCompare(b.res_type||'');
+  });
   var up=srt.filter(function(r){return!past(r.reservation_dt);});
   var old=srt.filter(function(r){return past(r.reservation_dt);});
   function rc(r){
+    var noFlag=r.cost_skipped||(r.amount!=null&&parseFloat(r.amount)>=0&&r.amount!==''&&r.amount!==null);
+    var addCostFlag=noFlag?'':'<span class="fcard-addcost" data-rcost="'+r.id+'"><i class="ti ti-plus" aria-hidden="true" style="font-size:9px"></i>Add cost</span>';
+    var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' \u00b7 ');
     return'<div class="fcard'+(past(r.reservation_dt)?' past':'')+'" data-rid="'+r.id+'">'
       +'<div class="fcard-row">'
       +'<span class="fcard-title">'+esc(r.name)+'</span>'
+      +addCostFlag
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +(function(){var t=(r.res_type||'Other').toLowerCase();var bg=t==='restaurant'?'#FFCCBC':t==='tour'?'#B2EBF2':t==='activity'?'#BBDEFB':t==='transport'?'#FFF59D':t==='docking'?'#FCE4EC':'#E8C8F8';var fg=t==='restaurant'?'#8B1A00':t==='tour'?'#006064':t==='activity'?'#003070':t==='transport'?'#7A4F00':t==='docking'?'#880041':'#6B2F9E';return '<div class="fcard-sub"><span class="fcard-pill" style="background:'+bg+';color:'+fg+'">'+esc(r.res_type||'Other')+'</span>';}())+fmtDT(r.reservation_dt)+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
-      +(r.num_people?'<div class="fcard-pax">'+r.num_people+' people</div>':'')
-      +(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' · ');return g?'<div class="fcard-pax">'+esc(g)+'</div>':'';}())
+      +'<div class="fcard-sub"><span class="fcard-pill" style="'+resPillStyle(r.res_type)+'">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
+      +(g?'<div class="fcard-pax">'+esc(g)+'</div>':'')
       +'</div>';
   }
   var cards=up.map(rc).join('');
@@ -798,6 +927,376 @@ function reservePanel(){
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
 }
 
+/* ---- RESERVE DETAIL: color per type, shows skip state ---- */
+function reserveDetailClass(t){
+  var tl=(t||'').toLowerCase();
+  if(tl==='restaurant')return'reserve-detail-restaurant';
+  if(tl==='tour')return'reserve-detail-tour';
+  if(tl==='activity')return'reserve-detail-activity';
+  if(tl==='transport')return'reserve-detail-transport';
+  if(tl==='docking')return'reserve-detail-docking';
+  return'reserve-detail';
+}
+function reserveDetail(id){
+  var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
+  var dc=reserveDetailClass(r.res_type);
+  document.getElementById('cpanel').classList.add(dc);
+  var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');
+  var hasAmt=r.amount!=null&&r.amount!==''&&parseFloat(r.amount)>=0;
+  var amtVal=r.cost_skipped?'No cost (skipped)'
+    :hasAmt?('$'+parseFloat(r.amount).toFixed(2)+(r.currency&&r.currency!=='USD'?' '+r.currency:''))
+    :'<span style="color:#f0c040;font-size:.82rem;display:inline-flex;align-items:center;gap:4px"><i class="ti ti-alert-triangle" style="font-size:.75rem"></i>Add cost</span>';
+  openCP(esc(r.name),
+    DR('Type',r.res_type)
+    +DR('Name',r.name)
+    +DR('When',fmtDT(r.reservation_dt))
+    +DR('Location',r.location)
+    +DR('Notes',r.notes)
+    +(g?DR('Guests',g):'')
+    +'<div class="drow"><span class="dlbl">Amount</span><span class="dval">'+amtVal+'</span></div>'
+    +(r.paid_by_family?DR('Paid by',r.paid_by_family.charAt(0).toUpperCase()+r.paid_by_family.slice(1)):'')
+    +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
+    +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
+}
+
+/* ---- ADD RESERVATION SHEET ---- */
+function rvFamMembers(fkey){
+  return S.allMembers.filter(function(m){return m.family_id===FIDS[fkey]&&!m.is_subject;});
+}
+function rvAllSelected(fkey){
+  var mems=rvFamMembers(fkey);
+  return mems.length>0&&mems.every(function(m){return S.rv.memSel[m.id];});
+}
+function rvAnySelected(fkey){
+  return rvFamMembers(fkey).some(function(m){return S.rv.memSel[m.id];});
+}
+function rvFamBtnClass(fkey){
+  if(rvAllSelected(fkey))return'rv-fam-btn rv-fam-all';
+  if(rvAnySelected(fkey))return'rv-fam-btn rv-fam-part';
+  return'rv-fam-btn';
+}
+function rvSheetHTML(){
+  var rv=S.rv;
+  var types=['Restaurant','Tour','Activity','Transport','Docking'];
+  var typeIcos={Restaurant:'ti-tools-kitchen-2',Tour:'ti-map',Activity:'ti-run',Transport:'ti-car',Docking:'ti-anchor'};
+  var typeBtns=types.map(function(t){
+    return'<button class="rv-type-btn'+(rv.resType===t?' rv-on':'')+'" data-rvtype="'+t+'">'
+      +'<i class="ti '+typeIcos[t]+'" aria-hidden="true"></i>'+t+'</button>';
+  }).join('');
+  var dtVal=rv.dt||nowLocal();
+  var fkeys=['jmcr','matthews','silvermans'];
+  var famBtns=fkeys.map(function(fk){
+    var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';
+    return'<button class="'+rvFamBtnClass(fk)+'" data-rvfam="'+fk+'">'+lbl+'</button>';
+  }).join('');
+  var ddHtml='';
+  if(rv.ddOpen){
+    var fk=rv.ddOpen;
+    var mems=rvFamMembers(fk);
+    var allSel=rvAllSelected(fk);
+    ddHtml='<div class="rv-dd" id="rvDD">'
+      +'<div class="rv-dd-all" data-rvddall="'+fk+'"><div class="rv-chk'+(allSel?' rv-chk-on':'')+'">'+(allSel?'\u2713':'')+'</div>'+(allSel?'Deselect all':'Select all')+'</div>'
+      +mems.map(function(m){
+        var sel=!!rv.memSel[m.id];
+        return'<div class="rv-dd-item" data-rvmem="'+m.id+'">'
+          +'<div class="rv-chk'+(sel?' rv-chk-on':'')+'">'+(sel?'\u2713':'')+'</div>'
+          +esc(m.name)+'</div>';
+      }).join('')
+      +'</div>';
+  }
+  var sym=rv.currency==='EUR'?'\u20ac':'$';
+  var amtRaw=rv.amount;
+  var amtDisp=(amtRaw!==''&&amtRaw!=null)?(sym+amtRaw):'\u2014';
+  var pbBtns=fkeys.map(function(fk){
+    var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';
+    return'<button class="rv-pb-btn'+(rv.paidBy===fk?' rv-pb-on':'')+'" data-rvpb="'+fk+'">'+lbl+'</button>';
+  }).join('');
+  return'<div class="rv-handle"></div>'
+    +'<div class="rv-head">'
+    +'<span class="rv-title">'+(rv.editId?'Edit reservation':'Add reservation')+'</span>'
+    +'<button class="rv-close" id="rvCloseBtn" aria-label="Close"><i class="ti ti-x"></i></button>'
+    +'</div>'
+    +'<div class="rv-body">'
+    +'<div class="rv-card"><div class="rv-lbl">Type</div>'
+    +'<div class="rv-type-row">'+typeBtns+'</div></div>'
+    +'<div class="rv-card">'
+    +'<div class="rv-two">'
+    +'<div><div class="rv-lbl">Date &amp; time</div>'
+    +'<div class="rv-field" style="padding:8px 10px">'
+    +'<input type="datetime-local" id="rvDtInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none" value="'+esc(dtVal)+'"/>'
+    +'</div></div>'
+    +'<div><div class="rv-lbl">Name</div>'
+    +'<input class="rv-inp" id="rvName" placeholder="Event name\u2026" value="'+esc(rv.name||'')+'"/>'
+    +'</div></div></div>'
+    +'<div class="rv-card"><div class="rv-lbl">Location</div>'
+    +'<input class="rv-inp" id="rvLoc" placeholder="Enter location" value="'+esc(rv.location||'')+'"/>'
+    +'</div>'
+    +'<div class="rv-card"><div class="rv-lbl">Participants</div>'
+    +'<div class="rv-fam-row">'+famBtns+'</div>'
+    +ddHtml+'</div>'
+    +'<div class="rv-card"><div class="rv-lbl">Notes (optional)</div>'
+    +'<textarea class="rv-inp rv-ta" id="rvNotes" placeholder="Dress code, special requests\u2026">'+esc(rv.notes||'')+'</textarea>'
+    +'</div>'
+    +'<div class="rv-card">'
+    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">'
+    +'<div class="rv-lbl" style="margin-bottom:0">Amount</div><span class="rv-opt">Optional</span>'
+    +'<div style="margin-left:auto"><div class="rv-cur">'
+    +'<button class="rv-cur-btn'+(rv.currency==='USD'?' rv-cur-on':'')+'" data-rvcur="USD">USD</button>'
+    +'<button class="rv-cur-btn'+(rv.currency==='EUR'?' rv-cur-on':'')+'" data-rvcur="EUR">EUR</button>'
+    +'</div></div></div>'
+    +'<div style="display:flex;align-items:center;gap:10px">'
+    +'<div class="rv-amt-big" id="rvAmtDisp" style="cursor:pointer">'+esc(amtDisp)+'</div>'
+    +(rv.costSkipped?'<span style="font-size:11px;color:#7fffa0;background:rgba(80,200,110,.2);border-radius:6px;padding:3px 8px">No cost</span>':'')
+    +'</div>'
+    +'<div class="rv-amt-hint" id="rvAmtHint"><i class="ti ti-calculator" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>Tap to enter amount</div>'
+    +'<button class="rv-skip-btn" id="rvSkipBtn">'+(rv.costSkipped?'\u21ba Undo skip':'Skip \u2014 no cost for this event')+'</button>'
+    +'</div>'
+    +'<div class="rv-card">'
+    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">'
+    +'<div class="rv-lbl" style="margin-bottom:0">Paid by</div><span class="rv-opt">Optional</span></div>'
+    +'<div class="rv-pb-row">'+pbBtns+'</div>'
+    +'</div>'
+    +'<div class="rv-split-note"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>'
+    +'If amount &amp; paid by are entered, cost splits among participants via Split tab rules.</div>'
+    +'<div class="rv-act-row">'
+    +(rv.editId?'<button class="rv-act-btn rv-act-del" id="rvDelBtn"><i class="ti ti-trash" aria-hidden="true" style="margin-right:4px"></i>Delete</button>':'')
+    +'<button class="rv-act-btn rv-act-save" id="rvSaveBtn"><i class="ti ti-device-floppy" aria-hidden="true" style="margin-right:4px"></i>Save</button>'
+    +'</div></div>';
+}
+
+function rvKpHTML(){
+  var rv=S.rv;
+  var sym=rv.currency==='EUR'?'\u20ac':'$';
+  var d=rv.kpDigits!=null?rv.kpDigits:'0';
+  var keys=['1','2','3','4','5','6','7','8','9','.','0','DEL'];
+  var kBtns=keys.map(function(k){
+    if(k==='DEL')return'<button class="rv-kp-key rv-kp-del" data-rvkey="DEL" aria-label="Delete"><i class="ti ti-backspace" style="font-size:20px"></i></button>';
+    return'<button class="rv-kp-key" data-rvkey="'+k+'">'+k+'</button>';
+  }).join('');
+  return'<div class="rv-kp-handle"></div>'
+    +'<div class="rv-kp-disp">'
+    +'<div class="rv-kp-lbl">Amount</div>'
+    +'<div class="rv-kp-num">'+sym+esc(d)+'</div>'
+    +'<div class="rv-kp-sub">'+esc(rv.name||'Reservation')+'</div>'
+    +'</div>'
+    +'<div class="rv-kp-grid">'+kBtns+'</div>'
+    +'<button class="rv-kp-save" id="rvKpSave"><i class="ti ti-check" aria-hidden="true" style="margin-right:6px"></i>Set amount &nbsp;&middot;&nbsp; '+sym+esc(d)+'</button>';
+}
+
+function openAddReservation(r){
+  var isEdit=r&&r.id;
+  S.rv={
+    open:true,
+    editId:isEdit?r.id:null,
+    resType:isEdit?(r.res_type||'Restaurant'):'Restaurant',
+    dt:isEdit?toLocalDT(r.reservation_dt):(S.rv&&S.rv.savedDt?S.rv.savedDt:nowLocal()),
+    name:isEdit?(r.name||''):'',
+    location:isEdit?(r.location||''):'',
+    notes:isEdit?(r.notes||''):'',
+    amount:isEdit&&(r.amount!=null&&r.amount!=='')?(String(parseFloat(r.amount))):'',
+    currency:isEdit?(r.currency||'USD'):'USD',
+    paidBy:isEdit?(r.paid_by_family||null):null,
+    costSkipped:isEdit?!!(r.cost_skipped):false,
+    famSel:{jmcr:'none',matthews:'none',silvermans:'none'},
+    memSel:{},
+    ddOpen:null,
+    kpOpen:false,
+    kpDigits:'0',
+    savedDt:S.rv&&S.rv.savedDt?S.rv.savedDt:''
+  };
+  if(isEdit){
+    var guests=r.reservation_guests||[];
+    var fkeys=['jmcr','matthews','silvermans'];
+    fkeys.forEach(function(fk){
+      rvFamMembers(fk).forEach(function(m){
+        if(guests.find(function(g){return g.member_id===m.id;})){S.rv.memSel[m.id]=true;}
+      });
+    });
+  }else{
+    S.allMembers.filter(function(m){return!m.is_subject;}).forEach(function(m){S.rv.memSel[m.id]=true;});
+  }
+  var sheet=document.getElementById('rvSheet');
+  var ovr=document.getElementById('rvOverlay');
+  sheet.innerHTML=rvSheetHTML();
+  sheet.classList.add('open');
+  ovr.classList.add('open');
+  bindRvSheet();
+}
+
+function rvRefresh(){
+  var nameEl=document.getElementById('rvName');
+  var locEl=document.getElementById('rvLoc');
+  var notesEl=document.getElementById('rvNotes');
+  var dtEl=document.getElementById('rvDtInp');
+  if(nameEl)S.rv.name=nameEl.value;
+  if(locEl)S.rv.location=locEl.value;
+  if(notesEl)S.rv.notes=notesEl.value;
+  if(dtEl&&dtEl.value)S.rv.dt=dtEl.value;
+  var sheet=document.getElementById('rvSheet');
+  if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
+}
+
+function bindRvSheet(){
+  var closeBtn=document.getElementById('rvCloseBtn');
+  if(closeBtn)closeBtn.onclick=function(){closeRvSheet();};
+  var saveBtn=document.getElementById('rvSaveBtn');
+  if(saveBtn)saveBtn.onclick=function(){submitReservation();};
+  var delBtn=document.getElementById('rvDelBtn');
+  if(delBtn)delBtn.onclick=function(){if(confirm('Delete this reservation?')){delRec('reserve',S.rv.editId);}};
+  var amtArea=document.getElementById('rvAmtDisp');
+  var amtHint=document.getElementById('rvAmtHint');
+  if(amtArea)amtArea.onclick=function(){openRvKp();};
+  if(amtHint)amtHint.onclick=function(){openRvKp();};
+  var skipBtn=document.getElementById('rvSkipBtn');
+  if(skipBtn)skipBtn.onclick=function(){S.rv.costSkipped=!S.rv.costSkipped;if(S.rv.costSkipped){S.rv.amount='0';}else{S.rv.amount='';}rvRefresh();};
+  document.querySelectorAll('[data-rvtype]').forEach(function(btn){
+    btn.onclick=function(){S.rv.resType=btn.dataset.rvtype;rvRefresh();};
+  });
+  document.querySelectorAll('[data-rvfam]').forEach(function(btn){
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var fk=btn.dataset.rvfam;
+      S.rv.ddOpen=S.rv.ddOpen===fk?null:fk;
+      rvRefresh();
+    };
+  });
+  document.querySelectorAll('[data-rvddall]').forEach(function(btn){
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var fk=btn.dataset.rvddall;
+      var allSel=rvAllSelected(fk);
+      rvFamMembers(fk).forEach(function(m){S.rv.memSel[m.id]=!allSel;});
+      rvRefresh();
+    };
+  });
+  document.querySelectorAll('[data-rvmem]').forEach(function(item){
+    item.onclick=function(e){
+      e.stopPropagation();
+      var mid=item.dataset.rvmem;
+      S.rv.memSel[mid]=!S.rv.memSel[mid];
+      rvRefresh();
+    };
+  });
+  document.querySelectorAll('[data-rvcur]').forEach(function(btn){
+    btn.onclick=function(){S.rv.currency=btn.dataset.rvcur;rvRefresh();};
+  });
+  document.querySelectorAll('[data-rvpb]').forEach(function(btn){
+    btn.onclick=function(){S.rv.paidBy=S.rv.paidBy===btn.dataset.rvpb?null:btn.dataset.rvpb;rvRefresh();};
+  });
+  var dtInp=document.getElementById('rvDtInp');
+  if(dtInp){dtInp.onchange=function(){S.rv.dt=dtInp.value;S.rv.savedDt=dtInp.value;};}
+}
+
+function openRvKp(){
+  S.rv.kpDigits=S.rv.amount!==''?S.rv.amount:'0';
+  var kpSheet=document.getElementById('rvKpSheet');
+  var kpOvr=document.getElementById('rvKpOverlay');
+  kpSheet.innerHTML=rvKpHTML();
+  kpSheet.classList.add('open');
+  kpOvr.classList.add('open');
+  bindRvKp();
+}
+
+function bindRvKp(){
+  document.querySelectorAll('[data-rvkey]').forEach(function(btn){
+    btn.onclick=function(){
+      var k=btn.dataset.rvkey;
+      var d=S.rv.kpDigits!=null?S.rv.kpDigits:'0';
+      if(k==='DEL'){d=d.length>1?d.slice(0,-1):'0';}
+      else if(k==='.'&&d.indexOf('.')>=0){}
+      else{if(d==='0'&&k!=='.')d='';d+=k;}
+      S.rv.kpDigits=d;
+      var kpSheet=document.getElementById('rvKpSheet');
+      if(kpSheet&&kpSheet.classList.contains('open')){kpSheet.innerHTML=rvKpHTML();bindRvKp();}
+    };
+  });
+  var saveBtn=document.getElementById('rvKpSave');
+  if(saveBtn)saveBtn.onclick=function(){
+    S.rv.amount=S.rv.kpDigits;
+    S.rv.costSkipped=false;
+    closeRvKp();
+    rvRefresh();
+  };
+  var kpOvr=document.getElementById('rvKpOverlay');
+  if(kpOvr)kpOvr.onclick=function(e){
+    if(e.target===kpOvr){S.rv.amount=S.rv.kpDigits;closeRvKp();}
+  };
+}
+
+function closeRvKp(){
+  document.getElementById('rvKpSheet').classList.remove('open');
+  document.getElementById('rvKpOverlay').classList.remove('open');
+}
+
+function closeRvSheet(){
+  var dtEl=document.getElementById('rvDtInp');
+  if(dtEl&&dtEl.value)S.rv.savedDt=dtEl.value;
+  document.getElementById('rvSheet').classList.remove('open');
+  document.getElementById('rvOverlay').classList.remove('open');
+  closeRvKp();
+}
+
+function submitReservation(){
+  var nameEl=document.getElementById('rvName');
+  var locEl=document.getElementById('rvLoc');
+  var notesEl=document.getElementById('rvNotes');
+  var dtEl=document.getElementById('rvDtInp');
+  var name=nameEl?nameEl.value.trim():'';
+  if(!name){alert('Name is required.');return;}
+  var loc=locEl?locEl.value.trim():'';
+  var notes=notesEl?notesEl.value.trim():'';
+  var dt=dtEl?dtEl.value:S.rv.dt;
+  if(dt)S.rv.savedDt=dt;
+  var amt=S.rv.amount!==''&&S.rv.amount!=null?parseFloat(S.rv.amount):null;
+  sdot('saving');
+  var row={
+    name:name,res_type:S.rv.resType,
+    reservation_dt:dt?new Date(dt).toISOString():null,
+    location:loc||null,notes:notes||null,
+    amount:amt!=null?amt:null,
+    currency:amt!=null?S.rv.currency:null,
+    paid_by_family:amt!=null&&S.rv.paidBy?S.rv.paidBy:null,
+    cost_skipped:S.rv.costSkipped||false,
+    trip_id:S.trip&&S.trip.id||null,
+    entered_by:S.user&&S.user.id||null
+  };
+  var isNew=!S.rv.editId;
+  var p=isNew?sb.from('reservations').insert(row).select():sb.from('reservations').update(row).eq('id',S.rv.editId);
+  p.then(function(r){
+    if(r.error){sdot('err');console.error(r.error);return;}
+    var rid=isNew?(r.data&&r.data[0]&&r.data[0].id):S.rv.editId;
+    sb.from('reservation_guests').delete().eq('reservation_id',rid).then(function(){
+      var gRows=Object.keys(S.rv.memSel).filter(function(mid){return S.rv.memSel[mid];}).map(function(mid){return{reservation_id:rid,member_id:mid,is_companion:false};});
+      var gp=gRows.length?sb.from('reservation_guests').insert(gRows):Promise.resolve({});
+      gp.then(function(){
+        if(amt!=null&&amt>0&&S.rv.paidBy&&S.trip){
+          var amtUSD=S.rv.currency==='EUR'?amt*(S.exRate||1.09):amt;
+          var fkeys=['jmcr','matthews','silvermans'];
+          var famCounts={jmcr:0,matthews:0,silvermans:0};
+          Object.keys(S.rv.memSel).filter(function(mid){return S.rv.memSel[mid];}).forEach(function(mid){
+            var m=S.allMembers.find(function(x){return x.id===mid;});
+            if(m){fkeys.forEach(function(fk){if(m.family_id===FIDS[fk])famCounts[fk]++;});}
+          });
+          var expRow={trip_id:S.trip.id,description:name,category:'Activity',amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.rv.currency,paid_by_family:S.rv.paidBy,created_at:dt?new Date(dt).toISOString():new Date().toISOString(),reservation_id:rid};
+          var existingExp=S.expenses.find(function(e){return e.reservation_id===rid;});
+          var ep=existingExp?sb.from('expenses').update(expRow).eq('id',existingExp.id).select():sb.from('expenses').insert(expRow).select();
+          ep.then(function(re){
+            if(re.error){sdot('err');console.error(re.error);}
+            var eid=existingExp?existingExp.id:(re.data&&re.data[0]&&re.data[0].id);
+            if(eid){
+              sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){
+                var splits=[];fkeys.forEach(function(fk){if(famCounts[fk]>0)splits.push({expense_id:eid,family_key:fk,people_count:famCounts[fk]});});
+                var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});
+                sp.then(function(){loadExpenses(function(exps){S.expenses=exps;});});
+              });
+            }
+          });
+        }
+        sb.from('reservations').select('*,reservation_guests(*,members(name,icon,icon_color))').order('reservation_dt').then(function(r2){S.reserves=r2.data||[];sdot('');closeRvSheet();renderPanel();});
+      });
+    });
+  });
+}
 document.addEventListener('click',function(e){
   if(!e.target.closest('#ctx')&&!e.target.closest('.idot'))
     document.getElementById('ctx').classList.remove('open');
@@ -838,9 +1337,17 @@ document.addEventListener('click',function(e){
   if(e.target.closest('#addFlightBtn')){openAddFlight();return;}
   if(e.target.closest('#addHotelBtn')){openAddHotel(null);return;}
   if(e.target.closest('#addReserveBtn')){openAddReservation(null);return;}
+  var rcost=e.target.closest('[data-rcost]');
+  if(rcost){
+    var rid=rcost.dataset.rcost;
+    var rv=S.reserves.find(function(x){return x.id===rid;});
+    if(rv)openAddReservation(rv);
+    return;
+  }
   var fc=e.target.closest('[data-fid]');if(fc){flightDetail(fc.dataset.fid);return;}
   var hc=e.target.closest('[data-hid]');if(hc){hotelDetail(hc.dataset.hid);return;}
-  var rc=e.target.closest('[data-rid]');if(rc){reserveDetail(rc.dataset.rid);return;}
+  var rc=e.target.closest('[data-rid]');if(rc&&!e.target.closest('[data-rcost]')){reserveDetail(rc.dataset.rid);return;}
+  if(e.target.closest('#rvOverlay')&&!e.target.closest('#rvSheet'))closeRvSheet();
   if(e.target.closest('#bsovr')&&!e.target.closest('#bsheet'))closeBS();
 });
 
@@ -1030,35 +1537,118 @@ function seatRows(members,pax){
 }
 function getSelPax(sel){return[].slice.call(document.querySelectorAll(sel+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});}
 
+
+/* ---- ADD FLIGHT: styled sheet (dark blue-gray, centered popup) ---- */
+function flightMemberTiles(selIds){
+  var groups={};var order=[];
+  (S.allMembers||[]).forEach(function(m){
+    var fid=m.family_id;
+    if(!groups[fid]){groups[fid]={name:(m.families&&m.families.name)||fid,mems:[]};order.push(fid);}
+    groups[fid].mems.push(m);
+  });
+  var html='';
+  order.forEach(function(fid){
+    var g=groups[fid];
+    html+='<div class="fl-fam-grp"><span class="fl-fam-grp-lbl">'+esc(g.name)+'</span><div class="fl-pax-tiles">';
+    g.mems.forEach(function(m,i){
+      var c=col(m,i);var isSel=selIds?selIds.indexOf(m.id)>=0:m.family_id===S.fid;
+      html+='<div class="fl-tile'+(isSel?' fl-sel':'')+'" data-mid="'+m.id+'" onclick="this.classList.toggle(\'fl-sel\')">'
+        +'<i class="ti '+(m.icon||'ti-user')+'" aria-hidden="true" style="color:'+(isSel?'#60a0ff':'rgba(255,255,255,.6)')+'"></i>'
+        +'<span>'+esc(m.name)+'</span></div>';
+    });
+    html+='</div></div>';
+  });
+  return html;
+}
+function flightSeatRows(pax){
+  return(S.allMembers||[]).map(function(m){
+    var s=pax?pax.find(function(p){return p.member_id===m.id;}):null;
+    return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.7);width:4.5rem;flex-shrink:0">'+esc(m.name)+'</span>'
+      +'<input class="fl-inp" data-seat="'+m.id+'" value="'+(s&&s.seat?esc(s.seat):'')+'" placeholder="Seat" style="flex:1"/></div>';
+  }).join('');
+}
 function openAddFlight(){S.companions=[];doOpenFlight(null);}
 function doOpenFlight(f){
   var selIds=f?(f.flight_passengers||[]).filter(function(p){return!p.is_companion;}).map(function(p){return p.member_id;}):S.members.map(function(m){return m.id;});
-  var depL=f&&f.departure_dt?new Date(f.departure_dt).toISOString().slice(0,16):nowLocal();
-  var arrL=f&&f.arrival_dt?new Date(f.arrival_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(d.getHours()+3);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}());
+  var depL=f&&f.departure_dt?toLocalDT(f.departure_dt):nowLocal();
+  var arrL=f&&f.arrival_dt?toLocalDT(f.arrival_dt):(function(){var d=new Date();d.setHours(d.getHours()+3);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());}());
   S.companions=f?(f.flight_passengers||[]).filter(function(p){return p.is_companion;}).map(function(p){return{name:p.companion_name,seat:p.seat||''};}):[]; 
-  var compHtml=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');
+  var compHtml=S.companions.map(function(c,i){return'<div class="comp-item" style="color:rgba(255,255,255,.8)"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button style="background:none;border:none;color:#ff9090;cursor:pointer;font-size:.9rem" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');
   var ins=f&&f.is_insured;
-  openCP(f?'Edit Flight':'Add Flight',
-    '<div class="fsec"><label class="flbl">Passengers</label><div id="fpaxTiles">'+paxTiles(selIds)+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Companions</label><div class="comp-row"><input class="finp" id="cName" placeholder="Name" style="flex:2"/><input class="finp" id="cSeat" placeholder="Seat" style="flex:1"/><button class="comp-add" type="button" onclick="addComp()"><i class="ti ti-plus"></i></button></div><div class="comp-list" id="compList">'+compHtml+'</div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">From</label><input class="finp" id="fFrom" value="'+esc(f?f.origin_city||'':'')+'" placeholder="LAX"/></div><div class="fsec"><label class="flbl">To</label><input class="finp" id="fTo" value="'+esc(f?f.dest_city||'':'')+'" placeholder="MIA"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Departure</label><input class="finp" type="datetime-local" id="fDep" value="'+depL+'"/></div><div class="fsec"><label class="flbl">Arrival</label><input class="finp" type="datetime-local" id="fArr" value="'+arrL+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Airline</label><input class="finp" id="fAl" value="'+esc(f?f.airline||'':'')+'" placeholder="American"/></div><div class="fsec"><label class="flbl">Flight #</label><input class="finp" id="fNum" value="'+esc(f?f.flight_number||'':'')+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Gate</label><input class="finp" id="fGate" value="'+esc(f?f.gate||'':'')+'"/></div><div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="fConf" value="'+esc(f?f.confirmation_no||'':'')+'"/></div></div>'
-    +'<div class="fsec"><label class="flbl">Insurance</label><div class="ftog" id="insTog"><button class="ftog-opt'+(ins?'':' on')+'" type="button" onclick="togFtog(this,\'insTog\')">No</button><button class="ftog-opt'+(ins?' on':'')+'" type="button" onclick="togFtog(this,\'insTog\');document.getElementById(\'insWrap\').style.display=\'block\'">Yes</button></div></div>'
-    +'<div id="insWrap" style="display:'+(ins?'block':'none')+'"><div class="fsec"><label class="flbl">Policy #</label><input class="finp" id="fPol" value="'+esc(f?f.insurance_policy_no||'':'')+'"/></div></div>'
-    +'<div class="fsec"><label class="flbl">Seats</label><div id="seatWrap">'+seatRows(S.allMembers,f?f.flight_passengers:null)+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="fNotes">'+esc(f?f.notes||'':'')+'</textarea></div>'
-    +'<button class="sbtn flight" type="button" onclick="submitFlight(\''+(f?f.id:'null')+'\')"><i class="ti ti-check"></i> '+(f?'Save':'Add Flight')+'</button>'
-    +(f?'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>':''));
+  var body='<div style="background:#1a2030;border-radius:14px;overflow:hidden">'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-lbl">Passengers</div>'
+    +'<div id="fpaxTiles">'+flightMemberTiles(selIds)+'</div>'
+    +'</div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-lbl">Companions</div>'
+    +'<div style="display:flex;gap:6px;margin-bottom:6px">'
+    +'<input class="fl-inp" id="cName" placeholder="Name" style="flex:2"/>'
+    +'<input class="fl-inp" id="cSeat" placeholder="Seat" style="flex:1"/>'
+    +'<button onclick="addComp()" style="background:#378ADD;border:none;border-radius:9px;color:#fff;padding:0 12px;cursor:pointer;font-size:1.1rem">+</button>'
+    +'</div><div id="compList">'+compHtml+'</div>'
+    +'</div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-two">'
+    +'<div><div class="fl-lbl">From</div><input class="fl-inp" id="fFrom" value="'+esc(f?f.origin_city||'':'')+'" placeholder="LAX"/></div>'
+    +'<div><div class="fl-lbl">To</div><input class="fl-inp" id="fTo" value="'+esc(f?f.dest_city||'':'')+'" placeholder="MIA"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-two">'
+    +'<div><div class="fl-lbl">Departure</div><input class="fl-inp" type="datetime-local" id="fDep" value="'+depL+'"/></div>'
+    +'<div><div class="fl-lbl">Arrival</div><input class="fl-inp" type="datetime-local" id="fArr" value="'+arrL+'"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-two">'
+    +'<div><div class="fl-lbl">Airline</div><input class="fl-inp" id="fAl" value="'+esc(f?f.airline||'':'')+'" placeholder="American"/></div>'
+    +'<div><div class="fl-lbl">Flight #</div><input class="fl-inp" id="fNum" value="'+esc(f?f.flight_number||'':'')+'"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-two">'
+    +'<div><div class="fl-lbl">Gate</div><input class="fl-inp" id="fGate" value="'+esc(f?f.gate||'':'')+'"/></div>'
+    +'<div><div class="fl-lbl">Confirmation</div><input class="fl-inp" id="fConf" value="'+esc(f?f.confirmation_no||'':'')+'"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-lbl">Insurance</div>'
+    +'<div class="fl-tog" id="insTog">'
+    +'<button class="fl-tog-btn'+(ins?'':' fl-on')+'" onclick="flTogIns(this,false)">No</button>'
+    +'<button class="fl-tog-btn'+(ins?' fl-on':'')+'" onclick="flTogIns(this,true)">Yes &mdash; add policy #</button>'
+    +'</div>'
+    +'<div class="fl-ins-wrap" id="insWrap" style="display:'+(ins?'block':'none')+';margin-top:7px">'
+    +'<div class="fl-lbl">Policy #</div><input class="fl-inp" id="fPol" value="'+esc(f?f.insurance_policy_no||'':'')+'"/>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="fl-lbl">Seats</div><div id="seatWrap">'+flightSeatRows(f?f.flight_passengers:null)+'</div>'
+    +'</div>'
+    +'<div style="padding:11px 13px">'
+    +'<div class="fl-lbl">Notes</div><textarea class="fl-inp fl-ta" id="fNotes">'+esc(f?f.notes||'':'')+'</textarea>'
+    +'</div></div>'
+    +'<button class="fl-save" onclick="submitFlight(\''+(f?f.id:'null')+'\')"><i class="ti ti-check" style="margin-right:5px"></i>'+(f?'Save changes':'Add flight')+'</button>'
+    +(f?'<button class="fl-del" onclick="delRec(\'flight\',\''+f.id+'\')"><i class="ti ti-trash" style="margin-right:5px"></i>Delete</button>':'');
+  var cp=document.getElementById('cpanel');
+  cp.style.background='#1a2030';
+  var head=document.getElementById('cpanel').querySelector('.cp-head');
+  if(head){head.style.background='#1a2030';head.style.borderBottomColor='rgba(255,255,255,.15)';}
+  var title=document.getElementById('cpTitle');
+  if(title){title.style.color='#60a0ff';title.style.textTransform='uppercase';title.style.fontSize='11px';title.style.letterSpacing='.08em';}
+  var closeBtn=document.querySelector('.cp-close');
+  if(closeBtn)closeBtn.style.color='rgba(255,255,255,.6)';
+  openCP(f?'Edit flight':'Add flight',body);
+}
+function flTogIns(btn,show){
+  document.querySelectorAll('#insTog .fl-tog-btn').forEach(function(b){b.classList.remove('fl-on');});
+  btn.classList.add('fl-on');
+  var wrap=document.getElementById('insWrap');
+  if(wrap)wrap.style.display=show?'block':'none';
 }
 function addComp(){var n=V('cName');if(!n)return;S.companions.push({name:n,seat:V('cSeat')});document.getElementById('cName').value='';document.getElementById('cSeat').value='';renderCompList();}
 function removeComp(i){S.companions.splice(i,1);renderCompList();}
-function renderCompList(){var el=document.getElementById('compList');if(!el)return;el.innerHTML=S.companions.map(function(c,i){return'<div class="comp-item"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button class="comp-del" type="button" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
+function renderCompList(){var el=document.getElementById('compList');if(!el)return;el.innerHTML=S.companions.map(function(c,i){return'<div class="comp-item" style="color:rgba(255,255,255,.8)"><span style="flex:1">'+esc(c.name)+(c.seat?' &mdash; '+esc(c.seat):'')+'</span><button style="background:none;border:none;color:#ff9090;cursor:pointer" onclick="removeComp('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
 function submitFlight(editId){
   var from=V('fFrom'),to=V('fTo'),dep=V('fDep');
   if(!from||!to||!dep){alert('From, To and Departure required.');return;}sdot('saving');
-  var insEl=document.querySelector('#insTog .on');var isIns=insEl&&insEl.textContent.trim()==='Yes';
+  var insEl=document.querySelector('#insTog .fl-on');var isIns=insEl&&insEl.textContent.trim().startsWith('Yes');
   var row={trip_id:S.trip&&S.trip.id||null,origin_city:from,dest_city:to,departure_dt:new Date(dep).toISOString(),arrival_dt:V('fArr')?new Date(V('fArr')).toISOString():null,airline:V('fAl')||null,flight_number:V('fNum')||null,gate:V('fGate')||null,confirmation_no:V('fConf')||null,is_insured:isIns,insurance_policy_no:isIns?(V('fPol')||null):null,notes:V('fNotes')||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('flights').insert(row).select().single():sb.from('flights').update(row).eq('id',editId);
@@ -1067,7 +1657,7 @@ function submitFlight(editId){
     var fid=isNew?rd.data.id:editId;
     sb.from('flight_passengers').delete().eq('flight_id',fid).then(function(){
       var paxRows=[];
-      getSelPax('#fpaxTiles').forEach(function(mid){var se=document.querySelector('[data-seat="'+mid+'"]');paxRows.push({flight_id:fid,member_id:mid,seat:se?se.value.trim()||null:null,is_companion:false});});
+      [].slice.call(document.querySelectorAll('#fpaxTiles .fl-tile.fl-sel[data-mid]')).forEach(function(el){var se=document.querySelector('[data-seat="'+el.dataset.mid+'"]');paxRows.push({flight_id:fid,member_id:el.dataset.mid,seat:se?se.value.trim()||null:null,is_companion:false});});
       S.companions.forEach(function(c){paxRows.push({flight_id:fid,companion_name:c.name,seat:c.seat||null,is_companion:true});});
       var ip=paxRows.length?sb.from('flight_passengers').insert(paxRows):Promise.resolve({});
       ip.then(function(){S.companions=[];sb.from('flights').select('*,flight_passengers(*,members(name,icon,icon_color))').order('departure_dt').then(function(r){S.flights=r.data||[];sdot('');closeAll();renderPanel();});});
@@ -1077,7 +1667,8 @@ function submitFlight(editId){
 function flightDetail(id){
   var f=S.flights.find(function(x){return x.id===id;});if(!f)return;
   var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name||p.companion_name||'?')+(p.seat?' ('+p.seat+')':'');}).join(', ')||'-';
-  document.getElementById('cpanel').classList.add('flight-detail');openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
+  document.getElementById('cpanel').classList.add('flight-detail');
+  openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
     DR('Route',f.origin_city+' \u2192 '+f.dest_city)+DR('Departure',fmtDT(f.departure_dt))+DR('Arrival',fmtDT(f.arrival_dt))
     +DR('Airline',f.airline)+DR('Flight #',f.flight_number)+DR('Gate',f.gate)+DR('Confirmation',f.confirmation_no)
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+esc(pax)+'</span></div>'
@@ -1085,86 +1676,103 @@ function flightDetail(id){
     +'<button class="sbtn flight" type="button" style="margin-top:.5rem" onclick="doOpenFlight(S.flights.find(function(x){return x.id===\''+f.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>');
 }
+
+/* ---- ADD ACCOMMODATION: styled sheet (warm neutral, no amount/paid by) ---- */
+function accomMemberTiles(selIds){
+  var groups={};var order=[];
+  (S.allMembers||[]).forEach(function(m){
+    var fid=m.family_id;
+    if(!groups[fid]){groups[fid]={name:(m.families&&m.families.name)||fid,mems:[]};order.push(fid);}
+    groups[fid].mems.push(m);
+  });
+  var html='';
+  order.forEach(function(fid){
+    var g=groups[fid];
+    html+='<div class="ac-fam-grp"><span class="ac-fam-grp-lbl">'+esc(g.name)+'</span><div class="ac-fam-tiles">';
+    g.mems.forEach(function(m,i){
+      var isSel=selIds?selIds.indexOf(m.id)>=0:m.family_id===S.fid;
+      html+='<div class="ac-tile'+(isSel?' ac-sel':'')+'" data-mid="'+m.id+'" onclick="this.classList.toggle(\'ac-sel\');this.querySelector(\'i\').style.color=this.classList.contains(\'ac-sel\')?\'#D85A30\':\'rgba(255,255,255,.6)\'">'
+        +'<i class="ti '+(m.icon||'ti-user')+'" aria-hidden="true" style="color:'+(isSel?'#D85A30':'rgba(255,255,255,.6)')+'"></i>'
+        +'<span>'+esc(m.name)+'</span></div>';
+    });
+    html+='</div></div>';
+  });
+  return html;
+}
 function openAddHotel(h){
   h=h||{};
-  var inL=h.check_in_dt?new Date(h.check_in_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(15,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T15:00';}());
-  var outL=h.check_out_dt?new Date(h.check_out_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setDate(d.getDate()+7);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T11:00';}());
-  var types=['Hotel','Cruise Ship','Vacation Rental','Other'];
-  var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(h.accom_type===t||(!h.accom_type&&t==='Hotel')?' on':'')+'" type="button" onclick="togFtog(this,\'acType\')">'+t+'</button>';}).join('');
-  openCP(h.id?'Edit Stay':'Add Accommodation',
-    '<div class="fsec"><label class="flbl">Guests</label><div id="hpaxTiles">'+paxTiles(h.id?((h.accommodation_guests||[]).filter(function(g){return!g.is_companion;}).map(function(g){return g.member_id;})):S.members.map(function(m){return m.id;}))+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="acType">'+typeBtns+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="hName" value="'+esc(h.name||'')+'" placeholder="Hotel name"/></div>'
-    +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="hLoc" value="'+esc(h.location||'')+'"/></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Check-in</label><input class="finp" type="datetime-local" id="hIn" value="'+inL+'"/></div><div class="fsec"><label class="flbl">Check-out</label><input class="finp" type="datetime-local" id="hOut" value="'+outL+'"/></div></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="hConf" value="'+esc(h.confirmation_no||'')+'"/></div><div class="fsec"><label class="flbl">Room #</label><input class="finp" id="hRoom" value="'+esc(h.room_number||'')+'"/></div></div>'
-    +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="hNotes">'+esc(h.notes||'')+'</textarea></div>'
-    +'<button class="sbtn hotel" type="button" onclick="submitHotel(\''+(h.id||'null')+'\')"><i class="ti ti-check"></i> '+(h.id?'Save':'Add')+'</button>'
-    +(h.id?'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>':''));
+  var inL=h.check_in_dt?toLocalDT(h.check_in_dt):(function(){var d=new Date();d.setHours(15,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T15:00';}());
+  var outL=h.check_out_dt?toLocalDT(h.check_out_dt):(function(){var d=new Date();d.setDate(d.getDate()+7);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T11:00';}());
+  var selIds=h.id?((h.accommodation_guests||[]).filter(function(g){return!g.is_companion;}).map(function(g){return g.member_id;})):S.members.map(function(m){return m.id;});
+  var types=[{k:'Hotel',ico:'ti-building'},{k:'Cruise Ship',ico:'ti-ship'},{k:'Vacation Rental',ico:'ti-home'},{k:'Other',ico:'ti-dots'}];
+  var typeBtns=types.map(function(t){var sel=h.accom_type===t.k||(!h.accom_type&&t.k==='Hotel');return'<button class="ac-type-btn'+(sel?' ac-on':'')+'" onclick="acTogType(this)"><i class="ti '+t.ico+'" aria-hidden="true"></i>'+t.k+'</button>';}).join('');
+  var body='<div style="background:#24201a;border-radius:14px;overflow:hidden">'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-lbl">Type</div>'
+    +'<div class="ac-type-row" id="acTypeRow">'+typeBtns+'</div>'
+    +'</div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-lbl">Name</div>'
+    +'<input class="ac-inp" id="hName" value="'+esc(h.name||'')+'" placeholder="Property name"/>'
+    +'</div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-lbl">Location</div>'
+    +'<input class="ac-inp" id="hLoc" value="'+esc(h.location||'')+'"/>'
+    +'</div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-two">'
+    +'<div><div class="ac-lbl">Check-in</div><input class="ac-inp" type="datetime-local" id="hIn" value="'+inL+'"/></div>'
+    +'<div><div class="ac-lbl">Check-out</div><input class="ac-inp" type="datetime-local" id="hOut" value="'+outL+'"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-two">'
+    +'<div><div class="ac-lbl">Confirmation</div><input class="ac-inp" id="hConf" value="'+esc(h.confirmation_no||'')+'"/></div>'
+    +'<div><div class="ac-lbl">Room #</div><input class="ac-inp" id="hRoom" value="'+esc(h.room_number||'')+'"/></div>'
+    +'</div></div>'
+    +'<div style="padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.1)">'
+    +'<div class="ac-lbl">Guests</div>'
+    +'<div id="hpaxTiles">'+accomMemberTiles(selIds)+'</div>'
+    +'</div>'
+    +'<div style="padding:11px 13px">'
+    +'<div class="ac-lbl">Notes</div>'
+    +'<textarea class="ac-inp ac-ta" id="hNotes">'+esc(h.notes||'')+'</textarea>'
+    +'</div></div>'
+    +'<button class="ac-save" onclick="submitHotel(\''+(h.id||'null')+'\')"><i class="ti ti-check" style="margin-right:5px"></i>'+(h.id?'Save changes':'Add accommodation')+'</button>'
+    +(h.id?'<button class="ac-del" onclick="delRec(\'hotel\',\''+h.id+'\')"><i class="ti ti-trash" style="margin-right:5px"></i>Delete</button>':'');
+  var cp=document.getElementById('cpanel');
+  cp.style.background='#24201a';
+  openCP(h.id?'Edit stay':'Add accommodation',body);
+  var head=cp.querySelector('.cp-head');
+  if(head){head.style.background='#24201a';head.style.borderBottomColor='rgba(255,255,255,.15)';}
+  var title=document.getElementById('cpTitle');
+  if(title){title.style.color='#D85A30';title.style.textTransform='uppercase';title.style.fontSize='11px';title.style.letterSpacing='.08em';}
+  var closeBtn=cp.querySelector('.cp-close');
+  if(closeBtn)closeBtn.style.color='rgba(255,255,255,.6)';
 }
+function acTogType(btn){document.querySelectorAll('#acTypeRow .ac-type-btn').forEach(function(b){b.classList.remove('ac-on');b.querySelector('i').style.color='rgba(255,255,255,.6)';});btn.classList.add('ac-on');btn.querySelector('i').style.color='#D85A30';}
 function submitHotel(editId){
   var name=V('hName');if(!name){alert('Name required.');return;}sdot('saving');
-  var acEl=document.querySelector('#acType .on');
-  var row={accom_type:acEl?acEl.textContent:'Hotel',name:name,location:V('hLoc')||null,check_in_dt:V('hIn')?new Date(V('hIn')).toISOString():null,check_out_dt:V('hOut')?new Date(V('hOut')).toISOString():null,room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
+  var acEl=document.querySelector('#acTypeRow .ac-on');
+  var selGuests=[].slice.call(document.querySelectorAll('#hpaxTiles .ac-tile.ac-sel[data-mid]')).map(function(el){return el.dataset.mid;});
+  var row={accom_type:acEl?acEl.textContent.trim():'Hotel',name:name,location:V('hLoc')||null,check_in_dt:V('hIn')?new Date(V('hIn')).toISOString():null,check_out_dt:V('hOut')?new Date(V('hOut')).toISOString():null,room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('accommodations').insert(row).select():sb.from('accommodations').update(row).eq('id',editId);
   p.then(function(r){
     if(r.error){sdot('err');console.error(r.error);return;}
     var hid=isNew?(r.data&&r.data[0]&&r.data[0].id):editId;
     sb.from('accommodation_guests').delete().eq('accommodation_id',hid).then(function(){
-      var gRows=getSelPax('#hpaxTiles').map(function(mid){return{accommodation_id:hid,member_id:mid,is_companion:false};});
+      var gRows=selGuests.map(function(mid){return{accommodation_id:hid,member_id:mid,is_companion:false};});
       var gp=gRows.length?sb.from('accommodation_guests').insert(gRows):Promise.resolve({});
-      gp.then(function(){
-        sb.from('accommodations').select('*,accommodation_guests(*,members(name,icon,icon_color))').order('check_in_dt').then(function(r2){S.hotels=r2.data||[];sdot('');closeAll();renderPanel();});
-      });
+      gp.then(function(){sb.from('accommodations').select('*,accommodation_guests(*,members(name,icon,icon_color))').order('check_in_dt').then(function(r2){S.hotels=r2.data||[];sdot('');closeAll();renderPanel();});});
     });
   });
 }
 function hotelDetail(id){
   var h=S.hotels.find(function(x){return x.id===id;});if(!h)return;
-  document.getElementById('cpanel').classList.add('hotel-detail');openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)+DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))+DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)+(function(){var g=(h.accommodation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
+  document.getElementById('cpanel').classList.add('hotel-detail');
+  openCP(esc(h.name),DR('Type',h.accom_type)+DR('Name',h.name)+DR('Location',h.location)+DR('Check-in',fmtDT(h.check_in_dt))+DR('Check-out',fmtDT(h.check_out_dt))+DR('Room',h.room_number||'TBD')+DR('Confirmation',h.confirmation_no)+DR('Notes',h.notes)+(function(){var g=(h.accommodation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
     +'<button class="sbtn hotel" type="button" style="margin-top:.5rem" onclick="openAddHotel(S.hotels.find(function(x){return x.id===\''+h.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'hotel\',\''+h.id+'\')">Delete</button>');
-}
-function openAddReservation(r){
-  r=r||{};
-  var dtL=r.reservation_dt?new Date(r.reservation_dt).toISOString().slice(0,16):(function(){var d=new Date();d.setHours(19,0,0,0);var pad=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T19:00';}());
-  var types=['Restaurant','Tour','Activity','Transport','Docking'];
-  var typeBtns=types.map(function(t){return'<button class="ftog-opt'+(r.res_type===t||(!r.res_type&&t==='Restaurant')?' on':'')+'" type="button" onclick="togFtog(this,\'resType\')">'+t+'</button>';}).join('');
-  openCP(r.id?'Edit Reservation':'Add Reservation',
-    '<div class="fsec"><label class="flbl">Guests</label><div id="rpaxTiles">'+paxTiles(r.id?[]:S.members.map(function(m){return m.id;}))+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Type</label><div class="ftog" id="resType">'+typeBtns+'</div></div>'
-    +'<div class="fsec"><label class="flbl">Name</label><input class="finp" id="rName" value="'+esc(r.name||'')+'"/></div>'
-    +'<div class="frow"><div class="fsec"><label class="flbl">Date &amp; Time</label><input class="finp" type="datetime-local" id="rDT" value="'+dtL+'"/></div><div class="fsec"><label class="flbl"># People</label><input class="finp" type="number" id="rPpl" value="'+(r.num_people||'')+'" min="1"/></div></div>'
-    +'<div class="fsec"><label class="flbl">Location</label><input class="finp" id="rLoc" value="'+esc(r.location||'')+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Confirmation</label><input class="finp" id="rConf" value="'+esc(r.confirmation_no||'')+'"/></div>'
-    +'<div class="fsec"><label class="flbl">Notes</label><textarea class="finp fta" id="rNotes">'+esc(r.notes||'')+'</textarea></div>'
-    +'<button class="sbtn reserve" type="button" onclick="submitReserve(\''+(r.id||'null')+'\')"><i class="ti ti-check"></i> '+(r.id?'Save':'Add')+'</button>'
-    +(r.id?'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>':''));
-}
-function submitReserve(editId){
-  var name=V('rName');if(!name){alert('Name required.');return;}sdot('saving');
-  var rtEl=document.querySelector('#resType .on');
-  var row={name:name,res_type:rtEl?rtEl.textContent:'Other',reservation_dt:V('rDT')?new Date(V('rDT')).toISOString():null,num_people:parseInt(V('rPpl'))||null,location:V('rLoc')||null,confirmation_no:V('rConf')||null,notes:V('rNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
-  var isNew=!editId||editId==='null';
-  var p=isNew?sb.from('reservations').insert(row).select():sb.from('reservations').update(row).eq('id',editId);
-  p.then(function(r){
-    if(r.error){sdot('err');console.error(r.error);return;}
-    var rid=isNew?(r.data&&r.data[0]&&r.data[0].id):editId;
-    sb.from('reservation_guests').delete().eq('reservation_id',rid).then(function(){
-      var gRows=getSelPax('#rpaxTiles').map(function(mid){return{reservation_id:rid,member_id:mid,is_companion:false};});
-      var gp=gRows.length?sb.from('reservation_guests').insert(gRows):Promise.resolve({});
-      gp.then(function(){
-        sb.from('reservations').select('*,reservation_guests(*,members(name,icon,icon_color))').order('reservation_dt').then(function(r2){S.reserves=r2.data||[];sdot('');closeAll();renderPanel();});
-      });
-    });
-  });
-}
-function reserveDetail(id){
-  var r=S.reserves.find(function(x){return x.id===id;});if(!r)return;
-  document.getElementById('cpanel').classList.add('reserve-detail');openCP(esc(r.name),(function(){var t=(r.res_type||'Other').toLowerCase();var cls=t==='restaurant'?'rs-restaurant':t==='tour'?'rs-tour':t==='activity'?'rs-activity':t==='transport'?'rs-transport':t==='docking'?'rs-docking':'rs';return '<div class="drow"><span class="dlbl">Type</span><span class="dval"><span class="pill '+cls+'">'+esc(r.res_type||'Other')+'</span></span></div>';}())+DR('Name',r.name)+DR('When',fmtDT(r.reservation_dt))+DR('Location',r.location)+DR('People',r.num_people)+DR('Confirmation',r.confirmation_no)+DR('Notes',r.notes)+(function(){var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(', ');return g?DR('Guests',g):'';}())
-    +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
-    +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }
 function delRec(type,id){
   if(!confirm('Delete this '+type+'?'))return;sdot('saving');
@@ -1172,7 +1780,7 @@ function delRec(type,id){
   sb.from(tbl[type]).delete().eq('id',id).then(function(){
     if(type==='flight')sb.from('flights').select('*,flight_passengers(*,members(name,icon,icon_color))').order('departure_dt').then(function(r){S.flights=r.data||[];sdot('');closeAll();renderPanel();});
     else if(type==='hotel')sb.from('accommodations').select('*,accommodation_guests(*,members(name,icon,icon_color))').order('check_in_dt').then(function(r){S.hotels=r.data||[];sdot('');closeAll();renderPanel();});
-    else sb.from('reservations').select('*,reservation_guests(*,members(name,icon,icon_color))').order('reservation_dt').then(function(r){S.reserves=r.data||[];sdot('');closeAll();renderPanel();});
+    else sb.from('reservations').select('*,reservation_guests(*,members(name,icon,icon_color))').order('reservation_dt').then(function(r){S.reserves=r.data||[];sdot('');closeAll();closeRvSheet();renderPanel();});
   });
 }
 function openNewTrip(){
@@ -1203,7 +1811,6 @@ function loadExpenses(cb){
       });
       cb(exps);
     }).catch(function(){
-      // fallback: try join
       exps.forEach(function(e){e.expense_splits=[];});
       cb(exps);
     });
@@ -1240,9 +1847,9 @@ function splitPanel(){
     +'<div class="sstat"><div class="sstat-lbl">Total spent</div><div class="sstat-val">'+uf(tot)+'</div></div>'
     +'<div class="sstat"><div class="sstat-lbl">Expenses</div><div class="sstat-val">'+exps.length+'</div></div>'
     +'<div class="ssort" id="sortPill">'
-      +'<div class="ssort-lbl">Sort by</div>'
-      +'<div class="ssort-val">'+sortLabel+' <i class="ti ti-chevron-down" aria-hidden="true" style="font-size:11px"></i></div>'
-+'</div>'
+    +'<div class="ssort-lbl">Sort by</div>'
+    +'<div class="ssort-val">'+sortLabel+' <i class="ti ti-chevron-down" aria-hidden="true" style="font-size:11px"></i></div>'
+    +'</div>'
     +'</div>'
     +'<div class="split-tog">'
     +'<button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button>'
@@ -1264,7 +1871,7 @@ function splitPanel(){
           +' ('+x.people_count+'p&nbsp;&middot;&nbsp;'+uf(pp*x.people_count)+')';
       }).join('&nbsp;&nbsp;');
       var dateStr=e.created_at?new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-      var pplStr=spl.map(function(x){return'<span style="font-weight:700;color:'+famColor(x.family_key)+'">'+famName(x.family_key)+'</span> ('+x.people_count+'p · '+uf(pp*x.people_count)+')';}).join('   ');
+      var pplStr=spl.map(function(x){return'<span style="font-weight:700;color:'+famColor(x.family_key)+'">'+famName(x.family_key)+'</span> ('+x.people_count+'p · '+uf(pp*x.people_count)+')';}).join('   ');
       html+='<div class="exp-row">'
         +'<div class="er-top">'
         +'<span class="er-desc">'+esc(e.description||e.category||'Expense')+'</span>'
@@ -1323,15 +1930,89 @@ function splitPanel(){
   html+='</div><div class="kp-overlay" id="kpOverlay"></div><div class="kp-sheet" id="kpSheet"></div>';
   return html;
 }
-function kpSheetHTML(){var sp=calcSplits();var uf=function(n){return n>0?'$'+n.toFixed(2):'--';};var sym=S.kp.currency==='EUR'?'\u20ac':'$';var d=S.kp.currDigits||'0';var jCls='kp-sbox'+(S.kp.jmcrN===0?' kp-soff':'')+(S.kp.focus==='jmcr'?' active':'');var mCls='kp-sbox'+(S.kp.mattN===0?' kp-soff':'')+(S.kp.focus==='matthews'?' active':'');var sCls='kp-sbox'+(S.kp.silvN===0?' kp-soff':'')+(S.kp.focus==='silvermans'?' active':'');var amtD=S.kp.focus==='amount'?(d!==''?d:(S.kp.amount||'0')):(S.kp.amount||'0');var jD=S.kp.focus==='jmcr'?(d===''?String(S.kp.jmcrN):d):String(S.kp.jmcrN);var mD=S.kp.focus==='matthews'?(d===''?String(S.kp.mattN):d):String(S.kp.mattN);var sD=S.kp.focus==='silvermans'?(d===''?String(S.kp.silvN):d):String(S.kp.silvN);var note=S.kp.currency==='EUR'?' \u2192 $'+sp.usdTotal.toFixed(2):'';var cats=['Food','Activity','Transport','Lodging'];var catBtns=cats.map(function(ct){return'<button class="kp-cat'+(S.kp.cat===ct?' on':'')+'" data-cat="'+ct+'">'+ct+'</button>';}).join('');var pBtns='<button class="kp-pb'+(S.kp.paidBy==='jmcr'?' on-j':'')+'" data-pb="jmcr">JMCR</button><button class="kp-pb'+(S.kp.paidBy==='matthews'?' on-m':'')+'" data-pb="matthews">Matthews</button><button class="kp-pb'+(S.kp.paidBy==='silvermans'?' on-s':'')+'" data-pb="silvermans">Silvermans</button>';var kBtns=['1','2','3','4','5','6','7','8','9','.','0','DEL'].map(function(k){if(k==='DEL')return'<button class="kp-key del" data-key="DEL" aria-label="delete"><i class="ti ti-backspace" aria-hidden="true" style="font-size:20px"></i></button>';if(k==='.')return'<button class="kp-key dot" data-key=".">.</button>';return'<button class="kp-key" data-key="'+k+'">'+k+'</button>';}).join('');return'<div class="kp-handle"></div><div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px 2px"><span style="font-size:12px;font-weight:700;color:#e8c84a;letter-spacing:.06em;text-transform:uppercase">Add Expense</span><button data-kpclose="1" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:20px;color:rgba(255,255,255,.5);font-size:12px;padding:3px 10px;cursor:pointer">Cancel</button></div><div class="kp-fields"><div class="kp-top-row"><div class="kp-box'+(S.kp.focus==='amount'?' active':'')+'" data-kpf="amount"><div class="kp-lbl">Amount</div><div class="kp-amt-inner"><div class="kp-amt-disp"><span class="kp-sym">'+sym+'</span><span class="kp-num">'+esc(amtD)+'</span></div><div class="kp-curr"><button class="kp-cb'+(S.kp.currency==='USD'?' on':'')+'" data-cur="USD">USD</button><button class="kp-cb'+(S.kp.currency==='EUR'?' on':'')+'" data-cur="EUR">EUR</button></div></div></div><div class="kp-box"><div class="kp-lbl">Date</div><div class="kp-date-val" id="kpDateVal"></div><div style="display:flex;gap:4px;margin-top:2px"><input type="date" id="kpDateInp" data-kpdate="1" style="background:transparent;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;outline:none;font-family:inherit;flex:1"><input type="time" id="kpTimeInp" data-kptime="1" style="background:transparent;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;outline:none;font-family:inherit;flex:1"></div></div></div><div class="kp-box"><div class="kp-lbl">Category</div><div class="kp-cats">'+catBtns+'</div><input class="kp-desc" placeholder="Description (optional)" id="kpDesc" value="'+esc(S.kp.desc||'')+'"></div><div class="kp-box"><div class="kp-lbl">Paid by</div><div class="kp-paidby">'+pBtns+'</div></div><div class="kp-box"><div class="kp-lbl">Split among &mdash; tap family to set count</div><div class="kp-splitgrid"><div class="'+jCls+'" data-kpf="jmcr"><div class="kp-sname">JMCR</div><div class="kp-sppl">'+jD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.jmcrN>0?'$'+sp.jAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='jmcr'?'editing':'tap to set')+'</div></div><div class="'+mCls+'" data-kpf="matthews"><div class="kp-sname">Matthews</div><div class="kp-sppl">'+mD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.mattN>0?'$'+sp.mAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='matthews'?'editing':'tap to set')+'</div></div><div class="'+sCls+'" data-kpf="silvermans"><div class="kp-sname">Silvermans</div><div class="kp-sppl">'+sD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.silvN>0?'$'+sp.sAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='silvermans'?'editing':'tap to set')+'</div></div></div></div></div><div class="kp-hint">'+sp.total+' people &nbsp;&middot;&nbsp; $'+sp.pp.toFixed(2)+'/person</div><div class="kp-keys">'+kBtns+'</div><button class="kp-cfm" id="kpCfmBtn"><i class="ti ti-check" aria-hidden="true"></i> Save &nbsp;&middot;&nbsp; '+sym+esc(S.kp.amount||'0')+note+'</button>';}
-function bindKP(){var addBtn=document.getElementById('splitAddBtn');if(addBtn)addBtn.onclick=function(){openKP();};var ovr=document.getElementById('kpOverlay');if(ovr)ovr.onclick=function(e){if(e.target===ovr)closeKP();};var di=document.getElementById('kpDateInp');var ti=document.getElementById('kpTimeInp');if(di)di.onchange=function(){var d=di.value;var t=ti?ti.value:'12:00';S.kp.dateVal=d+'T'+t;setKPDateTime();};if(ti)ti.onchange=function(){var d=di?di.value:'';var t=ti.value;S.kp.dateVal=d+'T'+t;setKPDateTime();};}
-function setKPDateTime(){var dv=document.getElementById('kpDateVal');if(!dv)return;var now=S.kp.dateVal?new Date(S.kp.dateVal):new Date();var pad=function(n){return String(n).padStart(2,'0');};var dateStr=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());var timeStr=pad(now.getHours())+':'+pad(now.getMinutes());dv.textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric'});var di=document.getElementById('kpDateInp');var ti=document.getElementById('kpTimeInp');if(di&&!di.value)di.value=dateStr;if(ti&&!ti.value)ti.value=timeStr;if(!S.kp.dateVal)S.kp.dateVal=dateStr+'T'+timeStr;}
-function openKP(){var j=famMemCount('jmcr');var m=famMemCount('matthews');var sv=famMemCount('silvermans');S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:'',dateVal:''};var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();setKPDateTime();}if(ovr)ovr.classList.add('open');}
-function closeKP(){var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');if(sheet)sheet.classList.remove('open');if(ovr)ovr.classList.remove('open');}
-function kpFocus(field){if(S.kp.focus!==field){var prev=S.kp.focus;var d=S.kp.currDigits;if(prev==='amount'&&d!=='')S.kp.amount=d;else if(prev==='jmcr'&&d!=='')S.kp.jmcrN=parseInt(d)||0;else if(prev==='matthews'&&d!=='')S.kp.mattN=parseInt(d)||0;else if(prev==='silvermans'&&d!=='')S.kp.silvN=parseInt(d)||0;}S.kp.focus=field;S.kp.currDigits='';refreshKP();}
-function kpKey(k){var d=S.kp.currDigits||'';var isAmt=S.kp.focus==='amount';if(k==='.'&&!isAmt)return;if(k==='.'&&d.indexOf('.')>=0)return;if(!isAmt&&d!==''&&d.length>=2)return;if(d==='0'&&k!=='.')d='';d+=k;S.kp.currDigits=d;if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
-function kpDel(){var d=S.kp.currDigits||'';d=d.length>1?d.slice(0,-1):'0';S.kp.currDigits=d;var isAmt=S.kp.focus==='amount';if(isAmt)S.kp.amount=d;else if(S.kp.focus==='jmcr')S.kp.jmcrN=parseInt(d)||0;else if(S.kp.focus==='matthews')S.kp.mattN=parseInt(d)||0;else if(S.kp.focus==='silvermans')S.kp.silvN=parseInt(d)||0;refreshKP();}
-function refreshKP(){var di=document.getElementById('kpDesc');if(di)S.kp.desc=di.value;var sheet=document.getElementById('kpSheet');if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=kpSheetHTML();setKPDateTime();var di2=document.getElementById('kpDesc');if(di2)di2.value=S.kp.desc||'';}}
+function kpSheetHTML(){
+  var sp=calcSplits();
+  var uf=function(n){return n>0?'$'+n.toFixed(2):'--';};
+  var sym=S.kp.currency==='EUR'?'\u20ac':'$';
+  var d=S.kp.currDigits||'0';
+  var jCls='kp-sbox'+(S.kp.jmcrN===0?' kp-soff':'')+(S.kp.focus==='jmcr'?' active':'');
+  var mCls='kp-sbox'+(S.kp.mattN===0?' kp-soff':'')+(S.kp.focus==='matthews'?' active':'');
+  var sCls='kp-sbox'+(S.kp.silvN===0?' kp-soff':'')+(S.kp.focus==='silvermans'?' active':'');
+  var amtD=S.kp.focus==='amount'?d:(S.kp.amount||'0');
+  var jD=S.kp.focus==='jmcr'?(d===''?String(S.kp.jmcrN):d):String(S.kp.jmcrN);
+  var mD=S.kp.focus==='matthews'?(d===''?String(S.kp.mattN):d):String(S.kp.mattN);
+  var sD=S.kp.focus==='silvermans'?(d===''?String(S.kp.silvN):d):String(S.kp.silvN);
+  var note=S.kp.currency==='EUR'?' \u2192 $'+sp.usdTotal.toFixed(2):'';
+  var cats=['Food','Activity','Transport','Lodging'];
+  var catBtns=cats.map(function(ct){return'<button class="kp-cat'+(S.kp.cat===ct?' on':'')+'" data-cat="'+ct+'">'+ct+'</button>';}).join('');
+  var pBtns='<button class="kp-pb'+(S.kp.paidBy==='jmcr'?' on-j':'')+'" data-pb="jmcr">JMCR</button>'
+    +'<button class="kp-pb'+(S.kp.paidBy==='matthews'?' on-m':'')+'" data-pb="matthews">Matthews</button>'
+    +'<button class="kp-pb'+(S.kp.paidBy==='silvermans'?' on-s':'')+'" data-pb="silvermans">Silvermans</button>';
+  var kBtns=['1','2','3','4','5','6','7','8','9','.','0','DEL'].map(function(k){
+    if(k==='DEL')return'<button class="kp-key del" data-key="DEL" aria-label="delete"><i class="ti ti-backspace" aria-hidden="true" style="font-size:20px"></i></button>';
+    if(k==='.')return'<button class="kp-key dot" data-key=".">.</button>';
+    return'<button class="kp-key" data-key="'+k+'">'+k+'</button>';
+  }).join('');
+  /* Date picker: active input, date only */
+  var now=S.kp.dateVal?new Date(S.kp.dateVal):new Date();
+  var pad=function(n){return String(n).padStart(2,'0');};
+  var dateISO=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  return'<div class="kp-handle"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px 2px">'
+    +'<span style="font-size:12px;font-weight:700;color:#e8c84a;letter-spacing:.06em;text-transform:uppercase">Add Expense</span>'
+    +'<button data-kpclose="1" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:20px;color:rgba(255,255,255,.5);font-size:12px;padding:3px 10px;cursor:pointer">Cancel</button>'
+    +'</div>'
+    +'<div class="kp-fields">'
+    +'<div class="kp-top-row">'
+    +'<div class="kp-box'+(S.kp.focus==='amount'?' active':'')+'" data-kpf="amount">'
+    +'<div class="kp-lbl">Amount</div>'
+    +'<div class="kp-amt-inner">'
+    +'<div class="kp-amt-disp"><span class="kp-sym">'+sym+'</span><span class="kp-num">'+esc(amtD)+'</span></div>'
+    +'<div class="kp-curr">'
+    +'<button class="kp-cb'+(S.kp.currency==='USD'?' on':'')+'" data-cur="USD">USD</button>'
+    +'<button class="kp-cb'+(S.kp.currency==='EUR'?' on':'')+'" data-cur="EUR">EUR</button>'
+    +'</div></div></div>'
+    +'<div class="kp-box" style="display:flex;flex-direction:column;justify-content:center">'
+    +'<div class="kp-lbl">Date</div>'
+    +'<input type="date" id="kpDateInp" data-kpdate="1" value="'+dateISO+'" class="kp-date-picker" style="font-size:13px;font-weight:700;color:#fff;background:transparent;border:none;outline:none;font-family:inherit;cursor:pointer;-webkit-appearance:none;width:100%"/>'
+    +'</div>'
+    +'</div>'
+    +'<div class="kp-box"><div class="kp-lbl">Category</div><div class="kp-cats">'+catBtns+'</div>'
+    +'<input class="kp-desc" placeholder="Description (optional)" id="kpDesc" value="'+esc(S.kp.desc||'')+'"></div>'
+    +'<div class="kp-box"><div class="kp-lbl">Paid by</div><div class="kp-paidby">'+pBtns+'</div></div>'
+    +'<div class="kp-box"><div class="kp-lbl">Split among &mdash; tap family to set count</div>'
+    +'<div class="kp-splitgrid">'
+    +'<div class="'+jCls+'" data-kpf="jmcr"><div class="kp-sname">JMCR</div><div class="kp-sppl">'+jD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.jmcrN>0?'$'+sp.jAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='jmcr'?'editing':'tap to set')+'</div></div>'
+    +'<div class="'+mCls+'" data-kpf="matthews"><div class="kp-sname">Matthews</div><div class="kp-sppl">'+mD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.mattN>0?'$'+sp.mAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='matthews'?'editing':'tap to set')+'</div></div>'
+    +'<div class="'+sCls+'" data-kpf="silvermans"><div class="kp-sname">Silvermans</div><div class="kp-sppl">'+sD+'</div><div class="kp-splbl">people</div><div class="kp-samt">'+(S.kp.silvN>0?'$'+sp.sAmt.toFixed(2):'--')+'</div><div class="kp-shint">'+(S.kp.focus==='silvermans'?'editing':'tap to set')+'</div></div>'
+    +'</div></div>'
+    +'</div>'
+    +'<div class="kp-hint">'+sp.total+' people &nbsp;&middot;&nbsp; $'+sp.pp.toFixed(2)+'/person</div>'
+    +'<div class="kp-keys">'+kBtns+'</div>'
+    +'<button class="kp-cfm" id="kpCfmBtn"><i class="ti ti-check" aria-hidden="true"></i> Save &nbsp;&middot;&nbsp; '+sym+esc(S.kp.amount||'0')+note+'</button>';
+}
+function bindKP(){
+  var addBtn=document.getElementById('splitAddBtn');if(addBtn)addBtn.onclick=function(){openKP();};
+  var ovr=document.getElementById('kpOverlay');if(ovr)ovr.onclick=function(e){if(e.target===ovr)closeKP();};
+  var di=document.getElementById('kpDateInp');
+  if(di)di.onchange=function(){S.kp.dateVal=di.value+'T12:00';refreshKP();};
+}
+function openKP(){
+  var j=famMemCount('jmcr');var m=famMemCount('matthews');var sv=famMemCount('silvermans');
+  S.kp={open:true,focus:'amount',amount:'',currency:'USD',cat:'Food',paidBy:'jmcr',desc:'',jmcrN:j,mattN:m,silvN:sv,currDigits:'',dateVal:''};
+  var sheet=document.getElementById('kpSheet');var ovr=document.getElementById('kpOverlay');
+  if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();}
+  if(ovr)ovr.classList.add('open');
+}
+function refreshKP(){
+  var di=document.getElementById('kpDesc');if(di)S.kp.desc=di.value;
+  var sheet=document.getElementById('kpSheet');
+  if(sheet&&sheet.classList.contains('open')){
+    sheet.innerHTML=kpSheetHTML();
+    var di2=document.getElementById('kpDesc');if(di2)di2.value=S.kp.desc||'';
+    bindKP();
+  }
+}
 function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){S.sortBy=S.sortBy==='date'?'paidby':'date';renderPanel();return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}var kpDate=e.target.closest('[data-kpdate]');if(kpDate){return;}var kpTime=e.target.closest('[data-kptime]');if(kpTime){return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expedit=e.target.closest('[data-expedit]');if(expedit){openEditExpense(expedit.dataset.expedit);return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');renderPanel();});});});}return;}}
 
 function openEditExpense(eid){
@@ -1340,21 +2021,18 @@ function openEditExpense(eid){
   var j=spl.find(function(x){return x.family_key==='jmcr';});
   var m=spl.find(function(x){return x.family_key==='matthews';});
   var sv=spl.find(function(x){return x.family_key==='silvermans';});
-  var jN=j?j.people_count:0;
-  var mN=m?m.people_count:0;
-  var sN=sv?sv.people_count:0;
   S.kp={open:true,focus:'amount',
     amount:String(e.amount||''),currency:e.currency||'USD',
     cat:e.category||'Food',paidBy:e.paid_by_family||'jmcr',
     desc:e.description||'',
-    jmcrN:jN,mattN:mN,silvN:sN,
+    jmcrN:j?j.people_count:0,mattN:m?m.people_count:0,silvN:sv?sv.people_count:0,
     currDigits:'',dateVal:'',editId:eid};
   var sheet=document.getElementById('kpSheet');
   var ovr=document.getElementById('kpOverlay');
-  if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();setKPDateTime();}
+  if(sheet){sheet.classList.add('open');sheet.innerHTML=kpSheetHTML();}
   if(ovr)ovr.classList.add('open');
 }
-function submitExpense(){var di=document.getElementById('kpDesc');if(di)S.kp.desc=di.value;var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});}
+function submitExpense(){var amt=parseFloat(S.kp.amount)||0;if(!amt){alert('Enter an amount.');return;}var tp=(S.kp.jmcrN||0)+(S.kp.mattN||0)+(S.kp.silvN||0);if(!tp){alert('Add at least one family.');return;}if(!S.trip){alert('No active trip.');return;}sdot('saving');var amtUSD=S.kp.currency==='EUR'?amt*(S.exRate||1.09):amt;var isEdit=S.kp.editId;if(isEdit){sb.from('expenses').update({description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy}).eq('id',isEdit).then(function(ru){if(ru.error){sdot('err');alert('Update failed: '+ru.error.message);return;}sb.from('expense_splits').delete().eq('expense_id',isEdit).then(function(){var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:isEdit,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:isEdit,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:isEdit,family_key:'silvermans',people_count:S.kp.silvN});var sp=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});});});return;}var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};sb.from('expenses').insert(row).select().then(function(r){if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}var splits=[];if(S.kp.jmcrN>0)splits.push({expense_id:eid,family_key:'jmcr',people_count:S.kp.jmcrN});if(S.kp.mattN>0)splits.push({expense_id:eid,family_key:'matthews',people_count:S.kp.mattN});if(S.kp.silvN>0)splits.push({expense_id:eid,family_key:'silvermans',people_count:S.kp.silvN});var sp2=splits.length?sb.from('expense_splits').insert(splits):Promise.resolve({});sp2.then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');closeKP();renderPanel();});});})}
 
 function saveAS(){
   sb.from('app_state').upsert({family_id:S.fid,active_tab:S.tab,
@@ -1383,34 +2061,15 @@ function closeAll(){
   cp.classList.remove('flight-detail');
   cp.classList.remove('hotel-detail');
   cp.classList.remove('reserve-detail');
+  cp.classList.remove('reserve-detail-restaurant');
+  cp.classList.remove('reserve-detail-tour');
+  cp.classList.remove('reserve-detail-activity');
+  cp.classList.remove('reserve-detail-transport');
+  cp.classList.remove('reserve-detail-docking');
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('ctx').classList.remove('open');
 }
 (function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
-
-
-(function(){var saved=localStorage.getItem('fkey');if(saved&&FIDS[saved])pickFamily(saved);}());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
 </body>
 </html>

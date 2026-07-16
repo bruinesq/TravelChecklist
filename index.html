@@ -943,7 +943,7 @@ function reservePanel(){
       +addCostFlag
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +'<div class="fcard-sub"><span class="fcard-pill" style="'+resPillStyle(r.res_type)+'">'+esc(r.res_type||'Other')+'</span>'+fmtDT(r.reservation_dt)+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
+      +'<div class="fcard-sub"><span class="fcard-pill" style="'+resPillStyle(r.res_type)+'">'+esc(r.res_type||'Other')+'</span>'+(function(){var s=fmtDT(r.reservation_dt);if(r.end_dt){var e=new Date(r.end_dt);s+=' – '+e.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}return s;}())+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
       +(g?'<div class="fcard-pax">'+esc(g)+'</div>':'')
       +'</div>';
   }
@@ -1012,6 +1012,7 @@ function rvSheetHTML(){
       +'<i class="ti '+typeIcos[t]+'" aria-hidden="true"></i>'+t+'</button>';
   }).join('');
   var dtVal=rv.dt||nowLocal();
+  var endDtVal=rv.endDt||'';
   var fkeys=['jmcr','matthews','silvermans'];
   var famBtns=fkeys.map(function(fk){
     var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';
@@ -1049,13 +1050,18 @@ function rvSheetHTML(){
     +'<div class="rv-type-row">'+typeBtns+'</div></div>'
     +'<div class="rv-card">'
     +'<div class="rv-two">'
-    +'<div><div class="rv-lbl">Date &amp; time</div>'
+    +'<div><div class="rv-lbl">Starts</div>'
     +'<div class="rv-field" style="padding:8px 10px">'
     +'<input type="datetime-local" id="rvDtInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none" value="'+esc(dtVal)+'"/>'
     +'</div></div>'
-    +'<div><div class="rv-lbl">Name</div>'
+    +'<div><div class="rv-lbl">Ends</div>'
+    +'<div class="rv-field" style="padding:8px 10px">'
+    +'<input type="datetime-local" id="rvEndDtInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none" value="'+esc(endDtVal)+'"/>'
+    +'</div></div>'
+    +'</div></div>'
+    +'<div class="rv-card"><div class="rv-lbl">Name</div>'
     +'<input class="rv-inp" id="rvName" placeholder="Event name\u2026" value="'+esc(rv.name||'')+'"/>'
-    +'</div></div></div>'
+    +'</div>'
     +'<div class="rv-card"><div class="rv-lbl">Location</div>'
     +'<input class="rv-inp" id="rvLoc" placeholder="Enter location" value="'+esc(rv.location||'')+'"/>'
     +'</div>'
@@ -1118,6 +1124,7 @@ function openAddReservation(r){
     editId:isEdit?r.id:null,
     resType:isEdit?(r.res_type||'Restaurant'):'Restaurant',
     dt:isEdit?toLocalDT(r.reservation_dt):(S.rv&&S.rv.savedDt?S.rv.savedDt:nowLocal()),
+    endDt:isEdit?(toLocalDT(r.end_dt)||''):'',
     name:isEdit?(r.name||''):'',
     location:isEdit?(r.location||''):'',
     notes:isEdit?(r.notes||''):'',
@@ -1160,6 +1167,7 @@ function rvRefresh(){
   if(locEl)S.rv.location=locEl.value;
   if(notesEl)S.rv.notes=notesEl.value;
   if(dtEl&&dtEl.value)S.rv.dt=dtEl.value;
+  var endDtEl2=document.getElementById('rvEndDtInp');if(endDtEl2)S.rv.endDt=endDtEl2.value;
   var sheet=document.getElementById('rvSheet');
   if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
 }
@@ -1213,6 +1221,8 @@ function bindRvSheet(){
   });
   var dtInp=document.getElementById('rvDtInp');
   if(dtInp){dtInp.onchange=function(){S.rv.dt=dtInp.value;S.rv.savedDt=dtInp.value;};}
+  var endDtInp=document.getElementById('rvEndDtInp');
+  if(endDtInp){endDtInp.onchange=function(){S.rv.endDt=endDtInp.value;};}
 }
 
 function openRvKp(){
@@ -1286,11 +1296,14 @@ function submitReservation(){
   var notes=notesEl?notesEl.value.trim():'';
   var dt=dtEl?dtEl.value:S.rv.dt;
   if(dt)S.rv.savedDt=dt;
+  var endDtEl=document.getElementById('rvEndDtInp');
+  var endDt=endDtEl?endDtEl.value:(S.rv.endDt||'');
   var amt=S.rv.amount!==''&&S.rv.amount!=null?parseFloat(S.rv.amount):null;
   sdot('saving');
   var row={
     name:name,res_type:S.rv.resType,
     reservation_dt:dt?new Date(dt).toISOString():null,
+    end_dt:endDt?new Date(endDt).toISOString():null,
     location:loc||null,notes:notes||null,
     amount:amt!=null?amt:null,
     currency:amt!=null?S.rv.currency:null,

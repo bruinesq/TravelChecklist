@@ -1014,7 +1014,7 @@ function rvSheetHTML(){
   var dtVal=rv.dt||nowLocal();
   var endDtVal=rv.endDt||'';
   var dtDate=dtVal?dtVal.slice(0,10):'';var dtTime=dtVal&&dtVal.length>10?dtVal.slice(11,16):'';
-  var endDate=endDtVal?endDtVal.slice(0,10):'';var endTime=endDtVal&&endDtVal.length>10?endDtVal.slice(11,16):'';
+  var endDate=endDtVal?endDtVal.slice(0,10):(dtDate||'');var endTime=endDtVal&&endDtVal.length>10?endDtVal.slice(11,16):'';
   var fkeys=['jmcr','matthews','silvermans'];
   var famBtns=fkeys.map(function(fk){
     var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';

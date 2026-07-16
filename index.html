@@ -1280,8 +1280,8 @@ function closeRvKp(){
 }
 
 function closeRvSheet(){
-  var dtEl=document.getElementById('rvDtInp');
-  if(dtEl&&dtEl.value)S.rv.savedDt=dtEl.value;
+  var sv=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);
+  if(sv)S.rv.savedDt=sv;
   document.getElementById('rvSheet').classList.remove('open');
   document.getElementById('rvOverlay').classList.remove('open');
   closeRvKp();

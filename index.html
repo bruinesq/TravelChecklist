@@ -1052,14 +1052,17 @@ function rvSheetHTML(){
     +'<div class="rv-type-row">'+typeBtns+'</div></div>'
     +'<div class="rv-card">'
     +'<div class="rv-two">'
-    +'<div><div class="rv-lbl">Starts</div>'
-    +'<div class="rv-field" style="padding:8px 10px">'
-    +'<input type="date" id="rvDateInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:50%" value="'+esc(dtDate)+'"/><input type="time" id="rvTimeInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:46%" value="'+esc(dtTime)+'"/>'
-    +'</div></div>'
-    +'<div><div class="rv-lbl">Ends</div>'
-    +'<div class="rv-field" style="padding:8px 10px">'
-    +'<input type="date" id="rvEndDateInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:50%" value="'+esc(endDate)+'"/><input type="time" id="rvEndTimeInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:46%" value="'+esc(endTime)+'"/>'
-    +'</div></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">'
+    +'<div>'
+    +'<div class="rv-lbl">Starts</div>'
+    +'<input type="date" id="rvDateInp" class="rv-inp" style="width:100%;font-size:13px;font-weight:500;color:#fff;margin-bottom:6px" value="'+esc(dtDate)+'"/>'
+    +'<input type="time" id="rvTimeInp" class="rv-inp" style="width:100%;font-size:13px;font-weight:500;color:#fff" value="'+esc(dtTime)+'"/>'
+    +'</div>'
+    +'<div>'
+    +'<div class="rv-lbl">End time</div>'
+    +'<input type="date" id="rvEndDateInp" style="display:none" value="'+esc(endDate)+'"/>'
+    +'<input type="time" id="rvEndTimeInp" class="rv-inp" style="width:100%;font-size:13px;font-weight:500;color:#fff;margin-top:26px" value="'+esc(endTime)+'"/>'
+    +'</div>'
     +'</div></div>'
     +'<div class="rv-card"><div class="rv-lbl">Name</div>'
     +'<input class="rv-inp" id="rvName" placeholder="Event name\u2026" value="'+esc(rv.name||'')+'"/>'
@@ -1221,7 +1224,7 @@ function bindRvSheet(){
   document.querySelectorAll('[data-rvpb]').forEach(function(btn){
     btn.onclick=function(){S.rv.paidBy=S.rv.paidBy===btn.dataset.rvpb?null:btn.dataset.rvpb;rvRefresh();};
   });
-  function _wrvdt(){var v=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(v){S.rv.dt=v;S.rv.savedDt=v;}}
+  function _wrvdt(){var v=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(v){S.rv.dt=v;S.rv.savedDt=v;var ed=document.getElementById('rvEndDateInp');var sd=document.getElementById('rvDateInp');if(ed&&sd&&!S.rv.endDt)ed.value=sd.value;}}
   function _wrvedt(){S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);}
   ['rvDateInp','rvTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvdt;});
   ['rvEndDateInp','rvEndTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvedt;});

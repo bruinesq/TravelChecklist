@@ -1013,6 +1013,8 @@ function rvSheetHTML(){
   }).join('');
   var dtVal=rv.dt||nowLocal();
   var endDtVal=rv.endDt||'';
+  var dtDate=dtVal?dtVal.slice(0,10):'';var dtTime=dtVal&&dtVal.length>10?dtVal.slice(11,16):'';
+  var endDate=endDtVal?endDtVal.slice(0,10):'';var endTime=endDtVal&&endDtVal.length>10?endDtVal.slice(11,16):'';
   var fkeys=['jmcr','matthews','silvermans'];
   var famBtns=fkeys.map(function(fk){
     var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';
@@ -1052,11 +1054,11 @@ function rvSheetHTML(){
     +'<div class="rv-two">'
     +'<div><div class="rv-lbl">Starts</div>'
     +'<div class="rv-field" style="padding:8px 10px">'
-    +'<input type="datetime-local" id="rvDtInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none" value="'+esc(dtVal)+'"/>'
+    +'<input type="date" id="rvDateInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:50%" value="'+esc(dtDate)+'"/><input type="time" id="rvTimeInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:46%" value="'+esc(dtTime)+'"/>'
     +'</div></div>'
     +'<div><div class="rv-lbl">Ends</div>'
     +'<div class="rv-field" style="padding:8px 10px">'
-    +'<input type="datetime-local" id="rvEndDtInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none" value="'+esc(endDtVal)+'"/>'
+    +'<input type="date" id="rvEndDateInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:50%" value="'+esc(endDate)+'"/><input type="time" id="rvEndTimeInp" class="rv-inp" style="border:none;background:transparent;padding:0;font-size:12px;font-weight:500;color:#fff;outline:none;width:46%" value="'+esc(endTime)+'"/>'
     +'</div></div>'
     +'</div></div>'
     +'<div class="rv-card"><div class="rv-lbl">Name</div>'
@@ -1158,16 +1160,16 @@ function openAddReservation(r){
   bindRvSheet();
 }
 
+function rvGetDt(dateId,timeId,fallback){var d=document.getElementById(dateId);var t=document.getElementById(timeId);var dv=d?d.value:'';var tv=t?t.value:'';if(dv)return dv+'T'+(tv||'00:00');return fallback||'';}
 function rvRefresh(){
   var nameEl=document.getElementById('rvName');
   var locEl=document.getElementById('rvLoc');
   var notesEl=document.getElementById('rvNotes');
-  var dtEl=document.getElementById('rvDtInp');
   if(nameEl)S.rv.name=nameEl.value;
   if(locEl)S.rv.location=locEl.value;
   if(notesEl)S.rv.notes=notesEl.value;
-  if(dtEl&&dtEl.value)S.rv.dt=dtEl.value;
-  var endDtEl2=document.getElementById('rvEndDtInp');if(endDtEl2)S.rv.endDt=endDtEl2.value;
+  var _rvdt=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(_rvdt)S.rv.dt=_rvdt;
+  S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);
   var sheet=document.getElementById('rvSheet');
   if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
 }
@@ -1219,10 +1221,10 @@ function bindRvSheet(){
   document.querySelectorAll('[data-rvpb]').forEach(function(btn){
     btn.onclick=function(){S.rv.paidBy=S.rv.paidBy===btn.dataset.rvpb?null:btn.dataset.rvpb;rvRefresh();};
   });
-  var dtInp=document.getElementById('rvDtInp');
-  if(dtInp){dtInp.onchange=function(){S.rv.dt=dtInp.value;S.rv.savedDt=dtInp.value;};}
-  var endDtInp=document.getElementById('rvEndDtInp');
-  if(endDtInp){endDtInp.onchange=function(){S.rv.endDt=endDtInp.value;};}
+  function _wrvdt(){var v=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(v){S.rv.dt=v;S.rv.savedDt=v;}}
+  function _wrvedt(){S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);}
+  ['rvDateInp','rvTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvdt;});
+  ['rvEndDateInp','rvEndTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvedt;});
 }
 
 function openRvKp(){
@@ -1289,15 +1291,13 @@ function submitReservation(){
   var nameEl=document.getElementById('rvName');
   var locEl=document.getElementById('rvLoc');
   var notesEl=document.getElementById('rvNotes');
-  var dtEl=document.getElementById('rvDtInp');
   var name=nameEl?nameEl.value.trim():'';
   if(!name){alert('Name is required.');return;}
   var loc=locEl?locEl.value.trim():'';
   var notes=notesEl?notesEl.value.trim():'';
-  var dt=dtEl?dtEl.value:S.rv.dt;
+  var dt=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);
   if(dt)S.rv.savedDt=dt;
-  var endDtEl=document.getElementById('rvEndDtInp');
-  var endDt=endDtEl?endDtEl.value:(S.rv.endDt||'');
+  var endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);
   var amt=S.rv.amount!==''&&S.rv.amount!=null?parseFloat(S.rv.amount):null;
   sdot('saving');
   var row={

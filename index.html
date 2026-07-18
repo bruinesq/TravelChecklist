@@ -1199,7 +1199,7 @@ function rvRefresh(){
   if(notesEl)S.rv.notes=notesEl.value;
   var _rvdt=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(_rvdt)S.rv.dt=_rvdt;
   S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);
-  var _di=document.getElementById('rvDocUrl');if(_di&&_di.value.trim()){S.rv.docUrl=_di.value.trim();if(!S.rv.docName)S.rv.docName=decodeURIComponent(S.rv.docUrl.split('/').pop().split('?')[0]);}
+  var _di=document.getElementById('rvDocUrl');if(_di&&_di.value.trim()){S.rv.docUrl=_di.value.trim();try{if(!S.rv.docName)S.rv.docName=decodeURIComponent(S.rv.docUrl.split('/').pop().split('?')[0]);}catch(e){}}
   var sheet=document.getElementById('rvSheet');
   if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
 }
@@ -1259,7 +1259,7 @@ function bindRvSheet(){
   if(docInp){docInp.oninput=function(){
     var url=docInp.value.trim();
     S.rv.docUrl=url;
-    S.rv.docName=url?decodeURIComponent(url.split('/').pop().split('?')[0]):'';
+    try{S.rv.docName=url?decodeURIComponent(url.split('/').pop().split('?')[0]):'';}catch(e){S.rv.docName=url?url.split('/').pop().split('?')[0]:'';};
   };}
   var clearDoc=document.querySelector('[data-rvcleardoc]');
   if(clearDoc){clearDoc.onclick=function(){S.rv.docUrl='';S.rv.docName='';rvRefresh();};}
@@ -1348,7 +1348,7 @@ function submitReservation(){
     paid_by_family:amt!=null&&S.rv.paidBy?S.rv.paidBy:null,
     cost_skipped:S.rv.costSkipped||false,
     doc_url:(function(){var i=document.getElementById('rvDocUrl');return(i?i.value.trim():S.rv.docUrl)||null;}()),
-    doc_name:(function(){var i=document.getElementById('rvDocUrl');var u=(i?i.value.trim():S.rv.docUrl)||'';return u?(S.rv.docName||decodeURIComponent(u.split('/').pop().split('?')[0])):null;}()),
+    doc_name:(function(){try{var i=document.getElementById('rvDocUrl');var u=(i?i.value.trim():S.rv.docUrl)||'';return u?(S.rv.docName||decodeURIComponent(u.split('/').pop().split('?')[0])):null;}catch(e){return S.rv.docName||null;}}()),
     trip_id:S.trip&&S.trip.id||null,
     entered_by:S.user&&S.user.id||null
   };

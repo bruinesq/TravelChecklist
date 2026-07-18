@@ -9,7 +9,6 @@
 <title>Family Travel</title>
 <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="fvxbyrolmg4edt8"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
@@ -1086,14 +1085,14 @@ function rvSheetHTML(){
     +(rv.docUrl
       ?'<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 12px;margin-bottom:8px">'
       +'<i class="ti ti-file-type-pdf" style="font-size:18px;color:#f0c040;flex-shrink:0"></i>'
-      +'<span style="flex:1;font-size:12px;color:#fff;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(rv.docName||'Document attached')+'</span>'
+      +'<span style="flex:1;font-size:12px;color:#fff;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(rv.docName||rv.docUrl)+'</span>'
       +'<button data-rvcleardoc="1" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:16px;flex-shrink:0"><i class="ti ti-x"></i></button>'
       +'</div>'
       :'')
-    +'<button id="rvDbxBtn" type="button" style="width:100%;padding:13px;border-radius:11px;border:1px dashed rgba(255,255,255,.3);background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">'
-    +'<i class="ti ti-brand-dropbox" style="font-size:18px;color:#0061ff"></i>'
-    +(rv.docUrl?'<span>Change file</span>':'<span>Select from Dropbox</span>')
-    +'</button>'
+    +'<div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:5px">'
+    +'<i class="ti ti-brand-dropbox" style="color:#0061ff;margin-right:3px"></i>'
+    +'In Dropbox: tap … on the file → Share → Copy link</div>'
+    +'<input class="rv-inp" id="rvDocUrl" type="url" placeholder="Paste Dropbox link here…" value="'+esc(rv.docUrl||'')+'"/>'
     +'</div>'
     +'<div class="rv-card"><div class="rv-lbl">Participants</div>'
     +'<div class="rv-fam-row">'+famBtns+'</div>'
@@ -1200,6 +1199,7 @@ function rvRefresh(){
   if(notesEl)S.rv.notes=notesEl.value;
   var _rvdt=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);if(_rvdt)S.rv.dt=_rvdt;
   S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);
+  var _di=document.getElementById('rvDocUrl');if(_di&&_di.value.trim()){S.rv.docUrl=_di.value.trim();if(!S.rv.docName)S.rv.docName=decodeURIComponent(S.rv.docUrl.split('/').pop().split('?')[0]);}
   var sheet=document.getElementById('rvSheet');
   if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
 }
@@ -1255,23 +1255,12 @@ function bindRvSheet(){
   function _wrvedt(){S.rv.endDt=rvGetDt('rvEndDateInp','rvEndTimeInp',S.rv.endDt);}
   ['rvDateInp','rvTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvdt;});
   ['rvEndDateInp','rvEndTimeInp'].forEach(function(id){var el=document.getElementById(id);if(el)el.onchange=_wrvedt;});
-  var dbxBtn=document.getElementById('rvDbxBtn');
-  if(dbxBtn){
-    dbxBtn.onclick=function(){
-      if(window.Dropbox){
-        Dropbox.choose({
-          success:function(files){var f=files[0];S.rv.docUrl=f.link;S.rv.docName=f.name;rvRefresh();},
-          cancel:function(){},
-          linkType:'direct',
-          multiselect:false,
-          extensions:['.pdf','.doc','.docx','.jpg','.png']
-        });
-      }else{
-        var url=prompt('Paste Dropbox link:');
-        if(url){S.rv.docUrl=url;S.rv.docName=url.split('/').pop().split('?')[0];rvRefresh();}
-      }
-    };
-  }
+  var docInp=document.getElementById('rvDocUrl');
+  if(docInp){docInp.oninput=function(){
+    var url=docInp.value.trim();
+    S.rv.docUrl=url;
+    S.rv.docName=url?decodeURIComponent(url.split('/').pop().split('?')[0]):'';
+  };}
   var clearDoc=document.querySelector('[data-rvcleardoc]');
   if(clearDoc){clearDoc.onclick=function(){S.rv.docUrl='';S.rv.docName='';rvRefresh();};}
 }
@@ -1358,8 +1347,8 @@ function submitReservation(){
     currency:amt!=null?S.rv.currency:null,
     paid_by_family:amt!=null&&S.rv.paidBy?S.rv.paidBy:null,
     cost_skipped:S.rv.costSkipped||false,
-    doc_url:S.rv.docUrl||null,
-    doc_name:S.rv.docName||null,
+    doc_url:(function(){var i=document.getElementById('rvDocUrl');return(i?i.value.trim():S.rv.docUrl)||null;}()),
+    doc_name:(function(){var i=document.getElementById('rvDocUrl');var u=(i?i.value.trim():S.rv.docUrl)||'';return u?(S.rv.docName||decodeURIComponent(u.split('/').pop().split('?')[0])):null;}()),
     trip_id:S.trip&&S.trip.id||null,
     entered_by:S.user&&S.user.id||null
   };

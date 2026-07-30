@@ -451,7 +451,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 </style>
 </head>
 <body>
-
 <div class="fscreen" id="fscreen">
   <div style="font-size:3rem;margin-bottom:1rem">&#x2708;&#xFE0F;&#x1F30A;</div>
   <div class="fscreen-title">Family Travel</div>
@@ -462,9 +461,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
     <div class="ftile" onclick="pickFamily('silvermans')"><span class="ftile-ico">&#x2B50;</span><span class="ftile-name">Silvermans</span><span class="ftile-sub">Josh &middot; Lori<br>Mikayla &middot; Zach</span></div>
   </div>
 </div>
-
 <div class="lscreen hide" id="lscreen"><div class="lscreen-ico">&#x2708;&#xFE0F;</div><div class="lscreen-txt">Loading your trip...</div></div>
-
 <div id="app">
   <div class="hero">
     <div class="hero-sun"></div>
@@ -486,7 +483,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
   <div class="nav" id="nav"></div>
   <div id="panel"></div>
 </div>
-
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
 <div class="cpanel" id="cpanel">
   <div class="cp-head"><span class="cp-title" id="cpTitle"></span><button class="cp-close" onclick="closeAll()" type="button"><i class="ti ti-x"></i></button></div>
@@ -501,18 +497,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
   <div class="cmod-m" id="cmod-m"></div>
   <div class="cmod-btns"><button class="cmod-cancel" onclick="closeCon()" type="button">Cancel</button><button class="cmod-ok" id="cmod-ok" type="button">Confirm</button></div>
 </div>
-
 <!-- Add Reservation sheet (navy) -->
 <div class="rv-overlay" id="rvOverlay"></div>
 <div class="rv-sheet" id="rvSheet"></div>
 <!-- Reservation amount keypad -->
 <div class="rv-kp-overlay" id="rvKpOverlay"></div>
 <div class="rv-kp-sheet" id="rvKpSheet"></div>
-
 <script>
 var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-
 var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false}});
 var FIDS={
   jmcr:'a1000000-0000-0000-0000-000000000001',
@@ -546,16 +539,50 @@ var S={
       famSel:{jmcr:'all',matthews:'none',silvermans:'none'},
       memSel:{},ddOpen:null,kpOpen:false,kpDigits:'',savedDt:''}
 };
-
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function fmtDT(dt){if(!dt)return'-';return new Date(dt).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});}
-function fmtD(dt){if(!dt)return'-';return new Date(dt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-function past(dt){return dt&&new Date(dt)<new Date();}
+// ---- Timezone-naive date/time handling ----
+// Every trip date/time represents the DESTINATION's local wall-clock time as
+// entered by the user (e.g. "1:00 PM" for a London excursion means 1:00 PM
+// in London, period -- it is NOT relative to wherever the device happens to
+// be right now). The device's current timezone must never be applied to
+// these values, on save or on display. Values are stored as plain
+// "YYYY-MM-DDTHH:MM:SS" text and parsed by reading the digits directly --
+// never by constructing a JS Date from them, since Date() and
+// toLocaleString()/getHours() etc. all silently apply the browser's local
+// timezone, which is exactly the bug this avoids.
+var MONTH_ABBR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function dtParts(dt){
+  if(!dt)return null;
+  var m=String(dt).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  if(!m)return null;
+  return{y:+m[1],mo:+m[2],d:+m[3],h:+m[4],mi:+m[5]};
+}
+function fmtHM(h,mi){
+  var ap=h>=12?'PM':'AM';var h12=h%12;if(h12===0)h12=12;
+  return h12+':'+String(mi).padStart(2,'0')+' '+ap;
+}
+function fmtDT(dt){var p=dtParts(dt);if(!p)return'-';return MONTH_ABBR[p.mo-1]+' '+p.d+', '+p.y+', '+fmtHM(p.h,p.mi);}
+function fmtD(dt){var p=dtParts(dt);if(!p)return'-';return MONTH_ABBR[p.mo-1]+' '+p.d+', '+p.y;}
+function fmtT(dt){var p=dtParts(dt);if(!p)return'';return fmtHM(p.h,p.mi);}
+function past(dt){
+  var p=dtParts(dt);if(!p)return false;
+  var n=new Date();var pad=function(v){return String(v).padStart(2,'0');};
+  var nowStr=n.getFullYear()+pad(n.getMonth()+1)+pad(n.getDate())+pad(n.getHours())+pad(n.getMinutes());
+  var dtStr=String(p.y)+pad(p.mo)+pad(p.d)+pad(p.h)+pad(p.mi);
+  return dtStr<nowStr;
+}
+function cmpDT(a,b){a=a||'';b=b||'';return a<b?-1:a>b?1:0;}
+// Convert a "YYYY-MM-DDTHH:MM" value from a date/time input into the string
+// stored in the database -- the literal digits the user typed, with no
+// timezone conversion applied.
+function toStoredDT(localStr){
+  if(!localStr)return null;
+  return localStr.length===16?localStr+':00':localStr;
+}
 function sdot(s){var el=document.getElementById('sdot');if(el)el.className='sdot tb-sdot'+(s?' '+s:'');}
 function col(m,i){return{bg:m.bg_color||COLORS[i%COLORS.length].bg,ic:m.icon_color||COLORS[i%COLORS.length].ic};}
 function V(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 function DR(l,v){return'<div class="drow"><span class="dlbl">'+l+'</span><span class="dval">'+esc(String(v||'-'))+'</span></div>';}
-
 // Identify J&J member IDs from allMembers — Matthews guests named John or Jody
 function resolveJJMembers(){
   S.jjMemberIds=S.allMembers.filter(function(m){
@@ -567,19 +594,16 @@ function resolveJJMembers(){
 function showLoad(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.remove('hide');document.getElementById('app').style.display='none';}
 function showApp(){document.getElementById('fscreen').classList.add('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='block';}
 function showFamScreen(){document.getElementById('fscreen').classList.remove('hide');document.getElementById('lscreen').classList.add('hide');document.getElementById('app').style.display='none';}
-
 function nowLocal(){
   var d=new Date();
   var pad=function(n){return String(n).padStart(2,'0');};
   return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
     +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
 }
-function toLocalDT(utcStr){
-  if(!utcStr)return'';
-  var d=new Date(utcStr);
-  var pad=function(n){return String(n).padStart(2,'0');};
-  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
-    +'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+function toLocalDT(dtStr){
+  if(!dtStr)return'';
+  var m=String(dtStr).match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/);
+  return m?m[1]+'T'+m[2]:'';
 }
 function pickFamily(key){
   S.fkey=key;S.fid=FIDS[key];S.isJMCR=(key==='jmcr');
@@ -592,7 +616,6 @@ function switchFam(){
   S.rsubs.forEach(function(r){if(r._iv)clearInterval(r._iv);});S.rsubs=[];
   localStorage.removeItem('fkey');showFamScreen();
 }
-
 function loadAll(){
   sb.from('members').select('*').eq('family_id',S.fid).order('display_order')
   .then(function(r){
@@ -654,12 +677,10 @@ function loadAll(){
     });
   });
 }
-
 function render(){
   document.getElementById('hBadge').textContent=S.fname;
   renderToolbar();renderNav();renderPanel();updateProg();
 }
-
 function renderToolbar(){
   var tb=document.getElementById('toolbar');
   tb.innerHTML='';
@@ -685,7 +706,6 @@ function renderToolbar(){
   pencil.onclick=function(){openMemberMgr();};
   tb.appendChild(pencil);
 }
-
 function openPackerSheet(){
   var pk=S.members.filter(function(m){return!m.is_subject;});
   var rows='';
@@ -705,7 +725,6 @@ function closeBS(){
   document.getElementById('bsovr').classList.remove('open');
   document.getElementById('bsheet').classList.remove('open');
 }
-
 function renderNav(){
   var nav=document.getElementById('nav');nav.innerHTML='';
   var tabs=[
@@ -723,7 +742,6 @@ function renderNav(){
     nav.appendChild(b);
   });
 }
-
 function renderPanel(){
   var el=document.getElementById('panel');
   if(S.tab==='pack')el.innerHTML=packPanel();
@@ -735,7 +753,6 @@ function renderPanel(){
   document.querySelectorAll('.iundo').forEach(function(b){b.onclick=function(){undoCheck(b.dataset.id);};});
   document.querySelectorAll('.idot').forEach(function(b){b.onclick=function(e){itemCtx(e,b.dataset.id);};});
 }
-
 function sortedItems(arr){
   function alpha(a,b){return(a.text||'').localeCompare(b.text||'');}
   var a=arr.filter(function(i){return!i.is_done&&!i.is_skipped;}).sort(alpha);
@@ -743,7 +760,6 @@ function sortedItems(arr){
   var d=arr.filter(function(i){return i.is_done;}).sort(alpha);
   return a.concat(s,d);
 }
-
 function irow(item,showStamp){
   var st=showStamp?S.allMembers.find(function(m){return m.id===item.done_by;}):null;
   var stamp=st?'<span class="istamp" style="background:'+(st.icon_color||'#ccc')+'22;color:'+(st.icon_color||'#888')+'">'+esc(st.name)+'</span>':'';
@@ -756,7 +772,6 @@ function irow(item,showStamp){
     +'<button class="idot" data-id="'+item.id+'"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>'
     +'</li>';
 }
-
 function selbarHTML(hbg,hic,hico,hlbl,hdn,htot,addTab){
   var cnt=(hdn!==null&&htot!==null)?' ('+hdn+'/'+htot+')':'';
   return '<div class="ddwrap">'
@@ -774,7 +789,6 @@ function selbarHTML(hbg,hic,hico,hlbl,hdn,htot,addTab){
     +'<div class="ddmenu" id="packDD">'+buildDropHTML()+'</div>'
     +'</div>';
 }
-
 function buildDropHTML(){
   var pk=S.members.filter(function(m){return!m.is_subject;});
   var html='';
@@ -787,7 +801,7 @@ function buildDropHTML(){
       var sel=S.sel&&S.sel.type==='ryan'&&S.sel.sub===sub;
       html+='<div class="dditem'+(sel?' sel':'')+'" data-rysub="'+sub+'" style="background:'+rc.bg+';border-left-color:'+rc.ic+'">'
         +'<i class="ti ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope')+' dditem-ico" style="color:'+rc.ic+'" aria-hidden="true"></i>'
-        +'<span class="dditem-lbl" style="color:'+rc.ic+'">Ryan \u2014 '+sub+'</span>'
+        +'<span class="dditem-lbl" style="color:'+rc.ic+'">Ryan — '+sub+'</span>'
         +'<span class="dditem-cnt">('+dn+'/'+tot+')</span>'
         +'</div>';
     });
@@ -806,7 +820,6 @@ function buildDropHTML(){
   });
   return html;
 }
-
 function packPanel(){
   var pk=S.members.filter(function(m){return!m.is_subject;});
   var hbg,hic,hico,hlbl,hdn,htot;
@@ -814,7 +827,7 @@ function packPanel(){
     var sub=S.sel.sub;var rc=RYAN_COLORS[sub];
     hbg=rc.bg;hic=rc.ic;
     hico='ti-'+(sub==='Backpack'?'backpack':sub==='Meds'?'pill':'stethoscope');
-    hlbl='Ryan \u2014 '+sub;
+    hlbl='Ryan — '+sub;
     var cat=S.cats.find(function(c){return c.name===sub;});
     hdn=cat?S.items.filter(function(i){return i.category_id===cat.id&&i.is_done;}).length:0;
     htot=cat?S.items.filter(function(i){return i.category_id===cat.id&&!i.is_skipped;}).length:0;
@@ -827,7 +840,6 @@ function packPanel(){
   }else{
     hbg='#f5f3ee';hic='#888';hico='ti-users';hlbl='Tap to select list';hdn=null;htot=null;
   }
-
   var html=selbarHTML(hbg,hic,hico,hlbl,hdn,htot,'pack');
   var rows='';var showStamp=S.isJMCR;
   if(S.sel&&S.sel.type==='ryan'){
@@ -835,19 +847,18 @@ function packPanel(){
     var items2=cat2?sortedItems(S.items.filter(function(i){return i.category_id===cat2.id;})):[];
     items2.forEach(function(i){rows+=irow(i,true);});
     html+='<ul class="ilist" style="background:'+hbg+'66">'+rows+'</ul>'
-      +(items2.length?'':'<div class="empty">No items yet \u2014 tap + Add</div>');
+      +(items2.length?'':'<div class="empty">No items yet — tap + Add</div>');
   }else if(S.sel&&S.sel.type==='member'&&S.sel.member){
     var m2=S.sel.member;var mi2=pk.indexOf(m2);var mc2=col(m2,mi2<0?0:mi2);
     var items3=sortedItems(S.items.filter(function(i){return i.member_id===m2.id;}));
     items3.forEach(function(i){rows+=irow(i,true);});
     html+='<ul class="ilist" style="background:'+mc2.bg+'55">'+rows+'</ul>'
-      +(items3.length?'':'<div class="empty">No items yet \u2014 tap + Add</div>');
+      +(items3.length?'':'<div class="empty">No items yet — tap + Add</div>');
   }else{
     html+='<div class="empty" style="margin:.5rem;border-radius:.5rem">Tap the bar above to choose a list</div>';
   }
   return html;
 }
-
 function updateProg(){
   if(!S.isJMCR){document.getElementById('pl').textContent='';document.getElementById('pb').style.width='0%';return;}
   var tot=0,dn=0;
@@ -859,19 +870,18 @@ function updateProg(){
   document.getElementById('pb').style.width=pct+'%';
   document.getElementById('pl').textContent='Ryan: '+dn+'/'+tot+' ('+pct+'%)';
 }
-
 function flightPanel(){
-  var srt=S.flights.slice().sort(function(a,b){return new Date(a.departure_dt)-new Date(b.departure_dt);});
+  var srt=S.flights.slice().sort(function(a,b){return cmpDT(a.departure_dt,b.departure_dt);});
   var up=srt.filter(function(f){return!past(f.departure_dt);});
   var old=srt.filter(function(f){return past(f.departure_dt);});
   function fc(f){
-    var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name)||p.companion_name;}).filter(Boolean).join(' \u00b7 ');
+    var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name)||p.companion_name;}).filter(Boolean).join(' · ');
     return'<div class="fcard'+(past(f.departure_dt)?' past':'')+'" data-fid="'+f.id+'">'
       +'<div class="fcard-row">'
-      +'<span class="fcard-title">'+esc(f.origin_city)+' \u2192 '+esc(f.dest_city)+'</span>'
+      +'<span class="fcard-title">'+esc(f.origin_city)+' → '+esc(f.dest_city)+'</span>'
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +'<div class="fcard-sub"><span class="fcard-pill" style="background:#0C447C;color:white">'+esc(f.airline||'?')+'</span>'+fmtDT(f.departure_dt)+(f.gate?' \u00b7 Gate '+esc(f.gate):'')+'</div>'
+      +'<div class="fcard-sub"><span class="fcard-pill" style="background:#0C447C;color:white">'+esc(f.airline||'?')+'</span>'+fmtDT(f.departure_dt)+(f.gate?' · Gate '+esc(f.gate):'')+'</div>'
       +(pax?'<div class="fcard-pax">'+esc(pax)+'</div>':'')
       +'</div>';
   }
@@ -882,9 +892,8 @@ function flightPanel(){
     +'<button class="addbar-btn" style="color:#0C447C" id="addFlightBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No flights yet</div>');
 }
-
 function hotelPanel(){
-  var srt=S.hotels.slice().sort(function(a,b){return new Date(a.check_in_dt)-new Date(b.check_in_dt);});
+  var srt=S.hotels.slice().sort(function(a,b){return cmpDT(a.check_in_dt,b.check_in_dt);});
   var up=srt.filter(function(h){return!past(h.check_out_dt);});
   var old=srt.filter(function(h){return past(h.check_out_dt);});
   function hc(h){
@@ -893,7 +902,7 @@ function hotelPanel(){
       +'<span class="fcard-title">'+esc(h.name)+'</span>'
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +'<div class="fcard-sub"><span class="fcard-pill" style="background:#712B13;color:white">'+esc(h.accom_type||'Hotel')+'</span>'+esc(h.location||'-')+' \u00b7 '+fmtD(h.check_in_dt)+' \u2192 '+fmtD(h.check_out_dt)+'</div>'
+      +'<div class="fcard-sub"><span class="fcard-pill" style="background:#712B13;color:white">'+esc(h.accom_type||'Hotel')+'</span>'+esc(h.location||'-')+' · '+fmtD(h.check_in_dt)+' → '+fmtD(h.check_out_dt)+'</div>'
       +(h.room_number?'<div class="fcard-pax">Room '+esc(h.room_number)+'</div>':'')
       +(function(){var g=(h.accommodation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' · ');return g?'<div class="fcard-pax">'+esc(g)+'</div>':'';}())
       +'</div>';
@@ -927,8 +936,8 @@ function resPillStyle(t){
 }
 function reservePanel(){
   var srt=S.reserves.slice().sort(function(a,b){
-    var da=new Date(a.reservation_dt||0),db=new Date(b.reservation_dt||0);
-    if(da-db!==0)return da-db;
+    var c=cmpDT(a.reservation_dt,b.reservation_dt);
+    if(c!==0)return c;
     return(a.res_type||'').localeCompare(b.res_type||'');
   });
   var up=srt.filter(function(r){return!past(r.reservation_dt);});
@@ -936,7 +945,7 @@ function reservePanel(){
   function rc(r){
     var noFlag=r.cost_skipped||(r.amount!=null&&parseFloat(r.amount)>=0&&r.amount!==''&&r.amount!==null);
     var addCostFlag=noFlag?'':'<span class="fcard-addcost" data-rcost="'+r.id+'"><i class="ti ti-plus" aria-hidden="true" style="font-size:9px"></i>Add cost</span>';
-    var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' \u00b7 ');
+    var g=(r.reservation_guests||[]).map(function(x){return(x.members&&x.members.name)||x.companion_name||'';}).filter(Boolean).join(' · ');
     return'<div class="fcard'+(past(r.reservation_dt)?' past':'')+'" data-rid="'+r.id+'">'
       +'<div class="fcard-row">'
       +'<span class="fcard-title">'+esc(r.name)+'</span>'
@@ -951,7 +960,7 @@ function reservePanel(){
         :'')
       +'<i class="ti ti-chevron-right fcard-chev" aria-hidden="true"></i>'
       +'</div>'
-      +'<div class="fcard-sub"><span class="fcard-pill" style="'+resPillStyle(r.res_type)+'">'+esc(r.res_type||'Other')+'</span>'+(function(){var s=fmtDT(r.reservation_dt);if(r.end_dt){var e=new Date(r.end_dt);s+=' – '+e.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}return s;}())+(r.location?' \u00b7 '+esc(r.location):'')+'</div>'
+      +'<div class="fcard-sub"><span class="fcard-pill" style="'+resPillStyle(r.res_type)+'">'+esc(r.res_type||'Other')+'</span>'+(function(){var s=fmtDT(r.reservation_dt);if(r.end_dt){s+=' – '+fmtT(r.end_dt);}return s;}())+(r.location?' · '+esc(r.location):'')+'</div>'
       +(g?'<div class="fcard-pax">'+esc(g)+'</div>':'')
       +'</div>';
   }
@@ -962,7 +971,6 @@ function reservePanel(){
     +'<button class="addbar-btn" style="color:#6B2F9E" id="addReserveBtn" type="button">+ Add</button>'
     +'</div>'+(up.length+old.length?'<div class="cards">'+cards+'</div>':'<div class="empty">No reservations yet</div>');
 }
-
 /* ---- RESERVE DETAIL: color per type, shows skip state ---- */
 function reserveDetailClass(t){
   var tl=(t||'').toLowerCase();
@@ -994,7 +1002,6 @@ function reserveDetail(id){
     +'<button class="sbtn reserve" type="button" style="margin-top:.5rem" onclick="openAddReservation(S.reserves.find(function(x){return x.id===\''+r.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'reserve\',\''+r.id+'\')">Delete</button>');
 }
-
 /* ---- ADD RESERVATION SHEET ---- */
 function rvFamMembers(fkey){
   return S.allMembers.filter(function(m){return m.family_id===FIDS[fkey]&&!m.is_subject;});
@@ -1034,18 +1041,18 @@ function rvSheetHTML(){
     var mems=rvFamMembers(fk);
     var allSel=rvAllSelected(fk);
     ddHtml='<div class="rv-dd" id="rvDD">'
-      +'<div class="rv-dd-all" data-rvddall="'+fk+'"><div class="rv-chk'+(allSel?' rv-chk-on':'')+'">'+(allSel?'\u2713':'')+'</div>'+(allSel?'Deselect all':'Select all')+'</div>'
+      +'<div class="rv-dd-all" data-rvddall="'+fk+'"><div class="rv-chk'+(allSel?' rv-chk-on':'')+'">'+(allSel?'✓':'')+'</div>'+(allSel?'Deselect all':'Select all')+'</div>'
       +mems.map(function(m){
         var sel=!!rv.memSel[m.id];
         return'<div class="rv-dd-item" data-rvmem="'+m.id+'">'
-          +'<div class="rv-chk'+(sel?' rv-chk-on':'')+'">'+(sel?'\u2713':'')+'</div>'
+          +'<div class="rv-chk'+(sel?' rv-chk-on':'')+'">'+(sel?'✓':'')+'</div>'
           +esc(m.name)+'</div>';
       }).join('')
       +'</div>';
   }
-  var sym=rv.currency==='EUR'?'\u20ac':'$';
+  var sym=rv.currency==='EUR'?'€':'$';
   var amtRaw=rv.amount;
-  var amtDisp=(amtRaw!==''&&amtRaw!=null)?(sym+amtRaw):'\u2014';
+  var amtDisp=(amtRaw!==''&&amtRaw!=null)?(sym+amtRaw):'—';
   var pbBtns=fkeys.map(function(fk){
     var lbl=fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':'Silvermans';
     return'<button class="rv-pb-btn'+(rv.paidBy===fk?' rv-pb-on':'')+'" data-rvpb="'+fk+'">'+lbl+'</button>';
@@ -1073,7 +1080,7 @@ function rvSheetHTML(){
     +'</div>'
     +'</div></div>'
     +'<div class="rv-card"><div class="rv-lbl">Name</div>'
-    +'<input class="rv-inp" id="rvName" placeholder="Event name\u2026" value="'+esc(rv.name||'')+'"/>'
+    +'<input class="rv-inp" id="rvName" placeholder="Event name…" value="'+esc(rv.name||'')+'"/>'
     +'</div>'
     +'<div class="rv-card"><div class="rv-lbl">Location</div>'
     +'<input class="rv-inp" id="rvLoc" placeholder="Enter location" value="'+esc(rv.location||'')+'"/>'
@@ -1098,7 +1105,7 @@ function rvSheetHTML(){
     +'<div class="rv-fam-row">'+famBtns+'</div>'
     +ddHtml+'</div>'
     +'<div class="rv-card"><div class="rv-lbl">Notes (optional)</div>'
-    +'<textarea class="rv-inp rv-ta" id="rvNotes" placeholder="Dress code, special requests\u2026">'+esc(rv.notes||'')+'</textarea>'
+    +'<textarea class="rv-inp rv-ta" id="rvNotes" placeholder="Dress code, special requests…">'+esc(rv.notes||'')+'</textarea>'
     +'</div>'
     +'<div class="rv-card">'
     +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">'
@@ -1112,7 +1119,7 @@ function rvSheetHTML(){
     +(rv.costSkipped?'<span style="font-size:11px;color:#7fffa0;background:rgba(80,200,110,.2);border-radius:6px;padding:3px 8px">No cost</span>':'')
     +'</div>'
     +'<div class="rv-amt-hint" id="rvAmtHint"><i class="ti ti-calculator" aria-hidden="true" style="font-size:11px;margin-right:3px"></i>Tap to enter amount</div>'
-    +'<button class="rv-skip-btn" id="rvSkipBtn">'+(rv.costSkipped?'\u21ba Undo skip':'Skip \u2014 no cost for this event')+'</button>'
+    +'<button class="rv-skip-btn" id="rvSkipBtn">'+(rv.costSkipped?'↺ Undo skip':'Skip — no cost for this event')+'</button>'
     +'</div>'
     +'<div class="rv-card">'
     +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">'
@@ -1126,10 +1133,9 @@ function rvSheetHTML(){
     +'<button class="rv-act-btn rv-act-save" id="rvSaveBtn"><i class="ti ti-device-floppy" aria-hidden="true" style="margin-right:4px"></i>Save</button>'
     +'</div></div>';
 }
-
 function rvKpHTML(){
   var rv=S.rv;
-  var sym=rv.currency==='EUR'?'\u20ac':'$';
+  var sym=rv.currency==='EUR'?'€':'$';
   var d=rv.kpDigits!=null?rv.kpDigits:'0';
   var keys=['1','2','3','4','5','6','7','8','9','.','0','DEL'];
   var kBtns=keys.map(function(k){
@@ -1145,7 +1151,6 @@ function rvKpHTML(){
     +'<div class="rv-kp-grid">'+kBtns+'</div>'
     +'<button class="rv-kp-save" id="rvKpSave"><i class="ti ti-check" aria-hidden="true" style="margin-right:6px"></i>Set amount &nbsp;&middot;&nbsp; '+sym+esc(d)+'</button>';
 }
-
 function openAddReservation(r){
   var isEdit=r&&r.id;
   S.rv={
@@ -1188,7 +1193,6 @@ function openAddReservation(r){
   ovr.classList.add('open');
   bindRvSheet();
 }
-
 function rvGetDt(dateId,timeId,fallback){var d=document.getElementById(dateId);var t=document.getElementById(timeId);var dv=d?d.value:'';var tv=t?t.value:'';if(dv)return dv+'T'+(tv||'00:00');return fallback||'';}
 function rvRefresh(){
   var nameEl=document.getElementById('rvName');
@@ -1203,7 +1207,6 @@ function rvRefresh(){
   var sheet=document.getElementById('rvSheet');
   if(sheet&&sheet.classList.contains('open')){sheet.innerHTML=rvSheetHTML();bindRvSheet();}
 }
-
 function bindRvSheet(){
   var closeBtn=document.getElementById('rvCloseBtn');
   if(closeBtn)closeBtn.onclick=function(){closeRvSheet();};
@@ -1264,7 +1267,6 @@ function bindRvSheet(){
   var clearDoc=document.querySelector('[data-rvcleardoc]');
   if(clearDoc){clearDoc.onclick=function(){S.rv.docUrl='';S.rv.docName='';rvRefresh();};}
 }
-
 function openRvKp(){
   S.rv.kpDigits=S.rv.amount!==''?S.rv.amount:'0';
   S.rv.kpReplacing=(S.rv.amount!=='');  // pre-filled value: first key replaces
@@ -1275,7 +1277,6 @@ function openRvKp(){
   kpOvr.classList.add('open');
   bindRvKp();
 }
-
 function bindRvKp(){
   document.querySelectorAll('[data-rvkey]').forEach(function(btn){
     btn.onclick=function(){
@@ -1311,12 +1312,10 @@ function bindRvKp(){
     if(e.target===kpOvr){S.rv.amount=S.rv.kpDigits;closeRvKp();}
   };
 }
-
 function closeRvKp(){
   document.getElementById('rvKpSheet').classList.remove('open');
   document.getElementById('rvKpOverlay').classList.remove('open');
 }
-
 function closeRvSheet(){
   var sv=rvGetDt('rvDateInp','rvTimeInp',S.rv.dt);
   if(sv)S.rv.savedDt=sv;
@@ -1324,7 +1323,6 @@ function closeRvSheet(){
   document.getElementById('rvOverlay').classList.remove('open');
   closeRvKp();
 }
-
 function submitReservation(){
   var nameEl=document.getElementById('rvName');
   var locEl=document.getElementById('rvLoc');
@@ -1340,8 +1338,8 @@ function submitReservation(){
   sdot('saving');
   var row={
     name:name,res_type:S.rv.resType,
-    reservation_dt:dt?new Date(dt).toISOString():null,
-    end_dt:endDt?new Date(endDt).toISOString():null,
+    reservation_dt:toStoredDT(dt),
+    end_dt:toStoredDT(endDt),
     location:loc||null,notes:notes||null,
     amount:amt!=null?amt:null,
     currency:amt!=null?S.rv.currency:null,
@@ -1369,7 +1367,7 @@ function submitReservation(){
             var m=S.allMembers.find(function(x){return x.id===mid;});
             if(m){fkeys.forEach(function(fk){if(m.family_id===FIDS[fk])famCounts[fk]++;});}
           });
-          var expRow={trip_id:S.trip.id,description:name,category:'Activity',amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.rv.currency,paid_by_family:S.rv.paidBy,created_at:dt?new Date(dt).toISOString():new Date().toISOString(),reservation_id:rid};
+          var expRow={trip_id:S.trip.id,description:name,category:'Activity',amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.rv.currency,paid_by_family:S.rv.paidBy,created_at:dt?toStoredDT(dt):new Date().toISOString(),reservation_id:rid};
           var existingExp=S.expenses.find(function(e){return e.reservation_id===rid;});
           var ep=existingExp?sb.from('expenses').update(expRow).eq('id',existingExp.id).select():sb.from('expenses').insert(expRow).select();
           ep.then(function(re){
@@ -1442,7 +1440,6 @@ document.addEventListener('click',function(e){
   if(e.target.closest('#rvOverlay')&&!e.target.closest('#rvSheet'))closeRvSheet();
   if(e.target.closest('#bsovr')&&!e.target.closest('#bsheet'))closeBS();
 });
-
 function toggleCheck(id){
   sdot('saving');
   var item=S.items.find(function(i){return i.id===id;});if(!item)return;
@@ -1481,7 +1478,6 @@ function itemCtx(e,id){
   ctx.classList.add('open');
 }
 function closeCtx(){document.getElementById('ctx').classList.remove('open');}
-
 function openAddItem(tab){
   var isFam=tab==='family';
   var pk=S.members.filter(function(m){return!m.is_subject;});
@@ -1526,7 +1522,6 @@ function submitAdd(tab){
   sb.from('checklist_items').insert(rows).select()
   .then(function(r){if(r.error){sdot('err');console.error(r.error);return;}S.items=S.items.concat(r.data||[]);delete S._sub;sdot('');closeAll();renderPanel();updateProg();});
 }
-
 function openMemberMgr(){
   var html='<ul class="mgrlist">';
   S.members.forEach(function(m,i){
@@ -1601,7 +1596,6 @@ function addMember(){
     sdot('');openMemberMgr();renderToolbar();renderPanel();
   });
 }
-
 function paxTiles(selIds){
   var groups={};var order=[];
   (S.allMembers||[]).forEach(function(m){
@@ -1631,8 +1625,6 @@ function seatRows(members,pax){
   }).join('');
 }
 function getSelPax(sel){return[].slice.call(document.querySelectorAll(sel+' .mtile.sel[data-mid]')).map(function(el){return el.dataset.mid;});}
-
-
 /* ---- ADD FLIGHT: styled sheet (dark blue-gray, centered popup) ---- */
 function flightMemberTiles(selIds){
   var groups={};var order=[];
@@ -1744,7 +1736,7 @@ function submitFlight(editId){
   var from=V('fFrom'),to=V('fTo'),dep=V('fDep');
   if(!from||!to||!dep){alert('From, To and Departure required.');return;}sdot('saving');
   var insEl=document.querySelector('#insTog .fl-on');var isIns=insEl&&insEl.textContent.trim().startsWith('Yes');
-  var row={trip_id:S.trip&&S.trip.id||null,origin_city:from,dest_city:to,departure_dt:new Date(dep).toISOString(),arrival_dt:V('fArr')?new Date(V('fArr')).toISOString():null,airline:V('fAl')||null,flight_number:V('fNum')||null,gate:V('fGate')||null,confirmation_no:V('fConf')||null,is_insured:isIns,insurance_policy_no:isIns?(V('fPol')||null):null,notes:V('fNotes')||null,entered_by:S.user&&S.user.id||null};
+  var row={trip_id:S.trip&&S.trip.id||null,origin_city:from,dest_city:to,departure_dt:toStoredDT(dep),arrival_dt:toStoredDT(V('fArr')),airline:V('fAl')||null,flight_number:V('fNum')||null,gate:V('fGate')||null,confirmation_no:V('fConf')||null,is_insured:isIns,insurance_policy_no:isIns?(V('fPol')||null):null,notes:V('fNotes')||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('flights').insert(row).select().single():sb.from('flights').update(row).eq('id',editId);
   p.then(function(rd){
@@ -1763,15 +1755,14 @@ function flightDetail(id){
   var f=S.flights.find(function(x){return x.id===id;});if(!f)return;
   var pax=(f.flight_passengers||[]).map(function(p){return(p.members&&p.members.name||p.companion_name||'?')+(p.seat?' ('+p.seat+')':'');}).join(', ')||'-';
   document.getElementById('cpanel').classList.add('flight-detail');
-  openCP(esc(f.origin_city)+' \u2192 '+esc(f.dest_city),
-    DR('Route',f.origin_city+' \u2192 '+f.dest_city)+DR('Departure',fmtDT(f.departure_dt))+DR('Arrival',fmtDT(f.arrival_dt))
+  openCP(esc(f.origin_city)+' → '+esc(f.dest_city),
+    DR('Route',f.origin_city+' → '+f.dest_city)+DR('Departure',fmtDT(f.departure_dt))+DR('Arrival',fmtDT(f.arrival_dt))
     +DR('Airline',f.airline)+DR('Flight #',f.flight_number)+DR('Gate',f.gate)+DR('Confirmation',f.confirmation_no)
     +'<div class="drow"><span class="dlbl">Passengers</span><span class="dval">'+esc(pax)+'</span></div>'
     +DR('Insurance',f.is_insured?'Yes '+(f.insurance_policy_no||''):'No')+DR('Notes',f.notes)
     +'<button class="sbtn flight" type="button" style="margin-top:.5rem" onclick="doOpenFlight(S.flights.find(function(x){return x.id===\''+f.id+'\';}))">Edit</button>'
     +'<button class="dbtn" type="button" onclick="delRec(\'flight\',\''+f.id+'\')">Delete</button>');
 }
-
 /* ---- ADD ACCOMMODATION: styled sheet (warm neutral, no amount/paid by) ---- */
 function accomMemberTiles(selIds){
   var groups={};var order=[];
@@ -1849,7 +1840,7 @@ function submitHotel(editId){
   var name=V('hName');if(!name){alert('Name required.');return;}sdot('saving');
   var acEl=document.querySelector('#acTypeRow .ac-on');
   var selGuests=[].slice.call(document.querySelectorAll('#hpaxTiles .ac-tile.ac-sel[data-mid]')).map(function(el){return el.dataset.mid;});
-  var row={accom_type:acEl?acEl.textContent.trim():'Hotel',name:name,location:V('hLoc')||null,check_in_dt:V('hIn')?new Date(V('hIn')).toISOString():null,check_out_dt:V('hOut')?new Date(V('hOut')).toISOString():null,room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
+  var row={accom_type:acEl?acEl.textContent.trim():'Hotel',name:name,location:V('hLoc')||null,check_in_dt:toStoredDT(V('hIn')),check_out_dt:toStoredDT(V('hOut')),room_number:V('hRoom')||null,confirmation_no:V('hConf')||null,notes:V('hNotes')||null,trip_id:S.trip&&S.trip.id||null,entered_by:S.user&&S.user.id||null};
   var isNew=!editId||editId==='null';
   var p=isNew?sb.from('accommodations').insert(row).select():sb.from('accommodations').update(row).eq('id',editId);
   p.then(function(r){
@@ -1904,7 +1895,6 @@ function famName(fk){return fk==='jmcr'?'JMCR':fk==='matthews'?'Matthews':fk==='
 function catPillSplit(cat){var m={Food:'#FFCCBC:#8B1A00',Activity:'#BBDEFB:#003070',Transport:'#FFF59D:#7A4F00',Lodging:'#B2EBF2:#006064'};var p=m[cat]||'#E1D5F5:#4527A0';var cols=p.split(':');return'<span class="er-pill" style="background:'+cols[0]+';color:'+cols[1]+'">'+esc(cat)+'</span>';}
 // calcSplits: jjN people are included in total headcount; their share rolls up into Matthews for inter-family math
 function calcSplits(){var total=parseFloat(S.kp.amount)||0;if(S.kp.currency==='EUR')total=total*(S.exRate||1.09);var jn=S.kp.jmcrN||0,mn=S.kp.mattN||0,sn=S.kp.silvN||0,jjn=S.kp.jjN||0;var tot=jn+mn+sn+jjn;var pp=tot>0?total/tot:0;return{jmcr:jn,matt:mn,silv:sn,jj:jjn,total:tot,pp:pp,jAmt:pp*jn,mAmt:pp*(mn+jjn),sAmt:pp*sn,jjAmt:pp*jjn,usdTotal:total};}
-
 function loadExpenses(cb){
   if(!S.trip){cb([]);return;}
   sb.from('expenses').select('*').eq('trip_id',S.trip.id)
@@ -1929,16 +1919,14 @@ function loadExpenses(cb){
 function splitPanel(){
   var exps=(S.expenses||[]).slice().sort(function(a,b){
     if(S.sortBy==='paidby')return(a.paid_by_family||'').localeCompare(b.paid_by_family||'');
-    return new Date(b.created_at)-new Date(a.created_at);
+    return cmpDT(b.created_at,a.created_at);
   });
   var uf=function(n){return'$'+n.toFixed(2);};
   var tot=0;exps.forEach(function(e){tot+=parseFloat(e.amount_usd||e.amount||0);});
-
   // Inter-family balances: J&J share rolls up into Matthews
   var bal={jmcr:0,matthews:0,silvermans:0};
   var paid={jmcr:0,matthews:0,silvermans:0};
   var jjTotal=0; // cumulative J&J sub-ledger across all expenses
-
   exps.forEach(function(e){
     var au=parseFloat(e.amount_usd||e.amount||0);
     if(paid[e.paid_by_family]!==undefined)paid[e.paid_by_family]+=au;
@@ -1957,7 +1945,6 @@ function splitPanel(){
       if(bal[e.paid_by_family]!==undefined)bal[e.paid_by_family]+=pp*(x.people_count||0);
     });
   });
-
   var sortLabel=S.sortBy==='paidby'?'Paid By':'Date';
   var eOn=S.splitView==='expenses'?' on':'';var sOn=S.splitView==='settle'?' on':'';
   var html='<div class="split-screen">'
@@ -1988,7 +1975,6 @@ function splitPanel(){
     +'<button class="stog-btn'+eOn+'" data-sv="expenses">Expenses</button>'
     +'<button class="stog-btn'+sOn+'" data-sv="settle">Summary</button>'
     +'</div>';
-
   if(S.splitView==='expenses'){
     html+='<div class="exp-list">';
     if(!exps.length)html+='<div class="split-empty">No expenses yet. Tap + Add to get started.</div>';
@@ -2000,14 +1986,14 @@ function splitPanel(){
       var catMap={Food:'#FFCCBC:#8B1A00',Activity:'#BBDEFB:#003070',Transport:'#FFF59D:#7A4F00',Lodging:'#B2EBF2:#006064'};
       var cp=catMap[e.category]||'#ede7d9:#5a4a38';var cc=cp.split(':');
       var pill='<span class="er-pill" style="background:'+cc[0]+';color:'+cc[1]+'">'+esc(e.category||'')+'</span>';
-      var dateStr=e.created_at?new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+      var dateStr=(function(){var p=dtParts(e.created_at);return p?MONTH_ABBR[p.mo-1]+' '+p.d:'';}());
       // Build per-family split display; J&J sub-line shown beneath Matthews
       var jjRow=spl.find(function(x){return x.family_key==='jj';});
       var pplParts=[];
       spl.forEach(function(x){
         if(x.family_key==='jj')return; // rendered as sub-line below
         pplParts.push('<span style="font-weight:700;color:'+famColor(x.family_key)+'">'+famName(x.family_key)+'</span>'
-          +' ('+(x.people_count||0)+'p\u00b7'+uf(pp*(x.people_count||0))+')');
+          +' ('+(x.people_count||0)+'p·'+uf(pp*(x.people_count||0))+')');
       });
       var pplStr=pplParts.join('&nbsp;&nbsp;');
       // J&J sub-line — rust left-border indented line
@@ -2016,7 +2002,7 @@ function splitPanel(){
         jjLine='<div class="jj-subledger">'
           +'<i class="ti ti-corner-down-right" style="font-size:10px;margin-right:3px;color:#993C1D"></i>'
           +'<span style="color:#993C1D;font-weight:700">J&amp;J owe Matthews</span>'
-          +'&nbsp;\u00b7\u00b7\u00b7&nbsp;'+(jjRow.people_count||0)+'p&nbsp;\u00b7&nbsp;'+uf(pp*(jjRow.people_count||0))
+          +'&nbsp;···&nbsp;'+(jjRow.people_count||0)+'p&nbsp;·&nbsp;'+uf(pp*(jjRow.people_count||0))
           +'</div>';
       }
       html+='<div class="exp-row">'
@@ -2030,7 +2016,7 @@ function splitPanel(){
         +'</div>'
         +'<div class="er-meta">'+pill
         +'Paid by <span style="color:'+famColor(e.paid_by_family)+';font-weight:700">'+famName(e.paid_by_family)+'</span>'
-        +(dateStr?'&nbsp;\u00b7&nbsp;<span style="color:#8a7a60">'+dateStr+'</span>':'')
+        +(dateStr?'&nbsp;·&nbsp;<span style="color:#8a7a60">'+dateStr+'</span>':'')
         +'</div>'
         +(pplStr?'<div class="er-ppl">'+pplStr+'</div>':'')
         +jjLine
@@ -2077,7 +2063,7 @@ function splitPanel(){
     html+='</div>';
     // J&J sub-ledger section — internal, not in inter-family settlement
     if(jjTotal>0.01){
-      html+='<div class="settle-hdr" style="margin-top:8px;color:#993C1D">J&amp;J \u2192 Matthews (internal)</div>';
+      html+='<div class="settle-hdr" style="margin-top:8px;color:#993C1D">J&amp;J → Matthews (internal)</div>';
       html+='<div class="settle-list">';
       html+='<div class="jj-settle-row">'
         +'<span class="settle-fdot" style="background:#C0612A"></span>'
@@ -2088,7 +2074,7 @@ function splitPanel(){
         +'<span class="jj-settle-badge">J&amp;J share: '+uf(jjTotal)+'</span>'
         +'</div>';
       html+='</div>';
-      html+='<div style="font-size:10px;color:#8a7a60;padding:4px 14px 10px;font-style:italic">Internal transfer \u2014 not included in the inter-family settlement above.</div>';
+      html+='<div style="font-size:10px;color:#8a7a60;padding:4px 14px 10px;font-style:italic">Internal transfer — not included in the inter-family settlement above.</div>';
     }
   }
   html+='</div><div class="kp-overlay" id="kpOverlay"></div><div class="kp-sheet" id="kpSheet"></div>';
@@ -2097,7 +2083,7 @@ function splitPanel(){
 function kpSheetHTML(){
   var sp=calcSplits();
   var uf=function(n){return n>0?'$'+n.toFixed(2):'--';};
-  var sym=S.kp.currency==='EUR'?'\u20ac':'$';
+  var sym=S.kp.currency==='EUR'?'€':'$';
   var d=S.kp.currDigits||'0';
   var jCls='kp-sbox'+(S.kp.jmcrN===0?' kp-soff':'')+(S.kp.focus==='jmcr'?' active':'');
   var mCls='kp-sbox'+(S.kp.mattN===0?' kp-soff':'')+(S.kp.focus==='matthews'?' active':'');
@@ -2108,7 +2094,7 @@ function kpSheetHTML(){
   var mD=S.kp.focus==='matthews'?(d===''?String(S.kp.mattN):d):String(S.kp.mattN);
   var sD=S.kp.focus==='silvermans'?(d===''?String(S.kp.silvN):d):String(S.kp.silvN);
   var jjD=S.kp.focus==='jj'?(d===''?String(S.kp.jjN):d):String(S.kp.jjN);
-  var note=S.kp.currency==='EUR'?' \u2192 $'+sp.usdTotal.toFixed(2):'';
+  var note=S.kp.currency==='EUR'?' → $'+sp.usdTotal.toFixed(2):'';
   var cats=['Food','Activity','Transport','Lodging'];
   var catBtns=cats.map(function(ct){return'<button class="kp-cat'+(S.kp.cat===ct?' on':'')+'" data-cat="'+ct+'">'+ct+'</button>';}).join('');
   var pBtns='<button class="kp-pb'+(S.kp.paidBy==='jmcr'?' on-j':'')+'" data-pb="jmcr">JMCR</button>'
@@ -2187,7 +2173,6 @@ function refreshKP(){
     bindKP();
   }
 }
-
 function closeKP(){
   var sheet=document.getElementById('kpSheet');
   var ovr=document.getElementById('kpOverlay');
@@ -2255,7 +2240,6 @@ function kpDel(){
   refreshKP();
 }
 function handleKPClick(e){var sortOpt=e.target.closest('[data-sort]');if(sortOpt){S.sortBy=sortOpt.dataset.sort;renderPanel();return;}var sortPill=e.target.closest('#sortPill');if(sortPill){S.sortBy=S.sortBy==='date'?'paidby':'date';renderPanel();return;}var sv=e.target.closest('[data-sv]');if(sv){S.splitView=sv.dataset.sv;renderPanel();return;}var cur=e.target.closest('[data-cur]');if(cur){S.kp.currency=cur.dataset.cur;refreshKP();return;}var kpf=e.target.closest('[data-kpf]');if(kpf){kpFocus(kpf.dataset.kpf);return;}var cat=e.target.closest('[data-cat]');if(cat){S.kp.cat=cat.dataset.cat;refreshKP();return;}var pb=e.target.closest('[data-pb]');if(pb){S.kp.paidBy=pb.dataset.pb;refreshKP();return;}var kk=e.target.closest('[data-key]');if(kk){var k=kk.dataset.key;if(k==='DEL')kpDel();else kpKey(k);return;}var kpDate=e.target.closest('[data-kpdate]');if(kpDate){return;}var kpTime=e.target.closest('[data-kptime]');if(kpTime){return;}if(e.target.closest('#kpCfmBtn')){submitExpense();return;}if(e.target.closest('[data-kpclose]')){closeKP();return;}var expedit=e.target.closest('[data-expedit]');if(expedit){openEditExpense(expedit.dataset.expedit);return;}var expdel=e.target.closest('[data-expdel]');if(expdel){var eid=expdel.dataset.expdel;if(confirm('Delete this expense?')){sdot('saving');sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){sb.from('expenses').delete().eq('id',eid).then(function(){loadExpenses(function(exps){S.expenses=exps;sdot('');renderPanel();});});});}return;}}
-
 function openEditExpense(eid){
   var e=S.expenses.find(function(x){return x.id===eid;});if(!e)return;
   var spl=e.expense_splits||[];
@@ -2299,7 +2283,7 @@ function submitExpense(){
     });
     return;
   }
-  var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?new Date(S.kp.dateVal).toISOString():new Date().toISOString()};
+  var row={trip_id:S.trip.id,description:S.kp.desc||'',category:S.kp.cat,amount:amt,amount_usd:parseFloat(amtUSD.toFixed(2)),currency:S.kp.currency,paid_by_family:S.kp.paidBy,created_at:S.kp.dateVal?toStoredDT(S.kp.dateVal):new Date().toISOString()};
   sb.from('expenses').insert(row).select().then(function(r){
     if(r.error){sdot('err');alert('Save failed: '+r.error.message);return;}
     var eid=r.data&&r.data[0]&&r.data[0].id;if(!eid){sdot('err');return;}

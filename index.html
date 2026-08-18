@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Travel">
 <title>Family Travel</title>
 <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./neon-bundle.iife.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:17px}
@@ -476,6 +476,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
     <div class="prog-row">
       <div style="flex:1"><div class="pw"><div class="pb" id="pb" style="width:0%"></div></div><div class="pl" id="pl"></div></div>
       <button class="newtrip-btn" onclick="openNewTrip()" type="button">&#x21BA; New trip</button>
+      <button class="newtrip-btn" onclick="openClearTripData()" type="button" style="margin-left:.3rem">&#x1F5D1; Clear data</button>
     </div>
     <svg class="hero-beach" viewBox="0 0 400 45" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="45" fill="#87CEEB"/><rect x="0" y="22" width="400" height="23" fill="#1565C0"/><path d="M0 22 Q20 18 40 22 Q60 26 80 22 Q100 18 120 22 Q140 26 160 22 Q180 18 200 22 Q220 26 240 22 Q260 18 280 22 Q300 26 320 22 Q340 18 360 22 Q380 26 400 22 L400 45 L0 45Z" fill="#42A5F5"/><path d="M0 33 Q50 30 100 33 Q150 36 200 33 Q250 30 300 33 Q350 36 400 33 L400 45 L0 45Z" fill="#EDD9A3"/></svg>
   </div>
@@ -504,9 +505,246 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f0e8;
 <div class="rv-kp-overlay" id="rvKpOverlay"></div>
 <div class="rv-kp-sheet" id="rvKpSheet"></div>
 <script>
-var SB_URL='https://dehktexgwfurefdihtfn.supabase.co';
-var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGt0ZXhnd2Z1cmVmZGlodGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzExMjUsImV4cCI6MjA5NTY0NzEyNX0.pEwh8Q26c6NosCD_MnTe4zBHmwUmGuTo_a-wF56ObtI';
-var sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{enabled:false}});
+// ============================================================
+// Neon Postgres client (replaces Supabase SDK).
+//
+// SECURITY NOTE: per explicit decision, this connection string is embedded
+// directly in this static page and talks to Neon over HTTPS from the
+// browser. That means anyone who can view this page's source can read/write
+// the database directly (this trip's dates, flight/hotel confirmation
+// numbers, and any medical/med-related packing notes entered here). This
+// tradeoff was chosen deliberately in favor of a serverless proxy, in
+// exchange for zero backend infrastructure to run/maintain. If that
+// tradeoff ever needs revisiting, the fix is to move NEON_CONNECTION_STRING
+// server-side (e.g. a small proxy function) rather than shipping it here.
+// ============================================================
+var NEON_CONNECTION_STRING='postgresql://neondb_owner:npg_h2JVUnkKdq8C@ep-round-smoke-arok0h93-pooler.c-4.us-west-2.aws.neon.tech/neondb?sslmode=require';
+var _neonSql=NeonServerless.neon(NEON_CONNECTION_STRING);
+
+// ---- Supabase-compatible query-builder shim ----
+// Translates the small subset of the Supabase JS SDK this app actually used
+// (.from(table).select/eq/in/order/limit/single, .insert/.update/.delete,
+// .upsert, .rpc) into parameterized SQL run over Neon's HTTP driver, and
+// returns {data,error}-shaped results so every existing .then(function(r){...})
+// call site in this file keeps working unmodified.
+function createSb(_sql){
+
+function buildWhereAppend(filters, params){
+  if(!filters.length) return '';
+  var parts = filters.map(function(f){
+    if(f.op==='in'){ params.push(f.val); return f.col+' = ANY($'+params.length+'::uuid[])'; }
+    params.push(f.val); return f.col+' = $'+params.length;
+  });
+  return ' where '+parts.join(' and ');
+}
+function orderClause(orders){
+  return orders.length ? (' order by '+orders.map(function(o){return o.col+(o.asc?'':' desc');}).join(', ')) : '';
+}
+// ---- the four special-cased "embedded resource" select patterns used by loadAll() ----
+function selectMembersWithFamilies(){
+  return _sql.query(
+    'select m.*, f.name as __f_name from members m left join families f on f.id = m.family_id order by m.family_id, m.display_order',
+    []
+  ).then(function(rows){
+    rows.forEach(function(r){ r.families = {name:r.__f_name}; delete r.__f_name; });
+    return {data: rows, error: null};
+  }).catch(function(e){ return {data:null, error:e}; });
+}
+function selectEmbeddedMany(parentTable, childTable, fkCol, orders){
+  var orderSql = orderClause(orders);
+  return _sql.query('select * from '+parentTable+orderSql, []).then(function(parents){
+    if(!parents.length) return {data: [], error: null};
+    var ids = parents.map(function(p){return p.id;});
+    return _sql.query(
+      'select c.*, m.name as __m_name, m.icon as __m_icon, m.icon_color as __m_icon_color '+
+      'from '+childTable+' c left join members m on m.id = c.member_id '+
+      'where c.'+fkCol+' = ANY($1::uuid[])',
+      [ids]
+    ).then(function(children){
+      var byParent = {};
+      children.forEach(function(c){
+        c.members = c.member_id ? {name:c.__m_name, icon:c.__m_icon, icon_color:c.__m_icon_color} : null;
+        delete c.__m_name; delete c.__m_icon; delete c.__m_icon_color;
+        (byParent[c[fkCol]] = byParent[c[fkCol]] || []).push(c);
+      });
+      parents.forEach(function(p){ p[childTable] = byParent[p.id] || []; });
+      return {data: parents, error: null};
+    });
+  }).catch(function(e){ return {data:null, error:e}; });
+}
+var EMBED_MANY = {
+  'flights|*,flight_passengers(*,members(name,icon,icon_color))':
+    {parentTable:'flights', childTable:'flight_passengers', fkCol:'flight_id'},
+  'accommodations|*,accommodation_guests(*,members(name,icon,icon_color))':
+    {parentTable:'accommodations', childTable:'accommodation_guests', fkCol:'accommodation_id'},
+  'reservations|*,reservation_guests(*,members(name,icon,icon_color))':
+    {parentTable:'reservations', childTable:'reservation_guests', fkCol:'reservation_id'}
+};
+function NeonQueryBuilder(table){
+  this.table = table;
+  this._selectSel = '*';
+  this._filters = [];
+  this._orders = [];
+  this._limitN = null;
+  this._singleFlag = false;
+  this._op = null;
+  this._payload = null;
+  this._upsertOpts = null;
+  this._promise = null;
+  this._scheduled = false;
+}
+NeonQueryBuilder.prototype._schedule = function(){
+  if(this._scheduled) return;
+  this._scheduled = true;
+  var self = this;
+  Promise.resolve().then(function(){ self._ensureExecuted(); });
+};
+NeonQueryBuilder.prototype._ensureExecuted = function(){
+  if(!this._promise) this._promise = this._exec();
+  return this._promise;
+};
+NeonQueryBuilder.prototype.select = function(sel){
+  this._selectSel = sel || '*';
+  if(!this._op){ this._op = 'select'; this._schedule(); }
+  return this;
+};
+NeonQueryBuilder.prototype.eq = function(col,val){ this._filters.push({col:col,op:'=',val:val}); return this; };
+NeonQueryBuilder.prototype.in = function(col,arr){ this._filters.push({col:col,op:'in',val:arr}); return this; };
+NeonQueryBuilder.prototype.order = function(col,opts){ this._orders.push({col:col, asc: !(opts && opts.ascending===false)}); return this; };
+NeonQueryBuilder.prototype.limit = function(n){ this._limitN = n; return this; };
+NeonQueryBuilder.prototype.single = function(){ this._singleFlag = true; return this; };
+NeonQueryBuilder.prototype.insert = function(rows){ this._op='insert'; this._payload = Array.isArray(rows)?rows:[rows]; this._schedule(); return this; };
+NeonQueryBuilder.prototype.update = function(obj){ this._op='update'; this._payload = obj; this._schedule(); return this; };
+NeonQueryBuilder.prototype.delete = function(){ this._op='delete'; this._schedule(); return this; };
+NeonQueryBuilder.prototype.upsert = function(obj, opts){ this._op='upsert'; this._payload = obj; this._upsertOpts = opts||{}; this._schedule(); return this; };
+NeonQueryBuilder.prototype.then = function(onRes, onRej){ return this._ensureExecuted().then(onRes, onRej); };
+NeonQueryBuilder.prototype.catch = function(onRej){ return this._ensureExecuted().catch(onRej); };
+NeonQueryBuilder.prototype._exec = function(){
+  try{
+    if(this._op === 'select') return this._execSelect();
+    if(this._op === 'insert') return this._execInsert();
+    if(this._op === 'update') return this._execUpdate();
+    if(this._op === 'delete') return this._execDelete();
+    if(this._op === 'upsert') return this._execUpsert();
+  }catch(e){
+    return Promise.resolve({data:null, error:e});
+  }
+  return Promise.resolve({data:null, error:new Error('No operation specified')});
+};
+NeonQueryBuilder.prototype._execSelect = function(){
+  var self = this;
+  var key = this.table+'|'+this._selectSel;
+  if(key === 'members|*,families(name)') return selectMembersWithFamilies();
+  var embed = EMBED_MANY[key];
+  if(embed) return selectEmbeddedMany(embed.parentTable, embed.childTable, embed.fkCol, this._orders);
+  var params = [];
+  var whereSql = buildWhereAppend(this._filters, params);
+  var sqlText = 'select * from '+this.table+whereSql+orderClause(this._orders)+(this._limitN!=null?(' limit '+parseInt(this._limitN,10)):'');
+  return _sql.query(sqlText, params).then(function(rows){
+    if(self._singleFlag) return {data: rows[0]||null, error: null};
+    return {data: rows, error: null};
+  }).catch(function(e){ return {data:null, error:e}; });
+};
+NeonQueryBuilder.prototype._execInsert = function(){
+  var self = this;
+  var rows = this._payload;
+  if(!rows.length) return Promise.resolve({data:[], error:null});
+  var cols = Object.keys(rows[0]);
+  var params = [];
+  var valueGroups = rows.map(function(row){
+    var placeholders = cols.map(function(c){ params.push(row[c]===undefined?null:row[c]); return '$'+params.length; });
+    return '('+placeholders.join(',')+')';
+  });
+  var sqlText = 'insert into '+this.table+' ('+cols.join(',')+') values '+valueGroups.join(',')+' returning *';
+  return _sql.query(sqlText, params).then(function(inserted){
+    if(self._singleFlag) return {data: inserted[0]||null, error:null};
+    return {data: inserted, error:null};
+  }).catch(function(e){ return {data:null, error:e}; });
+};
+NeonQueryBuilder.prototype._execUpdate = function(){
+  var self = this;
+  var obj = this._payload;
+  var cols = Object.keys(obj);
+  if(!cols.length) return Promise.resolve({data:[], error:null});
+  var params = [];
+  var setParts = cols.map(function(c){ params.push(obj[c]===undefined?null:obj[c]); return c+' = $'+params.length; });
+  var whereSql = buildWhereAppend(this._filters, params);
+  var sqlText = 'update '+this.table+' set '+setParts.join(', ')+whereSql+' returning *';
+  return _sql.query(sqlText, params).then(function(rows){
+    if(self._singleFlag) return {data: rows[0]||null, error:null};
+    return {data: rows, error:null};
+  }).catch(function(e){ return {data:null, error:e}; });
+};
+NeonQueryBuilder.prototype._execDelete = function(){
+  var params = [];
+  var whereSql = buildWhereAppend(this._filters, params);
+  var sqlText = 'delete from '+this.table+whereSql;
+  return _sql.query(sqlText, params).then(function(){ return {data:null, error:null}; }).catch(function(e){ return {data:null, error:e}; });
+};
+NeonQueryBuilder.prototype._execUpsert = function(){
+  var obj = this._payload;
+  var cols = Object.keys(obj);
+  var params = [];
+  var placeholders = cols.map(function(c){ params.push(obj[c]===undefined?null:obj[c]); return '$'+params.length; });
+  var conflictCol = this._upsertOpts.onConflict;
+  var updateSet = cols.filter(function(c){return c!==conflictCol;}).map(function(c){return c+' = excluded.'+c;}).join(', ');
+  var sqlText = 'insert into '+this.table+' ('+cols.join(',')+') values ('+placeholders.join(',')+') on conflict ('+conflictCol+') do update set '+updateSet+' returning *';
+  return _sql.query(sqlText, params).then(function(rows){ return {data: rows, error: null}; }).catch(function(e){ return {data:null, error:e}; });
+};
+// ---- start_new_trip: reconstructed client-side equivalent of the Supabase
+// RPC function of the same name. The original Postgres function body was
+// never migrated to Neon (it wasn't captured by the information_schema /
+// pg_constraint dump used to rebuild the schema), so this reproduces its
+// behavior from the exact confirmation copy already shown to users in
+// openNewTrip() -- "Checklist items stay but are unchecked. Flights, hotels
+// and reservations are cleared." -- plus the observed fact that flights/
+// hotels/reservations are loaded app-wide with no trip filter, so "cleared"
+// has to mean deleted, not just unlinked. Flagged to the user for review. ----
+function neonStartNewTrip(familyId, tripName){
+  var sqlText =
+    'with old_trip as (select id from trips where family_id=$1 and is_active=true limit 1), '+
+    'deactivated as (update trips set is_active=false, ended_at=now() where id in (select id from old_trip) returning id), '+
+    'new_trip as (insert into trips (family_id, name, is_active) values ($1,$2,true) returning id), '+
+    'moved_items as (update checklist_items set trip_id=(select id from new_trip), is_done=false, is_skipped=false, done_by=null, done_at=null where trip_id in (select id from old_trip) returning id), '+
+    'del_flights as (delete from flights returning id), '+
+    'del_accom as (delete from accommodations returning id), '+
+    'del_reserv as (delete from reservations returning id) '+
+    'select (select id from new_trip) as new_trip_id';
+  return _sql.query(sqlText, [familyId, tripName]).then(function(rows){
+    return {data: rows, error: null};
+  }).catch(function(e){ return {data:null, error:e}; });
+}
+// ---- Clear Trip Data: new admin feature to free Neon storage between trips.
+// Purges the shared/global flights, accommodations, reservations (and their
+// child guest/passenger rows via cascade) and expenses/expense_splits, plus
+// any already-superseded (is_active=false) trip rows. Does NOT touch
+// checklist_items (a reusable packing-list template, not a storage driver),
+// members, categories or families. Runs as one atomic transaction. ----
+function neonClearTripData(){
+  return _sql.transaction(function(txn){
+    return [
+      txn`delete from expenses`,
+      txn`delete from reservations`,
+      txn`delete from accommodations`,
+      txn`delete from flights`,
+      txn`delete from trips where is_active = false`
+    ];
+  }).then(function(){
+    return {error: null};
+  }).catch(function(e){
+    return {error: e};
+  });
+}
+return {
+  from: function(table){ return new NeonQueryBuilder(table); },
+  rpc: function(fnName, args){
+    if(fnName === 'start_new_trip') return neonStartNewTrip(args.p_family_id, args.p_trip_name);
+    return Promise.resolve({data:null, error:new Error('Unsupported rpc: '+fnName)});
+  },
+  clearTripData: neonClearTripData
+};
+}
+var sb=createSb(_neonSql);
 var FIDS={
   jmcr:'a1000000-0000-0000-0000-000000000001',
   matthews:'a2000000-0000-0000-0000-000000000002',
@@ -1353,7 +1591,7 @@ function submitReservation(){
   var isNew=!S.rv.editId;
   var p=isNew?sb.from('reservations').insert(row).select():sb.from('reservations').update(row).eq('id',S.rv.editId);
   p.then(function(r){
-    if(r.error){sdot('err');console.error(r.error);return;}
+    if(r.error){sdot('err');console.error(r.error);alert('Save failed: '+r.error.message);return;}
     var rid=isNew?(r.data&&r.data[0]&&r.data[0].id):S.rv.editId;
     sb.from('reservation_guests').delete().eq('reservation_id',rid).then(function(){
       var gRows=Object.keys(S.rv.memSel).filter(function(mid){return S.rv.memSel[mid];}).map(function(mid){return{reservation_id:rid,member_id:mid,is_companion:false};});
@@ -1371,7 +1609,7 @@ function submitReservation(){
           var existingExp=S.expenses.find(function(e){return e.reservation_id===rid;});
           var ep=existingExp?sb.from('expenses').update(expRow).eq('id',existingExp.id).select():sb.from('expenses').insert(expRow).select();
           ep.then(function(re){
-            if(re.error){sdot('err');console.error(re.error);}
+            if(re.error){sdot('err');console.error(re.error);alert('Reservation saved, but linked expense failed to save: '+re.error.message);return;}
             var eid=existingExp?existingExp.id:(re.data&&re.data[0]&&re.data[0].id);
             if(eid){
               sb.from('expense_splits').delete().eq('expense_id',eid).then(function(){
@@ -1872,8 +2110,20 @@ function delRec(type,id){
 function openNewTrip(){
   openConfirm('New Trip?','Checklist items stay but are unchecked. Flights, hotels and reservations are cleared.',function(){
     var n=V('newTripName')||'My Trip';sdot('saving');
-    sb.rpc('start_new_trip',{p_family_id:S.fid,p_trip_name:n}).then(function(r){if(r.error){sdot('err');console.error(r.error);return;}S.trip=null;closeCon();sdot('');loadAll();});
+    sb.rpc('start_new_trip',{p_family_id:S.fid,p_trip_name:n}).then(function(r){if(r.error){sdot('err');console.error(r.error);alert('Could not start new trip: '+r.error.message);return;}S.trip=null;closeCon();sdot('');loadAll();});
   },'<input class="finp" id="newTripName" placeholder="e.g. Cruise 2027" style="margin-top:.5rem;width:100%"/>');
+}
+function openClearTripData(){
+  openConfirm('Clear Trip Data?',
+    'This permanently deletes ALL flights, accommodations, reservations and expenses (shared across all three families) to free up storage. '
+    +'Your packing checklist items, members and categories are kept. This cannot be undone.',
+    function(){
+      sdot('saving');
+      sb.clearTripData().then(function(r){
+        if(r.error){sdot('err');console.error(r.error);alert('Could not clear trip data: '+r.error.message);return;}
+        closeCon();sdot('');loadAll();
+      });
+    });
 }
 function famMemCount(fk){
   var fid=FIDS[fk];
